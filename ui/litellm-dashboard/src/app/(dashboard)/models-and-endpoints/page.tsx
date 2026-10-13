@@ -9,7 +9,6 @@ import { useUISettings } from "@/app/(dashboard)/hooks/uiSettings/useUISettings"
 import { all_admin_roles, internalUserRoles } from "@/utils/roles";
 import { canCreateModels } from "@/utils/modelPermissions";
 import BetaBadge from "@/components/BetaBadge";
-import CostOptimizationFeedbackBanner from "@/components/molecules/cost_optimization_feedback_banner";
 import ModelInfoView from "@/components/model_info_view";
 import TeamInfoView from "@/components/team/TeamInfo";
 import { useModelDetailRouting } from "@/app/(dashboard)/models-and-endpoints/detailNavigation";
@@ -31,12 +30,12 @@ type ModelTabSlug =
   | "add"
   | "auto-routers"
   | "llm-credentials"
-  | "pass-through"
+  //| "pass-through"
   | "health"
   | "retry-settings"
-  | "model-group-alias"
-  | "access-group-budgets"
-  | "price-data";
+  //| "model-group-alias"
+  //| "access-group-budgets"
+  //| "price-data";
 
 const BASE_TAB_KEY = "all-models";
 
@@ -44,12 +43,12 @@ const TAB_LABELS: Record<ModelTabSlug, string> = {
   add: "Add Model",
   "auto-routers": "Auto-Routers",
   "llm-credentials": "LLM Credentials",
-  "pass-through": "Pass-Through Endpoints",
+  //"pass-through": "Pass-Through Endpoints",
   health: "Health Status",
   "retry-settings": "Model Retry Settings",
-  "model-group-alias": "Model Group Alias",
-  "access-group-budgets": "Model Access Group Budgets",
-  "price-data": "Price Data Reload",
+  //"model-group-alias": "Model Group Alias",
+  //"access-group-budgets": "Model Access Group Budgets",
+  //"price-data": "Price Data Reload",
 };
 
 const renderPanel = (key: string) => {
@@ -105,18 +104,18 @@ export default function ModelsAndEndpointsPage() {
     () => [
       "",
       ...(canCreate ? (["add"] as const) : []),
-      ...(isAdmin || canCreate ? (["auto-routers"] as const) : []),
       ...(isAdmin
         ? ([
-            "llm-credentials",
-            "pass-through",
             "health",
+            "llm-credentials",
+            //"pass-through",
             "retry-settings",
-            "model-group-alias",
-            "access-group-budgets",
-            "price-data",
+            //"model-group-alias",
+            //"access-group-budgets",
+            //"price-data",
           ] as const)
         : []),
+      ...(isAdmin || canCreate ? (["auto-routers"] as const) : []),
     ],
     [canCreate, isAdmin],
   );
@@ -173,7 +172,6 @@ export default function ModelsAndEndpointsPage() {
           </div>
         </div>
 
-        <CostOptimizationFeedbackBanner />
 
         {modelId ? (
           <ModelInfoView

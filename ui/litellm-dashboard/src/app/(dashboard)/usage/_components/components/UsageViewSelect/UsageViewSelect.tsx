@@ -55,6 +55,7 @@ const OPTIONS: OptionConfig[] = [
     icon: <User className="size-4" />,
     adminOnly: true,
   },
+  /*
   {
     value: "organization",
     label: "Organization Usage",
@@ -62,6 +63,7 @@ const OPTIONS: OptionConfig[] = [
     icon: <Building2 className="size-4" />,
     capability: "viewOrganizationUsage",
   },
+  */
   {
     value: "team",
     label: "Team Usage",
@@ -75,6 +77,7 @@ const OPTIONS: OptionConfig[] = [
     icon: <ShoppingCart className="size-4" />,
     adminOnly: true,
   },
+  /*
   {
     value: "tag",
     label: "Tag Usage",
@@ -82,6 +85,8 @@ const OPTIONS: OptionConfig[] = [
     icon: <Tags className="size-4" />,
     adminOnly: true,
   },
+  */
+  /*
   {
     value: "agent",
     label: "Agent Usage (A2A)",
@@ -89,6 +94,7 @@ const OPTIONS: OptionConfig[] = [
     icon: <Bot className="size-4" />,
     capability: "viewAgentUsage",
   },
+  */
   {
     value: "user",
     label: "User Usage",
@@ -96,6 +102,7 @@ const OPTIONS: OptionConfig[] = [
     icon: <User className="size-4" />,
     adminOnly: true,
   },
+  /*
   {
     value: "user-agent-activity",
     label: "User Agent Activity",
@@ -103,6 +110,7 @@ const OPTIONS: OptionConfig[] = [
     icon: <LineChart className="size-4" />,
     adminOnly: true,
   },
+  */
 ];
 export const UsageViewSelect: React.FC<UsageViewSelectProps> = ({
   value,
