@@ -45,9 +45,11 @@ export default function SpendLogsTable({ accessToken, token, userRole, userID, p
 
   const tabs: LogsTab[] = [
     REQUEST_LOGS_TAB,
+    /*
     ...(canViewAuditLogs ? [AUDIT_LOGS_TAB] : []),
     DELETED_KEYS_TAB,
     ...(canViewDeletedTeams ? [DELETED_TEAMS_TAB] : []),
+    */
   ];
 
   const renderPanel = (tabId: LogsTabId) => {
