@@ -10,12 +10,11 @@ import type { Page as PlaywrightPage } from "@playwright/test";
 const sidebarButtons = {
   [Role.ProxyAdmin]: [
     "Virtual Keys",
-    "Playground",
     "Models",
     "Usage",
+    "Logs",
     "Teams",
     "Internal Users",
-    "AI Hub",
     "Response Cache",
   ],
 };
@@ -76,10 +75,6 @@ for (const { role, storage } of roles) {
 
       await navigateToPage(page, Page.Models);
       await expectPageUrl(page, Page.Models);
-
-      // Migrated page: /ui?page=llm-playground redirects to the path route
-      await navigateToPage(page, Page.LlmPlayground);
-      await expectPageUrl(page, Page.LlmPlayground);
     });
   });
 }

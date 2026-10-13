@@ -1,4 +1,3 @@
-import { useTeams } from "@/app/(dashboard)/hooks/teams/useTeams";
 import useAuthorized from "@/app/(dashboard)/hooks/useAuthorized";
 import useIsOrgAdmin from "@/app/(dashboard)/hooks/useIsOrgAdmin";
 import { useHealthReadinessDetails } from "@/app/(dashboard)/hooks/healthReadiness/useHealthReadinessDetails";
@@ -25,53 +24,27 @@ import {
   Activity,
   BarChart3,
   Bell,
-  Blocks,
-  Bot,
-  BookOpen,
-  Building2,
-  Boxes,
   ChevronRight,
-  Code2,
   Database,
   ExternalLink,
-  FileText,
-  FlaskConical,
   Folder,
-  HeartPulse,
   KeyRound,
-  LayoutGrid,
   Network,
-  Palette,
   PanelLeftClose,
   PanelLeftOpen,
-  PiggyBank,
-  PlayCircle,
   Route,
-  ScrollText,
-  Search,
-  Server,
   Settings as SettingsIcon,
-  Shield,
-  ShieldCheck,
-  Tags,
-  Terminal,
   User,
   Users,
-  Wallet,
-  Wrench,
-  Workflow,
 } from "lucide-react";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { cn } from "@/lib/cva.config";
-import { rolesWithCapability } from "../utils/capabilities";
 import {
   all_admin_roles,
   internalUserRoles,
   isAdminRole,
-  isUserTeamAdminForAnyTeam,
   rolesAllowedToViewWriteScopedPages,
-  rolesWithWriteAccess,
 } from "../utils/roles";
 import BetaBadge from "./BetaBadge";
 import SidebarAccountMenu from "./SidebarAccountMenu/SidebarAccountMenu";
@@ -89,10 +62,6 @@ interface SidebarProps {
   onToggleCollapsed?: () => void;
   enabledPagesInternalUsers?: string[] | null;
   enableProjectsUI?: boolean;
-  disableAgentsForInternalUsers?: boolean;
-  allowAgentsForTeamAdmins?: boolean;
-  disableVectorStoresForInternalUsers?: boolean;
-  allowVectorStoresForTeamAdmins?: boolean;
 }
 
 interface MenuItem {
@@ -120,74 +89,11 @@ const menuGroups: MenuGroup[] = [
     items: [
       { key: "api-keys", page: "api-keys", label: "Virtual Keys", icon: <KeyRound {...ICON} /> },
       {
-        key: "llm-playground",
-        page: "llm-playground",
-        label: "Playground",
-        icon: <PlayCircle {...ICON} />,
-        roles: rolesWithWriteAccess,
-      },
-      {
         key: "models",
         page: "models",
         label: "Models + Endpoints",
         icon: <Network {...ICON} />,
         roles: rolesAllowedToViewWriteScopedPages,
-      },
-      {
-        key: "agentic",
-        page: "agentic",
-        label: "Agentic",
-        icon: <Bot {...ICON} />,
-        children: [
-          {
-            key: "agents",
-            page: "agents",
-            label: "Agents",
-            icon: <Bot {...ICON} />,
-            roles: rolesAllowedToViewWriteScopedPages,
-          },
-          {
-            key: "workflows",
-            page: "workflows",
-            label: "Workflow Runs",
-            icon: <Workflow {...ICON} />,
-            roles: rolesWithCapability("viewWorkflowRuns"),
-          },
-          {
-            key: "memory",
-            page: "memory",
-            label: "Memory",
-            icon: <Database {...ICON} />,
-            roles: rolesWithCapability("viewMemory"),
-          },
-        ],
-      },
-      { key: "mcp-servers", page: "mcp-servers", label: "MCP Servers", icon: <Server {...ICON} /> },
-      { key: "skills", page: "skills", label: "Skills", icon: <Blocks {...ICON} />, roles: all_admin_roles },
-      { key: "guardrails", page: "guardrails", label: "Guardrails", icon: <Shield {...ICON} /> },
-      {
-        key: "policies",
-        page: "policies",
-        label: "Policies",
-        icon: <ScrollText {...ICON} />,
-        roles: rolesWithCapability("viewPolicies"),
-      },
-      {
-        key: "tools",
-        page: "tools",
-        label: "Tools",
-        icon: <Wrench {...ICON} />,
-        children: [
-          { key: "search-tools", page: "search-tools", label: "Search Tools", icon: <Search {...ICON} /> },
-          { key: "vector-stores", page: "vector-stores", label: "Vector Stores", icon: <Database {...ICON} /> },
-          {
-            key: "tool-policies",
-            page: "tool-policies",
-            label: "Tool Policies",
-            icon: <ShieldCheck {...ICON} />,
-            roles: rolesWithCapability("viewToolPolicies"),
-          },
-        ],
       },
     ],
   },
@@ -201,25 +107,7 @@ const menuGroups: MenuGroup[] = [
         roles: [...all_admin_roles, ...internalUserRoles],
         label: "Usage",
       },
-      {
-        key: "cost-optimization",
-        page: "cost-optimization",
-        icon: <PiggyBank {...ICON} />,
-        roles: [...all_admin_roles, ...internalUserRoles],
-        label: (
-          <span className="flex items-center gap-2">
-            Cost Optimization <BetaBadge />
-          </span>
-        ),
-      },
       { key: "logs", page: "logs", label: "Logs", icon: <Activity {...ICON} /> },
-      {
-        key: "guardrails-monitor",
-        page: "guardrails-monitor",
-        label: "Guardrails Monitor",
-        icon: <HeartPulse {...ICON} />,
-        roles: rolesWithCapability("viewGuardrailUsage"),
-      },
     ],
   },
   {
@@ -238,77 +126,17 @@ const menuGroups: MenuGroup[] = [
         roles: all_admin_roles,
       },
       { key: "users", page: "users", label: "Internal Users", icon: <User {...ICON} />, roles: all_admin_roles },
-      {
-        key: "organizations",
-        page: "organizations",
-        label: "Organizations",
-        icon: <Building2 {...ICON} />,
-        roles: all_admin_roles,
-      },
-      {
-        key: "access-groups",
-        page: "access-groups",
-        label: "Access Groups",
-        icon: <Boxes {...ICON} />,
-        roles: all_admin_roles,
-      },
-      { key: "budgets", page: "budgets", label: "Budgets", icon: <Wallet {...ICON} />, roles: all_admin_roles },
     ],
   },
   {
     groupLabel: "DEVELOPER TOOLS",
     items: [
-      { key: "api_ref", page: "api_ref", label: "API Reference", icon: <Code2 {...ICON} /> },
-      { key: "model-hub-table", page: "model-hub-table", label: "AI Hub", icon: <LayoutGrid {...ICON} /> },
-      {
-        key: "learning-resources",
-        page: "learning-resources",
-        label: "Learning Resources",
-        icon: <BookOpen {...ICON} />,
-        external_url: "https://models.litellm.ai/cookbook",
-      },
       {
         key: "caching",
         page: "caching",
         label: "Response Cache",
         icon: <Database {...ICON} />,
         roles: all_admin_roles,
-      },
-      {
-        key: "experimental",
-        page: "experimental",
-        label: "Experimental",
-        icon: <FlaskConical {...ICON} />,
-        children: [
-          {
-            key: "prompts",
-            page: "prompts",
-            label: "Prompts",
-            icon: <FileText {...ICON} />,
-            roles: rolesWithCapability("viewPrompts"),
-          },
-          {
-            key: "transform-request",
-            page: "transform-request",
-            label: "API Playground",
-            icon: <Terminal {...ICON} />,
-            roles: [...all_admin_roles, ...internalUserRoles],
-          },
-          {
-            key: "tag-management",
-            page: "tag-management",
-            label: "Tag Management",
-            icon: <Tags {...ICON} />,
-            roles: all_admin_roles,
-          },
-          {
-            key: "4",
-            page: "usage",
-            label: "Old Usage",
-            icon: <BarChart3 {...ICON} />,
-            roles: rolesWithCapability("viewGlobalSpend"),
-          },
-        ],
       },
     ],
   },
@@ -344,14 +172,6 @@ const menuGroups: MenuGroup[] = [
             icon: <SettingsIcon {...ICON} />,
             roles: all_admin_roles,
           },
-          {
-            key: "cost-tracking",
-            page: "cost-tracking",
-            label: "Cost Tracking",
-            icon: <BarChart3 {...ICON} />,
-            roles: all_admin_roles,
-          },
-          { key: "ui-theme", page: "ui-theme", label: "UI Theme", icon: <Palette {...ICON} />, roles: all_admin_roles },
         ],
       },
     ],
@@ -415,14 +235,9 @@ const Sidebar_: React.FC<SidebarProps> = ({
   onToggleCollapsed,
   enabledPagesInternalUsers,
   enableProjectsUI,
-  disableAgentsForInternalUsers,
-  allowAgentsForTeamAdmins,
-  disableVectorStoresForInternalUsers,
-  allowVectorStoresForTeamAdmins,
 }) => {
-  const { userId, accessToken, userRole, isViewOnly } = useAuthorized();
+  const { accessToken, userRole } = useAuthorized();
   const isOrgAdmin = useIsOrgAdmin();
-  const { data: teams } = useTeams();
   const { logoUrl, logoUrlDark } = useTheme();
   const [erroredDarkLogo, setErroredDarkLogo] = useState<string | null>(null);
   const { data: healthData } = useHealthReadinessDetails(accessToken);
@@ -449,8 +264,6 @@ const Sidebar_: React.FC<SidebarProps> = ({
     }
   }
 
-  const isTeamAdmin = useMemo(() => isUserTeamAdminForAnyTeam(teams ?? null, userId ?? ""), [teams, userId]);
-
   const filterItemsByRole = (items: MenuItem[]): MenuItem[] => {
     const isAdmin = isAdminRole(userRole);
     return items
@@ -459,28 +272,13 @@ const Sidebar_: React.FC<SidebarProps> = ({
         // A parent whose children were all filtered out renders as a leaf link
         // to its own page id, which is not a real route. Drop it instead.
         if (item.children && item.children.length === 0) return false;
-        if (item.key === "llm-playground" && isViewOnly) return false;
-        if (item.key === "organizations" || item.key === "users") {
+        if (item.key === "users") {
           const hasRoleAccess = !item.roles || item.roles.includes(userRole) || isOrgAdmin;
           if (!hasRoleAccess) return false;
           if (!isAdmin && enabledPagesInternalUsers != null) return enabledPagesInternalUsers.includes(item.page);
           return true;
         }
         if (item.key === "projects" && !enableProjectsUI) return false;
-        if (
-          !isAdmin &&
-          item.key === "agents" &&
-          disableAgentsForInternalUsers &&
-          !(allowAgentsForTeamAdmins && isTeamAdmin)
-        )
-          return false;
-        if (
-          !isAdmin &&
-          item.key === "vector-stores" &&
-          disableVectorStoresForInternalUsers &&
-          !(allowVectorStoresForTeamAdmins && isTeamAdmin)
-        )
-          return false;
         if (item.roles && !item.roles.includes(userRole)) return false;
         if (!isAdmin && enabledPagesInternalUsers != null) {
           if (item.children && item.children.length > 0) {

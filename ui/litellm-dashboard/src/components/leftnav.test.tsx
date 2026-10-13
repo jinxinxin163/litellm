@@ -1,4 +1,4 @@
-import { act, fireEvent, screen, waitFor } from "@testing-library/react";
+import { fireEvent, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { renderWithProviders } from "../../tests/test-utils";
 import Sidebar, { menuGroups, getBreadcrumb } from "./leftnav";
@@ -175,18 +175,24 @@ describe("Sidebar (leftnav)", () => {
 
     const topLevelLabels = [
       "Virtual Keys",
-      "Playground",
       "Models + Endpoints",
+      "Usage",
+      "Logs",
+      "Teams",
+      "Internal Users",
+      "Response Cache",
+      "Settings",
+    ];
+    const removedLabels = [
+      "Playground",
       "Agentic",
       "MCP Servers",
+      "Skills",
       "Guardrails",
       "Policies",
       "Tools",
-      "Usage",
-      "Logs",
+      "Cost Optimization",
       "Guardrails Monitor",
-      "Teams",
-      "Internal Users",
       "Organizations",
       "Access Groups",
       "Budgets",
@@ -194,36 +200,13 @@ describe("Sidebar (leftnav)", () => {
       "AI Hub",
       "Learning Resources",
       "Experimental",
-      "Settings",
     ];
 
     topLevelLabels.forEach((label) => {
       expect(screen.getByText(label)).toBeInTheDocument();
     });
-  });
-
-  it("expands a nested tab to reveal its children (Tools > Search Tools)", async () => {
-    renderWithProviders(<Sidebar {...defaultProps} />);
-
-    expect(screen.queryByText("Search Tools")).not.toBeInTheDocument();
-    act(() => {
-      fireEvent.click(screen.getByText("Tools"));
-    });
-    await waitFor(() => {
-      expect(screen.getByText("Search Tools")).toBeInTheDocument();
-    });
-  });
-  it("reports whether a nested tab is expanded", async () => {
-    renderWithProviders(<Sidebar {...defaultProps} />);
-
-    const toggle = screen.getByText("Tools").closest("button")!;
-    expect(toggle).toHaveAttribute("aria-expanded", "false");
-
-    act(() => {
-      fireEvent.click(toggle);
-    });
-    await waitFor(() => {
-      expect(toggle).toHaveAttribute("aria-expanded", "true");
+    removedLabels.forEach((label) => {
+      expect(screen.queryByText(label)).not.toBeInTheDocument();
     });
   });
 
@@ -245,9 +228,8 @@ describe("Sidebar (leftnav)", () => {
   describe("Admin Viewer parity", () => {
     // Admin Viewer follows a "read parity with Proxy Admin, no writes, no
     // cost-incurring actions" rule. The session hook presents the viewer as
-    // an admin (`userRole: "admin"`) with `isViewOnly: true`; Playground
-    // stays hidden (incurs LLM cost) via the isViewOnly flag, while every
-    // admin page (Models + Endpoints, Agents, Logs, ...) is visible read-only.
+    // an admin (`userRole: "admin"`) with `isViewOnly: true`; every admin page
+    // (Models + Endpoints, Logs, ...) is visible read-only.
     const adminViewerAuth = {
       userId: "admin-viewer-user-id",
       accessToken: "test-access-token",
@@ -272,19 +254,6 @@ describe("Sidebar (leftnav)", () => {
       expect(screen.getByText("Models + Endpoints")).toBeInTheDocument();
     });
 
-    it("shows Agents (under Agentic) to Admin Viewer (read-only)", async () => {
-      mockUseAuthorized.mockReturnValue(adminViewerAuth);
-      renderWithProviders(<Sidebar {...defaultProps} />);
-      // Agents is now nested under the "Agentic" submenu — expand parent
-      // first to render the children, then assert Agents is visible.
-      act(() => {
-        fireEvent.click(screen.getByText("Agentic"));
-      });
-      await waitFor(() => {
-        expect(screen.getByText("Agents")).toBeInTheDocument();
-      });
-    });
-
     it("shows Logs to Admin Viewer", () => {
       mockUseAuthorized.mockReturnValue(adminViewerAuth);
       renderWithProviders(<Sidebar {...defaultProps} />);
@@ -292,99 +261,7 @@ describe("Sidebar (leftnav)", () => {
     });
   });
 
-  describe("capability-gated Tools children", () => {
-    const internalAuth = {
-      userId: "internal-user-id",
-      accessToken: "test-access-token",
-      userRole: "internal",
-      isViewOnly: false,
-      token: "test-token",
-      userEmail: "internal@example.com",
-      premiumUser: false,
-      disabledPersonalKeyCreation: false,
-      showSSOBanner: false,
-    };
-
-    afterEach(() => {
-      mockUseAuthorized.mockReset();
-    });
-
-    it("should hide Tool Policies from internal users while keeping other Tools children", async () => {
-      mockUseAuthorized.mockReturnValue(internalAuth);
-      renderWithProviders(<Sidebar {...defaultProps} />);
-
-      act(() => {
-        fireEvent.click(screen.getByText("Tools"));
-      });
-      await waitFor(() => {
-        expect(screen.getByText("Search Tools")).toBeInTheDocument();
-      });
-      expect(screen.queryByText("Tool Policies")).not.toBeInTheDocument();
-    });
-
-    it("should show Tool Policies to admins", async () => {
-      renderWithProviders(<Sidebar {...defaultProps} />);
-
-      act(() => {
-        fireEvent.click(screen.getByText("Tools"));
-      });
-      await waitFor(() => {
-        expect(screen.getByText("Tool Policies")).toBeInTheDocument();
-      });
-    });
-
-    it("should hide the Policies entry from internal users while keeping Guardrails", () => {
-      mockUseAuthorized.mockReturnValue(internalAuth);
-      renderWithProviders(<Sidebar {...defaultProps} />);
-
-      expect(screen.getByText("Guardrails")).toBeInTheDocument();
-      expect(screen.queryByText("Policies")).not.toBeInTheDocument();
-    });
-
-    it("should hide the Prompts entry from internal users while keeping other Experimental children", async () => {
-      mockUseAuthorized.mockReturnValue(internalAuth);
-      renderWithProviders(<Sidebar {...defaultProps} />);
-
-      act(() => {
-        fireEvent.click(screen.getByText("Experimental"));
-      });
-      await waitFor(() => {
-        expect(screen.getByText("API Playground")).toBeInTheDocument();
-      });
-      expect(screen.queryByText("Prompts")).not.toBeInTheDocument();
-    });
-
-    it("should hide Old Usage from internal users while keeping other Experimental children", async () => {
-      mockUseAuthorized.mockReturnValue(internalAuth);
-      renderWithProviders(<Sidebar {...defaultProps} />);
-
-      act(() => {
-        fireEvent.click(screen.getByText("Experimental"));
-      });
-      await waitFor(() => {
-        expect(screen.getByText("API Playground")).toBeInTheDocument();
-      });
-      expect(screen.queryByText("Old Usage")).not.toBeInTheDocument();
-    });
-
-    it("should show Old Usage to admins", async () => {
-      renderWithProviders(<Sidebar {...defaultProps} />);
-
-      act(() => {
-        fireEvent.click(screen.getByText("Experimental"));
-      });
-      await waitFor(() => {
-        expect(screen.getByText("Old Usage")).toBeInTheDocument();
-      });
-    });
-  });
-
-  // Workflow Runs, Memory and Guardrails Monitor render a shell and then 401
-  // for every non-proxy-admin role, because their page-load routes sit outside
-  // internal_user_routes / self_managed_routes. Cost Optimization does not:
-  // its primary call is /user/daily/activity, which every role may make, so
-  // the entry stays and only its proxy-wide tabs are gated inside the page.
-  describe("capability-gated pages whose data is proxy-admin-only", () => {
+  describe("capability-gated admin pages", () => {
     const authFor = (userRole: string) => ({
       userId: "some-user-id",
       accessToken: "test-access-token",
@@ -401,112 +278,15 @@ describe("Sidebar (leftnav)", () => {
       mockUseAuthorized.mockReset();
     });
 
-    it("hides Workflow Runs and Memory from an internal user under Agentic", async () => {
+    it("keeps the trimmed observability menu for internal users", () => {
       mockUseAuthorized.mockReturnValue(authFor("internal"));
       renderWithProviders(<Sidebar {...defaultProps} />);
 
-      act(() => {
-        fireEvent.click(screen.getByText("Agentic"));
-      });
-      // Liveness gate: the sibling Agents child stays visible to this role, so
-      // the absences below mean the gate fired, not that the group never opened.
-      await waitFor(() => {
-        expect(screen.getByText("Agents")).toBeInTheDocument();
-      });
-      expect(screen.queryByText("Workflow Runs")).not.toBeInTheDocument();
-      expect(screen.queryByText("Memory")).not.toBeInTheDocument();
-    });
-
-    // An org admin's session role is "Org Admin", which no capability list
-    // carries, and the proxy denies these routes to org admins too because
-    // `_user_is_org_admin` needs an organization_id the page-load GET never sends.
-    // Agents is already out of reach for this role, so gating the other two
-    // empties the Agentic group entirely and the parent must go with it rather
-    // than degrade into a leaf link to the non-route `?page=agentic`.
-    it("drops the whole Agentic group for an org admin once its last child is gated", () => {
-      mockUseAuthorized.mockReturnValue(authFor("org_admin"));
-      renderWithProviders(<Sidebar {...defaultProps} />);
-
-      // Liveness gate: Logs carries no role list, so it proves the sidebar rendered.
-      expect(screen.getByText("Logs")).toBeInTheDocument();
-      expect(screen.queryByText("Agentic")).not.toBeInTheDocument();
-      expect(screen.queryByText("Workflow Runs")).not.toBeInTheDocument();
-      expect(screen.queryByText("Memory")).not.toBeInTheDocument();
-    });
-
-    it("keeps the Agentic group for an internal user, who can still see Agents", () => {
-      mockUseAuthorized.mockReturnValue(authFor("internal"));
-      renderWithProviders(<Sidebar {...defaultProps} />);
-
-      expect(screen.getByText("Agentic")).toBeInTheDocument();
-    });
-
-    it("shows Workflow Runs and Memory to admins", async () => {
-      renderWithProviders(<Sidebar {...defaultProps} />);
-
-      act(() => {
-        fireEvent.click(screen.getByText("Agentic"));
-      });
-      await waitFor(() => {
-        expect(screen.getByText("Workflow Runs")).toBeInTheDocument();
-      });
-      expect(screen.getByText("Memory")).toBeInTheDocument();
-    });
-
-    it("hides Guardrails Monitor from an internal user while keeping Usage and Cost Optimization", () => {
-      mockUseAuthorized.mockReturnValue(authFor("internal"));
-      renderWithProviders(<Sidebar {...defaultProps} />);
-
-      expect(screen.queryByText("Guardrails Monitor")).not.toBeInTheDocument();
       expect(screen.getByText("Usage")).toBeInTheDocument();
-      expect(screen.getByText("Cost Optimization")).toBeInTheDocument();
+      expect(screen.getByText("Logs")).toBeInTheDocument();
+      expect(screen.queryByText("Cost Optimization")).not.toBeInTheDocument();
+      expect(screen.queryByText("Guardrails Monitor")).not.toBeInTheDocument();
     });
-
-    it("shows Guardrails Monitor to admins", () => {
-      renderWithProviders(<Sidebar {...defaultProps} />);
-
-      expect(screen.getByText("Guardrails Monitor")).toBeInTheDocument();
-    });
-  });
-
-  it("should show Organizations tab for organization admins", () => {
-    mockUseAuthorized.mockReturnValue({
-      userId: "org-admin-user-id",
-      accessToken: "test-access-token",
-      userRole: "viewer",
-      isViewOnly: false,
-      token: "test-token",
-      userEmail: "orgadmin@example.com",
-      premiumUser: false,
-      disabledPersonalKeyCreation: false,
-      showSSOBanner: false,
-    });
-
-    mockUseOrganizations.mockReturnValue({
-      data: [
-        {
-          organization_id: "org-1",
-          organization_name: "Test Organization",
-          spend: 0,
-          max_budget: null,
-          models: [],
-          tpm_limit: null,
-          rpm_limit: null,
-          members: [
-            {
-              user_id: "org-admin-user-id",
-              user_role: "org_admin",
-            },
-          ],
-        },
-      ],
-      isLoading: false,
-      error: null,
-    } as any);
-
-    renderWithProviders(<Sidebar {...defaultProps} />);
-
-    expect(screen.getByText("Organizations")).toBeInTheDocument();
   });
 
   it("marks the selected page's nav item active", () => {
@@ -530,21 +310,16 @@ describe("Sidebar (leftnav)", () => {
     expect(label).toHaveClass("group-data-[collapsed=true]/sidebar:hidden");
   });
 
-  it("shows Cost Optimization with a Beta badge and no feature-flag gate", () => {
+  it("keeps Projects beta-gated and removes Cost Optimization", () => {
     const { container } = renderWithProviders(<Sidebar {...defaultProps} enableProjectsUI={false} />);
 
-    const costOptimization = container.querySelector('a[href*="cost-optimization"]');
-    expect(costOptimization).not.toBeNull();
-    expect(costOptimization!).toHaveTextContent(/Cost Optimization/);
-    expect(costOptimization!).toHaveTextContent(/Beta/);
-
+    expect(container.querySelector('a[href*="cost-optimization"]')).toBeNull();
     expect(container.querySelector('a[href*="projects"]')).toBeNull();
   });
 
   it("keeps a readable collapsed-rail tooltip for items whose label carries a badge", () => {
     const { container } = renderWithProviders(<Sidebar {...defaultProps} enableProjectsUI collapsed />);
 
-    expect(container.querySelector('a[href*="cost-optimization"]')).toHaveAttribute("title", "Cost Optimization");
     expect(container.querySelector('a[href*="projects"]')).toHaveAttribute("title", "Projects");
   });
 });
@@ -553,10 +328,6 @@ describe("getBreadcrumb", () => {
   it("resolves a top-level page to its section + title", () => {
     expect(getBreadcrumb("api-keys")).toEqual({ section: "AI Gateway", title: "Virtual Keys" });
     expect(getBreadcrumb("logs")).toEqual({ section: "Observability", title: "Logs" });
-  });
-
-  it("resolves a nested child page to its parent section", () => {
-    expect(getBreadcrumb("search-tools")).toEqual({ section: "AI Gateway", title: "Search Tools" });
   });
 
   it("resolves router-settings under the Settings section", () => {
