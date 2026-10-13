@@ -23,7 +23,6 @@ import {
 import {
   Activity,
   BarChart3,
-  Bell,
   ChevronRight,
   Database,
   ExternalLink,
@@ -156,13 +155,6 @@ const menuGroups: MenuGroup[] = [
             page: "router-settings",
             label: "Router Settings",
             icon: <Route {...ICON} />,
-            roles: all_admin_roles,
-          },
-          {
-            key: "logging-and-alerts",
-            page: "logging-and-alerts",
-            label: "Logging & Alerts",
-            icon: <Bell {...ICON} />,
             roles: all_admin_roles,
           },
           {

@@ -14,7 +14,6 @@ export const pageDescriptions: Record<string, string> = {
   projects: "Manage projects within teams",
   caching: "Configure response caching and coordination Redis settings",
   "router-settings": "Configure routing and load balancing settings",
-  "logging-and-alerts": "Set up logging and alert configurations",
   "admin-panel": "Access admin panel and settings",
 };
 
