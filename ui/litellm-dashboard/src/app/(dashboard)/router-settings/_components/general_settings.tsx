@@ -258,7 +258,6 @@ const GeneralSettings: React.FC<GeneralSettingsPageProps> = ({ accessToken, user
           <TabsTrigger value="loadbalancing">Loadbalancing</TabsTrigger>
           <TabsTrigger value="routing-groups">Routing Groups</TabsTrigger>
           <TabsTrigger value="fallbacks">Fallbacks</TabsTrigger>
-          <TabsTrigger value="prompt-caching">Prompt Caching</TabsTrigger>
           <TabsTrigger value="general">General</TabsTrigger>
         </TabsList>
         <TabsContent value="loadbalancing" className="px-8 py-6" keepMounted>
