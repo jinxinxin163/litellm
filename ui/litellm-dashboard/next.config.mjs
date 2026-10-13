@@ -25,6 +25,7 @@ const nextConfig = {
     // Must be absolute; "." is no longer allowed
     root: __dirname,
   },
+  allowedDevOrigins: ['172.21.73.80'],
 };
 
 export default nextConfig;
