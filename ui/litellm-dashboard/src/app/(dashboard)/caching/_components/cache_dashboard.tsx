@@ -153,15 +153,6 @@ const CacheDashboard: React.FC<CachePageProps> = ({ accessToken, token, userRole
           <TabsTrigger value="analytics" className="flex-none rounded-none px-4 py-2">
             Cache Analytics
           </TabsTrigger>
-          <TabsTrigger value="health" className="flex-none rounded-none px-4 py-2">
-            Cache Health
-          </TabsTrigger>
-          <TabsTrigger value="settings" className="flex-none rounded-none px-4 py-2">
-            Cache Settings
-          </TabsTrigger>
-          <TabsTrigger value="coordination" className="flex-none rounded-none px-4 py-2">
-            Coordination Redis
-          </TabsTrigger>
         </TabsList>
 
         <div className="flex items-center space-x-2">
