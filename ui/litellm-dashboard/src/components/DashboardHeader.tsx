@@ -7,15 +7,8 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { ToolbarSeparator } from "@/components/shared/ToolbarSeparator";
 import { getBreadcrumb } from "@/components/leftnav";
-import { BlogDropdown } from "@/components/Navbar/BlogDropdown/BlogDropdown";
-import { DocsLink } from "@/components/Navbar/DocsLink/DocsLink";
-import { CommunityEngagementButtons } from "@/components/Navbar/CommunityEngagementButtons/CommunityEngagementButtons";
-import { NotificationsBell } from "@/components/Navbar/NotificationsBell/NotificationsBell";
-import ViewSwitcher from "@/components/Navbar/ViewSwitcher";
 import ThemeToggle from "@/components/ThemeToggle/ThemeToggle";
-import WorkerDropdown from "@/components/Navbar/WorkerDropdown/WorkerDropdown";
 import { useWorker } from "@/hooks/useWorker";
 import { useDisableShowPrompts } from "@/app/(dashboard)/hooks/useDisableShowPrompts";
 import { clearTokenCookies } from "@/utils/cookieUtils";
@@ -45,10 +38,6 @@ export function DashboardHeader({ page }: DashboardHeaderProps) {
     <header className="flex h-14 flex-none items-center justify-between gap-4 border-b border-border bg-background px-4">
       <Breadcrumb className="min-w-0">
         <BreadcrumbList className="flex-nowrap">
-          <BreadcrumbItem className="flex-none">
-            <ViewSwitcher />
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
           <BreadcrumbItem className="min-w-0">
             <BreadcrumbPage className="truncate">{title}</BreadcrumbPage>
           </BreadcrumbItem>
@@ -56,18 +45,7 @@ export function DashboardHeader({ page }: DashboardHeaderProps) {
       </Breadcrumb>
 
       <div className="flex flex-none items-center gap-1">
-        {showWorkerSwitch && (
-          <>
-            <WorkerDropdown onWorkerSwitch={handleWorkerSwitch} />
-            <ToolbarSeparator />
-          </>
-        )}
-        <DocsLink />
-        <BlogDropdown />
-        {!hideCommunityLinks && <CommunityEngagementButtons />}
-        <ToolbarSeparator />
         <ThemeToggle />
-        <NotificationsBell />
       </div>
     </header>
   );
