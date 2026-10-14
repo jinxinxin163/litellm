@@ -311,14 +311,7 @@ export default function UISettings() {
               label="Disable team admin delete team user"
               description={disableTeamAdminDeleteProperty?.description}
             />
-            <SettingRow
-              checked={Boolean(values.require_auth_for_public_ai_hub)}
-              disabled={isUpdating}
-              onCheckedChange={handleToggleRequireAuthForPublicAIHub}
-              ariaLabel={requireAuthForPublicAIHubProperty?.description ?? "Require authentication for public AI Hub"}
-              label="Require authentication for public AI Hub"
-              description={requireAuthForPublicAIHubProperty?.description}
-            />
+            
             <SettingRow
               checked={Boolean(values.forward_client_headers_to_llm_api)}
               disabled={isUpdating}
@@ -341,70 +334,7 @@ export default function UISettings() {
                 "Forwards provider auth headers (x-api-key, x-goog-api-key, api-key, ocp-apim-subscription-key) to the upstream LLM, overriding any deployment-configured key for that request. Enable for Claude Code BYOK (clients bring their own API key). Independent of the client-headers toggle — enable only the one(s) you need."
               }
             />
-            {enableProjectsUIProperty && (
-              <SettingRow
-                checked={Boolean(values.enable_projects_ui)}
-                disabled={isUpdating}
-                onCheckedChange={handleToggleEnableProjectsUI}
-                ariaLabel={enableProjectsUIProperty.description ?? "Enable Projects UI"}
-                label="[BETA] Enable Projects (page will refresh)"
-                description={
-                  enableProjectsUIProperty.description ??
-                  "If enabled, shows the Projects feature in the UI sidebar and the project field in key management."
-                }
-              />
-            )}
-            <SettingRow
-              checked={Boolean(values.enable_chat_ui)}
-              disabled={isUpdating}
-              onCheckedChange={handleToggleEnableChatUI}
-              ariaLabel={enableChatUIProperty?.description ?? "Enable Chat page"}
-              label="[BETA] Enable Chat page (page will refresh)"
-              description={
-                enableChatUIProperty?.description ??
-                "If enabled, shows the Chat page in the UI sidebar, letting users chat with an LLM and connect their own MCP server credentials via OAuth."
-              }
-            />
-
-            <Separator />
-            <SettingRow
-              checked={isAgentsDisabled}
-              disabled={isUpdating}
-              onCheckedChange={handleToggleDisableAgents}
-              ariaLabel={disableAgentsProperty?.description ?? "Disable agents for internal users"}
-              label="Disable agents for internal users"
-              description={disableAgentsProperty?.description}
-            />
-            <SettingRow
-              checked={Boolean(values.allow_agents_for_team_admins)}
-              disabled={isUpdating || !isAgentsDisabled}
-              onCheckedChange={handleToggleAllowAgentsTeamAdmins}
-              ariaLabel={allowAgentsTeamAdminsProperty?.description ?? "Allow agents for team admins"}
-              label="Allow agents for team admins"
-              description={allowAgentsTeamAdminsProperty?.description}
-              indented
-              muted={!isAgentsDisabled}
-            />
-
-            <Separator />
-            <SettingRow
-              checked={isVectorStoresDisabled}
-              disabled={isUpdating}
-              onCheckedChange={handleToggleDisableVectorStores}
-              ariaLabel={disableVectorStoresProperty?.description ?? "Disable vector stores for internal users"}
-              label="Disable vector stores for internal users"
-              description={disableVectorStoresProperty?.description}
-            />
-            <SettingRow
-              checked={Boolean(values.allow_vector_stores_for_team_admins)}
-              disabled={isUpdating || !isVectorStoresDisabled}
-              onCheckedChange={handleToggleAllowVectorStoresTeamAdmins}
-              ariaLabel={allowVectorStoresTeamAdminsProperty?.description ?? "Allow vector stores for team admins"}
-              label="Allow vector stores for team admins"
-              description={allowVectorStoresTeamAdminsProperty?.description}
-              indented
-              muted={!isVectorStoresDisabled}
-            />
+            
 
             <Separator />
             <SettingRow

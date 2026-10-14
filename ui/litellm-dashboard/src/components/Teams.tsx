@@ -702,61 +702,7 @@ const Teams: React.FC<TeamProps> = ({ accessToken, userID, userRole, premiumUser
                       <UIInput {...field} ref={ref} value={value ?? ""} data-testid="team-name-input" />
                     )}
                   </FormField>
-                  {(() => {
-                    const isSingleOrg = adminOrgs.length === 1;
-                    const hasNoOrgs = adminOrgs.length === 0;
-                    const soleOrganizationId = isSingleOrg ? adminOrgs[0].organization_id ?? null : null;
-
-                    return (
-                      <>
-                        <FormField
-                          control={form.control}
-                          name="organization_id"
-                          className="mt-8"
-                          label={labelWithDocsHint(
-                            "Organization",
-                            "Organizations can have multiple teams. Learn more about the user management hierarchy",
-                            "https://docs.litellm.ai/docs/proxy/user_management_heirarchy",
-                          )}
-                          description={
-                            isOrgAdmin && isSingleOrg
-                              ? "You can only create teams within this organization"
-                              : isOrgAdmin
-                                ? "required"
-                                : undefined
-                          }
-                        >
-                          {({ id, value, onChange }) => (
-                            <SearchSelect
-                              inputId={id}
-                              value={value ?? ""}
-                              options={adminOrgs.map((org) => ({
-                                value: org.organization_id ?? "",
-                                label: org.organization_alias ?? "",
-                                sublabel: org.organization_id ?? "",
-                              }))}
-                              disabled={isOrgAdmin && soleOrganizationId !== null && value === soleOrganizationId}
-                              allowClear={!isOrgAdmin}
-                              placeholder={
-                                hasNoOrgs ? "No organizations available" : "Search or select an Organization"
-                              }
-                              emptyText="No organizations available"
-                              onValueChange={(next) => selectCreateTeamOrganization(next, value ?? null, onChange)}
-                            />
-                          )}
-                        </FormField>
-
-                        {isOrgAdmin && !isSingleOrg && adminOrgs.length > 1 && (
-                          <div className="mb-8 rounded-md border border-info/20 bg-info/10 p-4">
-                            <span className="text-sm text-info">
-                              Please select an organization to create a team for. You can only create teams within
-                              organizations where you are an admin.
-                            </span>
-                          </div>
-                        )}
-                      </>
-                    );
-                  })()}
+                  
                   <FormField
                     control={form.control}
                     name="models"
@@ -898,94 +844,10 @@ const Teams: React.FC<TeamProps> = ({ accessToken, userID, userRole, premiumUser
                             <NumericalInput {...field} ref={ref} value={value ?? ""} step={1} width={400} />
                           )}
                         </FormField>
-                        <FormField
-                          control={form.control}
-                          name="secret_manager_settings"
-                          label="Secret Manager Settings"
-                          description={
-                            premiumUser
-                              ? "Enter secret manager configuration as a JSON object."
-                              : "Premium feature - Upgrade to manage secret manager settings."
-                          }
-                        >
-                          {({ ref, value, ...field }) => (
-                            <Textarea
-                              {...field}
-                              ref={ref}
-                              value={value ?? ""}
-                              rows={4}
-                              placeholder='{"namespace": "admin", "mount": "secret", "path_prefix": "litellm"}'
-                              disabled={!premiumUser}
-                            />
-                          )}
-                        </FormField>
-                        <FormField
-                          control={form.control}
-                          name="guardrails"
-                          className="mt-8"
-                          label={labelWithDocsHint(
-                            "Guardrails",
-                            "Setup your first guardrail",
-                            "https://docs.litellm.ai/docs/proxy/guardrails/quick_start",
-                          )}
-                          description="Select existing guardrails or enter new ones"
-                        >
-                          {({ id, value, onChange }) => (
-                            <TagsInput
-                              id={id}
-                              value={value ?? []}
-                              onValueChange={onChange}
-                              options={guardrailsList.map((name) => ({ value: name, label: name }))}
-                              placeholder="Select or enter guardrails"
-                            />
-                          )}
-                        </FormField>
-                        <FormField
-                          control={form.control}
-                          name="disable_global_guardrails"
-                          className="mt-4"
-                          label={labelWithHint(
-                            "Disable Global Guardrails",
-                            "When enabled, this team will bypass any guardrails configured to run on every request (global guardrails)",
-                          )}
-                          description={
-                            premiumUser
-                              ? "Bypass global guardrails for this team"
-                              : "Premium feature - Upgrade to disable global guardrails by team"
-                          }
-                        >
-                          {({ id, value, onChange }) => (
-                            <Switch
-                              id={id}
-                              disabled={!premiumUser}
-                              checked={value === true}
-                              onCheckedChange={onChange}
-                            />
-                          )}
-                        </FormField>
-                        {canViewPolicies && (
-                          <FormField
-                            control={form.control}
-                            name="policies"
-                            className="mt-8"
-                            label={labelWithDocsHint(
-                              "Policies",
-                              "Apply policies to this team to control guardrails and other settings",
-                              "https://docs.litellm.ai/docs/proxy/guardrails/guardrail_policies",
-                            )}
-                            description="Select existing policies or enter new ones"
-                          >
-                            {({ id, value, onChange }) => (
-                              <TagsInput
-                                id={id}
-                                value={value ?? []}
-                                onValueChange={onChange}
-                                options={policiesList.map((name) => ({ value: name, label: name }))}
-                                placeholder="Select or enter policies"
-                              />
-                            )}
-                          </FormField>
-                        )}
+                      
+                        
+                        
+                        
                         <FormField
                           control={form.control}
                           name="access_group_ids"
@@ -1004,164 +866,17 @@ const Teams: React.FC<TeamProps> = ({ accessToken, userID, userRole, premiumUser
                             />
                           )}
                         </FormField>
-                        <FormField
-                          control={form.control}
-                          name="allowed_vector_store_ids"
-                          className="mt-8"
-                          label={labelWithHint(
-                            "Allowed Vector Stores",
-                            "Select which vector stores this team can access by default. Leave empty for access to all vector stores",
-                          )}
-                          description="Select vector stores this team can access. Leave empty for access to all vector stores"
-                        >
-                          {({ value, onChange }) => (
-                            <VectorStoreSelector
-                              onChange={onChange}
-                              value={value}
-                              accessToken={accessToken || ""}
-                              placeholder="Select vector stores (optional)"
-                            />
-                          )}
-                        </FormField>
-                        <FormField
-                          control={form.control}
-                          name="allowed_passthrough_routes"
-                          className="mt-8"
-                          label={
-                            !premiumUser
-                              ? labelWithHint(
-                                  "Allowed Pass Through Routes",
-                                  "Premium feature - Upgrade to set allowed pass through routes",
-                                )
-                              : !isProxyAdminRole(userRole || "")
-                                ? labelWithHint(
-                                    "Allowed Pass Through Routes",
-                                    "Only proxy admins can set allowed pass through routes",
-                                  )
-                                : "Allowed Pass Through Routes"
-                          }
-                        >
-                          {({ value, onChange }) => (
-                            <PassThroughRoutesSelector
-                              value={value}
-                              onChange={onChange}
-                              accessToken={accessToken || ""}
-                              placeholder="Select pass through routes (optional)"
-                              disabled={!premiumUser || !isProxyAdminRole(userRole || "")}
-                            />
-                          )}
-                        </FormField>
+                        
+                        
                       </FieldGroup>
                     </CollapsibleContent>
                   </Collapsible>
 
-                  <Collapsible
-                    open={mcpSettingsOpen}
-                    onOpenChange={setMcpSettingsOpen}
-                    className="mt-8 mb-8 overflow-hidden rounded-lg border"
-                  >
-                    <CollapsibleTrigger className="group/section flex w-full items-center justify-between px-4 py-3 text-left">
-                      <b>MCP Settings</b>
-                      <ChevronDown className="size-5 shrink-0 text-muted-foreground transition-transform group-data-[panel-open]/section:rotate-180" />
-                    </CollapsibleTrigger>
-                    <CollapsibleContent className="px-4 pb-3">
-                      <FormField
-                        control={form.control}
-                        name="allowed_mcp_servers_and_groups"
-                        className="mt-4"
-                        label={labelWithHint(
-                          "Allowed MCP Servers",
-                          "Select which MCP servers or access groups this team can access",
-                        )}
-                        description="Select MCP servers or access groups this team can access"
-                      >
-                        {({ value, onChange }) => (
-                          <MCPServerSelector
-                            onChange={onChange}
-                            value={value}
-                            accessToken={accessToken || ""}
-                            placeholder="Select MCP servers or access groups (optional)"
-                            allowAllProxyMcpServers={isProxyAdminRole(userRole || "")}
-                          />
-                        )}
-                      </FormField>
+                  
 
-                      <div className="mt-6">
-                        <MCPToolPermissions
-                          accessToken={accessToken || ""}
-                          selectedServers={watchedMcpSelection?.servers || []}
-                          selectedAccessGroups={watchedMcpSelection?.accessGroups || []}
-                          selectedToolsets={watchedMcpSelection?.toolsets || []}
-                          toolPermissions={watchedToolPermissions || {}}
-                          onChange={(toolPerms) => form.setValue("mcp_tool_permissions", toolPerms)}
-                        />
-                      </div>
-                    </CollapsibleContent>
-                  </Collapsible>
+                  
 
-                  <Collapsible
-                    open={agentSettingsOpen}
-                    onOpenChange={setAgentSettingsOpen}
-                    className="mt-8 mb-8 overflow-hidden rounded-lg border"
-                  >
-                    <CollapsibleTrigger className="group/section flex w-full items-center justify-between px-4 py-3 text-left">
-                      <b>Agent Settings</b>
-                      <ChevronDown className="size-5 shrink-0 text-muted-foreground transition-transform group-data-[panel-open]/section:rotate-180" />
-                    </CollapsibleTrigger>
-                    <CollapsibleContent className="px-4 pb-3">
-                      <FormField
-                        control={form.control}
-                        name="allowed_agents_and_groups"
-                        className="mt-4"
-                        label={labelWithHint(
-                          "Allowed Agents",
-                          "Select which agents or access groups this team can access",
-                        )}
-                        description="Select agents or access groups this team can access"
-                      >
-                        {({ value, onChange }) => (
-                          <AgentSelector
-                            onChange={onChange}
-                            value={value}
-                            accessToken={accessToken || ""}
-                            placeholder="Select agents or access groups (optional)"
-                          />
-                        )}
-                      </FormField>
-                    </CollapsibleContent>
-                  </Collapsible>
-
-                  <Collapsible
-                    open={searchToolSettingsOpen}
-                    onOpenChange={setSearchToolSettingsOpen}
-                    className="mt-8 mb-8 overflow-hidden rounded-lg border"
-                  >
-                    <CollapsibleTrigger className="group/section flex w-full items-center justify-between px-4 py-3 text-left">
-                      <b>Search Tool Settings</b>
-                      <ChevronDown className="size-5 shrink-0 text-muted-foreground transition-transform group-data-[panel-open]/section:rotate-180" />
-                    </CollapsibleTrigger>
-                    <CollapsibleContent className="px-4 pb-3">
-                      <FormField
-                        control={form.control}
-                        name="object_permission_search_tools"
-                        className="mt-4"
-                        label={labelWithHint(
-                          "Allowed Search Tools",
-                          "Select which search tools this team can access. Leave empty to allow all search tools.",
-                        )}
-                        description="Restrict which configured search tools keys on this team may call."
-                      >
-                        {({ value, onChange }) => (
-                          <SearchToolSelector
-                            onChange={onChange}
-                            value={value}
-                            accessToken={accessToken || ""}
-                            placeholder="Select search tools (optional, empty = all allowed)"
-                          />
-                        )}
-                      </FormField>
-                    </CollapsibleContent>
-                  </Collapsible>
+                  
 
                   <Collapsible className="mt-8 mb-8 overflow-hidden rounded-lg border">
                     <CollapsibleTrigger className="group/section flex w-full items-center justify-between px-4 py-3 text-left">

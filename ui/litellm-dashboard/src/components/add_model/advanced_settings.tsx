@@ -117,68 +117,7 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
               )}
             </MountedFormField>
 
-            <MountedFormField
-              name="vector_store_ids"
-              label={
-                <span>
-                  Attached Knowledge Bases (RAG){" "}
-                  <SimpleTooltip content="Vector stores to use for RAG. Every request to this model will automatically retrieve context from these knowledge bases.">
-                    <a
-                      href="https://docs.litellm.ai/docs/completion/knowledgebase"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <Info className="ml-1 inline size-3.5 align-text-bottom" />
-                    </a>
-                  </SimpleTooltip>
-                </span>
-              }
-              className="mt-4"
-              help="Select vector stores to attach. Requests to this model will automatically use these for RAG. Set up vector stores in Tools > Vector Stores."
-            >
-              {(control) => (
-                <VectorStoreSelector
-                  onChange={control.onChange}
-                  value={control.value as string[] | undefined}
-                  accessToken={accessToken}
-                  placeholder="Select knowledge bases (optional)"
-                />
-              )}
-            </MountedFormField>
-
-            <MountedFormField
-              name="guardrails"
-              label={
-                <span>
-                  Guardrails{" "}
-                  <SimpleTooltip content="Apply safety guardrails to this key to filter content or enforce policies">
-                    <a
-                      href="https://docs.litellm.ai/docs/proxy/guardrails/quick_start"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()} // Prevent accordion from collapsing when clicking link
-                    >
-                      <Info className="ml-1 inline size-3.5 align-text-bottom" />
-                    </a>
-                  </SimpleTooltip>
-                </span>
-              }
-              className="mt-4"
-              help="Select existing guardrails. Go to 'Guardrails' tab to create new guardrails."
-            >
-              {(control) => (
-                <MultiSelect
-                  id={control.id}
-                  placeholder="Select or enter guardrails"
-                  emptyText="Type to add a guardrail"
-                  value={(control.value as string[] | undefined) ?? []}
-                  onValueChange={control.onChange}
-                  options={guardrailsList.map((name) => ({ value: name, label: name }))}
-                  allowCustomValues
-                />
-              )}
-            </MountedFormField>
+            
 
             <MountedFormField name="tags" label="Tags" className="mb-4">
               {(control) => (

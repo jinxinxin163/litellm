@@ -140,9 +140,6 @@ const EmailInvitationsNotice: React.FC = () => (
     <AlertTitle>Email invitations</AlertTitle>
     <AlertDescription>
       New users receive an email invite only when an email integration (SMTP, Resend, or SendGrid) is configured.{" "}
-      <a href="https://docs.litellm.ai/docs/proxy/email" target="_blank" rel="noreferrer">
-        Learn how to set up email notifications
-      </a>
     </AlertDescription>
   </Alert>
 );
@@ -349,41 +346,7 @@ export const CreateUserButton: React.FC<CreateuserProps> = ({
                 )}
                 {teamField}
 
-                <FormField
-                  control={form.control}
-                  name="organization_ids"
-                  label="Organization"
-                  description="The user will be added to the selected organization(s)."
-                >
-                  {({ id, value, onChange }) => (
-                    <Select
-                      multiple
-                      items={organizationOptions}
-                      value={value ?? []}
-                      onValueChange={(selected: string[]) => onChange(selected.length === 0 ? undefined : selected)}
-                    >
-                      <SelectTrigger id={id} className="w-full">
-                        <SelectValue placeholder="Select Organization">
-                          {(selected: string[]) =>
-                            selected.length === 0
-                              ? "Select Organization"
-                              : organizationOptions
-                                  .filter((option) => selected.includes(option.value))
-                                  .map((option) => option.label)
-                                  .join(", ")
-                          }
-                        </SelectValue>
-                      </SelectTrigger>
-                      <SelectContent>
-                        {organizationOptions.map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  )}
-                </FormField>
+              
 
                 {metadataField}
                 {sendInviteEmailField}

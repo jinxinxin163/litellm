@@ -693,10 +693,7 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                         Another User
                       </label>
                     )}
-                    <label className={KEY_OWNER_LABEL_CLASS}>
-                      <RadioGroupItem value="agent" />
-                      Agent <Badge>New</Badge>
-                    </label>
+                  
                   </RadioGroup>
                 </Field>
 
@@ -767,29 +764,7 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                     </div>
                   </div>
                 )}
-                <MountedFormField
-                  label={
-                    <span>
-                      Organization{" "}
-                      <SimpleTooltip content="The organization this key belongs to. Selecting an organization filters the available teams.">
-                        <Info className="ml-1 inline size-3.5 align-text-bottom" />
-                      </SimpleTooltip>
-                    </span>
-                  }
-                  name="organization_id"
-                  className="mt-4"
-                >
-                  {(control) => (
-                    <OrganizationDropdown
-                      id={control.id}
-                      value={control.value as string | undefined}
-                      organizations={organizations}
-                      loading={isOrganizationsLoading}
-                      disabled={userRole !== "Admin"}
-                      onChange={changeOrganization(control.onChange)}
-                    />
-                  )}
-                </MountedFormField>
+                
                 <MountedFormField
                   label={
                     <span>
@@ -1035,38 +1010,8 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                         </FieldLabel>
                         <BudgetWindowsEditor value={budgetLimits} onChange={setBudgetLimits} />
                       </Field>
-                      <Field className="mt-4">
-                        <FieldLabel>
-                          <span>
-                            Per-Model Budgets{" "}
-                            <SimpleTooltip content="Cap spend on individual models, each with its own reset window. Enforced across every request this key makes; usage is reported on the key's info page.">
-                              <Info className="ml-1 inline size-3.5 align-text-bottom" />
-                            </SimpleTooltip>
-                          </span>
-                        </FieldLabel>
-                        <ModelMaxBudgetEditor
-                          value={modelMaxBudget}
-                          onChange={setModelMaxBudget}
-                          availableModels={modelsToPick}
-                          premiumUser={premiumUser === true}
-                        />
-                      </Field>
-                      <Field className="mt-4">
-                        <FieldLabel>
-                          <span>
-                            Budget Fallbacks{" "}
-                            <SimpleTooltip content="When a model exceeds its per-model budget (model_max_budget), requests automatically reroute to fallback models instead of failing. Configure per-model budgets in Advanced Settings.">
-                              <Info className="ml-1 inline size-3.5 align-text-bottom" />
-                            </SimpleTooltip>
-                          </span>
-                        </FieldLabel>
-                        <BudgetFallbacksEditor
-                          key={budgetFallbacksKey}
-                          value={budgetFallbacks}
-                          onChange={setBudgetFallbacks}
-                          availableModels={modelsToPick}
-                        />
-                      </Field>
+                      
+                      
                       <MountedFormField
                         className="mt-4"
                         label={
@@ -1202,161 +1147,10 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                           />
                         )}
                       </MountedFormField>
-                      <MountedFormField
-                        label={
-                          <span>
-                            Guardrails{" "}
-                            <SimpleTooltip content="Apply safety guardrails to this key to filter content or enforce policies">
-                              <a
-                                href="https://docs.litellm.ai/docs/proxy/guardrails/quick_start"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                onClick={(e) => e.stopPropagation()} // Prevent accordion from collapsing when clicking link
-                              >
-                                <Info className="ml-1 inline size-3.5 align-text-bottom" />
-                              </a>
-                            </SimpleTooltip>
-                          </span>
-                        }
-                        name="guardrails"
-                        className="mt-4"
-                        help={
-                          canEditGuardrails
-                            ? "Select existing guardrails or enter new ones"
-                            : "Premium feature - Upgrade to set guardrails by key"
-                        }
-                      >
-                        {(control) => (
-                          <TagsInput
-                            id={control.id}
-                            value={(control.value as string[] | undefined) ?? []}
-                            onValueChange={control.onChange}
-                            disabled={!canEditGuardrails}
-                            placeholder={
-                              !canEditGuardrails
-                                ? "Premium feature - Upgrade to set guardrails by key"
-                                : "Select or enter guardrails"
-                            }
-                            options={guardrailsList.map((name) => ({ value: name, label: name }))}
-                          />
-                        )}
-                      </MountedFormField>
-                      <MountedFormField
-                        label={
-                          <span>
-                            Disable Global Guardrails{" "}
-                            <SimpleTooltip content="When enabled, this key will bypass any guardrails configured to run on every request (global guardrails)">
-                              <a
-                                href="https://docs.litellm.ai/docs/proxy/guardrails/quick_start"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                onClick={(e) => e.stopPropagation()} // Prevent accordion from collapsing when clicking link
-                              >
-                                <Info className="ml-1 inline size-3.5 align-text-bottom" />
-                              </a>
-                            </SimpleTooltip>
-                          </span>
-                        }
-                        name="disable_global_guardrails"
-                        className="mt-4"
-                        help={
-                          canEditGuardrails
-                            ? "Bypass global guardrails for this key"
-                            : "Premium feature - Upgrade to disable global guardrails by key"
-                        }
-                      >
-                        {(control) => (
-                          <Switch
-                            id={control.id}
-                            checked={control.value === true}
-                            onCheckedChange={control.onChange}
-                            disabled={!canEditGuardrails}
-                            aria-describedby={control["aria-describedby"]}
-                          />
-                        )}
-                      </MountedFormField>
-                      {canViewPolicies && (
-                        <MountedFormField
-                          label={
-                            <span>
-                              Policies{" "}
-                              <SimpleTooltip content="Apply policies to this key to control guardrails and other settings">
-                                <a
-                                  href="https://docs.litellm.ai/docs/proxy/guardrails/guardrail_policies"
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  onClick={(e) => e.stopPropagation()} // Prevent accordion from collapsing when clicking link
-                                >
-                                  <Info className="ml-1 inline size-3.5 align-text-bottom" />
-                                </a>
-                              </SimpleTooltip>
-                            </span>
-                          }
-                          name="policies"
-                          className="mt-4"
-                          help={
-                            premiumUser
-                              ? "Select existing policies or enter new ones"
-                              : "Premium feature - Upgrade to set policies by key"
-                          }
-                        >
-                          {(control) => (
-                            <TagsInput
-                              id={control.id}
-                              value={(control.value as string[] | undefined) ?? []}
-                              onValueChange={control.onChange}
-                              disabled={!premiumUser}
-                              placeholder={
-                                !premiumUser
-                                  ? "Premium feature - Upgrade to set policies by key"
-                                  : "Select or enter policies"
-                              }
-                              options={policiesList.map((name) => ({ value: name, label: name }))}
-                            />
-                          )}
-                        </MountedFormField>
-                      )}
-                      {canViewPrompts && (
-                        <MountedFormField
-                          label={
-                            <span>
-                              Prompts{" "}
-                              <SimpleTooltip content="Allow this key to use specific prompt templates">
-                                <a
-                                  href="https://docs.litellm.ai/docs/proxy/prompt_management"
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  onClick={(e) => e.stopPropagation()} // Prevent accordion from collapsing when clicking link
-                                >
-                                  <Info className="ml-1 inline size-3.5 align-text-bottom" />
-                                </a>
-                              </SimpleTooltip>
-                            </span>
-                          }
-                          name="prompts"
-                          className="mt-4"
-                          help={
-                            premiumUser
-                              ? "Select existing prompts or enter new ones"
-                              : "Premium feature - Upgrade to set prompts by key"
-                          }
-                        >
-                          {(control) => (
-                            <TagsInput
-                              id={control.id}
-                              value={(control.value as string[] | undefined) ?? []}
-                              onValueChange={control.onChange}
-                              disabled={!premiumUser}
-                              placeholder={
-                                !premiumUser
-                                  ? "Premium feature - Upgrade to set prompts by key"
-                                  : "Select or enter prompts"
-                              }
-                              options={promptsList.map((name) => ({ value: name, label: name }))}
-                            />
-                          )}
-                        </MountedFormField>
-                      )}
+                      
+                  
+                      
+                      
                       <MountedFormField
                         label={
                           <span>
@@ -1378,67 +1172,8 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                           />
                         )}
                       </MountedFormField>
-                      <MountedFormField
-                        label={
-                          <span>
-                            Allowed Pass Through Routes{" "}
-                            <SimpleTooltip content="Allow this key to use specific pass through routes">
-                              <a
-                                href="https://docs.litellm.ai/docs/proxy/pass_through"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                onClick={(e) => e.stopPropagation()} // Prevent accordion from collapsing when clicking link
-                              >
-                                <Info className="ml-1 inline size-3.5 align-text-bottom" />
-                              </a>
-                            </SimpleTooltip>
-                          </span>
-                        }
-                        name="allowed_passthrough_routes"
-                        className="mt-4"
-                        help={
-                          premiumUser
-                            ? "Select existing pass through routes or enter new ones"
-                            : "Premium feature - Upgrade to set pass through routes by key"
-                        }
-                      >
-                        {(control) => (
-                          <PassThroughRoutesSelector
-                            value={control.value as string[] | undefined}
-                            onChange={control.onChange}
-                            accessToken={accessToken}
-                            placeholder={
-                              !premiumUser
-                                ? "Premium feature - Upgrade to set pass through routes by key"
-                                : "Select or enter pass through routes"
-                            }
-                            disabled={!premiumUser}
-                            teamId={selectedCreateKeyTeam ? selectedCreateKeyTeam.team_id : null}
-                          />
-                        )}
-                      </MountedFormField>
-                      <MountedFormField
-                        label={
-                          <span>
-                            Allowed Vector Stores{" "}
-                            <SimpleTooltip content="Select which vector stores this key can access. If none selected, the key will have access to all available vector stores">
-                              <Info className="ml-1 inline size-3.5 align-text-bottom" />
-                            </SimpleTooltip>
-                          </span>
-                        }
-                        name="allowed_vector_store_ids"
-                        className="mt-4"
-                        help="Select vector stores this key can access. Leave empty for access to all vector stores"
-                      >
-                        {(control) => (
-                          <VectorStoreSelector
-                            onChange={control.onChange}
-                            value={control.value as string[] | undefined}
-                            accessToken={accessToken}
-                            placeholder="Select vector stores (optional)"
-                          />
-                        )}
-                      </MountedFormField>
+                    
+                      
                       <MountedFormField
                         label={
                           <span>
@@ -1484,78 +1219,9 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                           />
                         )}
                       </MountedFormField>
-                      <Collapsible className="mt-4 mb-4 overflow-hidden rounded-lg border">
-                        <CollapsibleTrigger className={SECTION_HEADER_CLASS}>
-                          <b>MCP Settings</b>
-                          <ChevronDown className={SECTION_CHEVRON_CLASS} />
-                        </CollapsibleTrigger>
-                        <CollapsibleContent className="px-4 pb-3">
-                          <MountedFormField
-                            label={
-                              <span>
-                                Allowed MCP Servers{" "}
-                                <SimpleTooltip content="Select which MCP servers or access groups this key can access">
-                                  <Info className="ml-1 inline size-3.5 align-text-bottom" />
-                                </SimpleTooltip>
-                              </span>
-                            }
-                            name="allowed_mcp_servers_and_groups"
-                            help="Select MCP servers or access groups this key can access"
-                          >
-                            {(control) => (
-                              <MCPServerSelector
-                                onChange={control.onChange}
-                                value={control.value as McpSelectorValue | undefined}
-                                accessToken={accessToken}
-                                teamId={selectedCreateKeyTeam?.team_id ?? null}
-                                placeholder="Select MCP servers or access groups (optional)"
-                                allowNoMcpServers
-                              />
-                            )}
-                          </MountedFormField>
+                      
 
-                          {/* Hidden field to register mcp_tool_permissions with the form */}
-                          <MountedFormField name="mcp_tool_permissions" bare>
-                            {(control) => <input type="hidden" id={control.id} name={control.name} />}
-                          </MountedFormField>
-
-                          <McpToolPermissionsField
-                            accessToken={accessToken}
-                            control={form.control}
-                            setValue={form.setValue}
-                          />
-                        </CollapsibleContent>
-                      </Collapsible>
-
-                      <Collapsible className="mt-4 mb-4 overflow-hidden rounded-lg border">
-                        <CollapsibleTrigger className={SECTION_HEADER_CLASS}>
-                          <b>Agent Settings</b>
-                          <ChevronDown className={SECTION_CHEVRON_CLASS} />
-                        </CollapsibleTrigger>
-                        <CollapsibleContent className="px-4 pb-3">
-                          <MountedFormField
-                            label={
-                              <span>
-                                Allowed Agents{" "}
-                                <SimpleTooltip content="Select which agents or access groups this key can access">
-                                  <Info className="ml-1 inline size-3.5 align-text-bottom" />
-                                </SimpleTooltip>
-                              </span>
-                            }
-                            name="allowed_agents_and_groups"
-                            help="Select agents or access groups this key can access"
-                          >
-                            {(control) => (
-                              <AgentSelector
-                                onChange={control.onChange}
-                                value={control.value as AgentSelectorValue | undefined}
-                                accessToken={accessToken}
-                                placeholder="Select agents or access groups (optional)"
-                              />
-                            )}
-                          </MountedFormField>
-                        </CollapsibleContent>
-                      </Collapsible>
+                
 
                       {premiumUser ? (
                         <Collapsible className="mt-4 mb-4 overflow-hidden rounded-lg border">

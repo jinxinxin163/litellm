@@ -70,7 +70,7 @@ export function ObjectPermissionsView({
             <p className="text-xs text-muted-foreground">Access control for Vector Stores and MCP Servers</p>
           </div>
         </div>
-        {content}
+        No Object Permissions configured
       </div>
     );
   }
@@ -78,7 +78,7 @@ export function ObjectPermissionsView({
   return (
     <div className={`${className}`}>
       <p className="font-medium text-foreground mb-3">Object Permissions</p>
-      {content}
+      No Object Permissions configured
     </div>
   );
 }

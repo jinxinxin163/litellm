@@ -512,12 +512,8 @@ const UsagePage: React.FC<UsagePageProps> = ({ teams, organizations }) => {
                     <TabsTrigger value="keys" className="flex-none px-3">
                       Key Activity
                     </TabsTrigger>
-                    <TabsTrigger value="mcp" className="flex-none px-3">
-                      MCP Server Activity
-                    </TabsTrigger>
-                    <TabsTrigger value="endpoints" className="flex-none px-3">
-                      Endpoint Activity
-                    </TabsTrigger>
+                    
+              
                   </TabsList>
                   <div className="flex items-center gap-2">
                     <Button variant="outline" onClick={() => setIsAiChatOpen(true)}>
