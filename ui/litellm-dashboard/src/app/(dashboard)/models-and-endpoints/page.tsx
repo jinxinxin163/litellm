@@ -123,7 +123,7 @@ export default function ModelsAndEndpointsPage() {
   const allModelsLabel = isAdmin ? "All Models" : "Your Models";
   const tabLabel = (slug: "" | ModelTabSlug): React.ReactNode => {
     if (!slug) return allModelsLabel;
-    if (slug === "auto-routers" || slug === "access-group-budgets") {
+    if (slug === "auto-routers") {
       return (
         <span className="flex items-center gap-2">
           {TAB_LABELS[slug]} <BetaBadge />
