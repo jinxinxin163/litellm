@@ -80,7 +80,7 @@ const BulkEditUserModal: React.FC<BulkEditUserModalProps> = ({
 
   const handleSubmit = async (formValues: any) => {
     if (!accessToken) {
-      toast.fromError("Access token not found");
+      toast.fromError("未找到访问令牌");
       return;
     }
 
@@ -116,7 +116,7 @@ const BulkEditUserModal: React.FC<BulkEditUserModalProps> = ({
       const hasTeamAdditions = addToTeams && selectedTeams.length > 0;
 
       if (!hasUserUpdates && !hasTeamAdditions) {
-        toast.fromError("Please modify at least one field or select teams to add users to");
+        toast.fromError("请至少修改一个字段，或选择要添加用户的团队");
         return;
       }
 
@@ -126,10 +126,10 @@ const BulkEditUserModal: React.FC<BulkEditUserModalProps> = ({
       if (hasUserUpdates) {
         if (updateAllUsers) {
           const result = await userBulkUpdateUserCall(accessToken, updatePayload, undefined, true);
-          successMessages.push(`Updated all users (${result.total_requested} total)`);
+          successMessages.push(`已更新全部用户（共 ${result.total_requested} 个）`);
         } else {
           await userBulkUpdateUserCall(accessToken, updatePayload, userIds);
-          successMessages.push(`Updated ${userIds.length} user(s)`);
+          successMessages.push(`已更新 ${userIds.length} 个用户`);
         }
       }
 
@@ -181,11 +181,11 @@ const BulkEditUserModal: React.FC<BulkEditUserModalProps> = ({
 
         if (successfulTeams.length > 0) {
           const totalAdditions = successfulTeams.reduce((sum, r) => sum + r.successfulAdditions, 0);
-          successMessages.push(`Added users to ${successfulTeams.length} team(s) (${totalAdditions} total additions)`);
+          successMessages.push(`已将用户添加到 ${successfulTeams.length} 个团队（共 ${totalAdditions} 次添加）`);
         }
 
         if (failedTeams.length > 0) {
-          toast.warning(`Failed to add users to ${failedTeams.length} team(s)`);
+          toast.warning(`有 ${failedTeams.length} 个团队添加失败`);
         }
       }
 
@@ -203,7 +203,7 @@ const BulkEditUserModal: React.FC<BulkEditUserModalProps> = ({
       onCancel();
     } catch (error) {
       console.error("Bulk operation failed:", error);
-      toast.fromError("Failed to perform bulk operations");
+      toast.fromError("批量操作失败");
     } finally {
       setLoading(false);
     }
@@ -214,7 +214,7 @@ const BulkEditUserModal: React.FC<BulkEditUserModalProps> = ({
       <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-y-auto sm:max-w-[800px]">
         <DialogHeader>
           <DialogTitle>
-            {updateAllUsers ? "Bulk Edit All Users" : `Bulk Edit ${selectedUsers.length} User(s)`}
+            {updateAllUsers ? "批量编辑全部用户" : `批量编辑 ${selectedUsers.length} 个用户`}
           </DialogTitle>
         </DialogHeader>
         {allowAllUsers && (
@@ -224,16 +224,16 @@ const BulkEditUserModal: React.FC<BulkEditUserModalProps> = ({
                 id={updateAllUsersId}
                 checked={updateAllUsers}
                 onCheckedChange={(checked) => setUpdateAllUsers(checked === true)}
-                aria-label="Update ALL users in the system"
+                aria-label="更新系统中的全部用户"
               />
               <label htmlFor={updateAllUsersId} className="cursor-pointer text-sm font-medium text-foreground">
-                Update ALL users in the system
+                更新系统中的全部用户
               </label>
             </div>
             {updateAllUsers && (
               <div className="mt-2">
                 <span className="text-xs text-warning">
-                  ⚠️ This will apply changes to ALL users in the system, not just the selected ones.
+                  ⚠️ 这会将更改应用到系统中的全部用户，而不仅是已选用户。
                 </span>
               </div>
             )}
@@ -242,15 +242,15 @@ const BulkEditUserModal: React.FC<BulkEditUserModalProps> = ({
 
         {!updateAllUsers && (
           <div className="mb-4">
-            <h5 className="mb-2 text-sm font-semibold text-foreground">Selected Users ({selectedUsers.length}):</h5>
+            <h5 className="mb-2 text-sm font-semibold text-foreground">已选用户（{selectedUsers.length}）：</h5>
             <div className="max-h-[200px] overflow-y-auto rounded-md border border-border">
               <Table>
                 <TableHeader>
                   <TableRow>
                     <TableHead className="w-[30%]">User ID</TableHead>
                     <TableHead className="w-[25%]">Email</TableHead>
-                    <TableHead className="w-[25%]">Current Role</TableHead>
-                    <TableHead className="w-[20%]">Budget</TableHead>
+                    <TableHead className="w-[25%]">当前角色</TableHead>
+                    <TableHead className="w-[20%]">预算</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -259,12 +259,12 @@ const BulkEditUserModal: React.FC<BulkEditUserModalProps> = ({
                       <TableCell className="text-xs font-medium text-foreground">
                         {user.user_id.length > 20 ? `${user.user_id.slice(0, 20)}...` : user.user_id}
                       </TableCell>
-                      <TableCell className="text-xs text-muted-foreground">{user.user_email || "No email"}</TableCell>
+                      <TableCell className="text-xs text-muted-foreground">{user.user_email || "无邮箱"}</TableCell>
                       <TableCell className="text-xs text-foreground">
                         {possibleUIRoles?.[user.user_role]?.ui_label || user.user_role}
                       </TableCell>
                       <TableCell>
-                        <MoneyCell value={user.max_budget} decimals={2} emptyText="Unlimited" showZero />
+                        <MoneyCell value={user.max_budget} decimals={2} emptyText="无限制" showZero />
                       </TableCell>
                     </TableRow>
                   ))}
@@ -278,15 +278,14 @@ const BulkEditUserModal: React.FC<BulkEditUserModalProps> = ({
 
         <div className="mb-4">
           <p className="text-sm text-foreground">
-            <strong>Instructions:</strong> Fill in the fields below with the values you want to apply to all selected
-            users. You can bulk edit: role, budget, models, and metadata. You can also add users to teams.
+            <strong>说明：</strong>在下方填写要应用到已选用户的值。可批量编辑角色、预算、模型和 metadata，也可以将用户添加到团队。
           </p>
         </div>
 
         {/* Team Management Section */}
         <Card size="sm" className="mb-4 bg-muted/50">
           <CardHeader>
-            <CardTitle>Team Management</CardTitle>
+            <CardTitle>团队管理</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex flex-col gap-2">
@@ -295,10 +294,10 @@ const BulkEditUserModal: React.FC<BulkEditUserModalProps> = ({
                   id={addToTeamsId}
                   checked={addToTeams}
                   onCheckedChange={(checked) => setAddToTeams(checked === true)}
-                  aria-label="Add selected users to teams"
+                  aria-label="将已选用户添加到团队"
                 />
                 <label htmlFor={addToTeamsId} className="cursor-pointer text-sm text-foreground">
-                  Add selected users to teams
+                  将已选用户添加到团队
                 </label>
               </div>
 
@@ -306,12 +305,12 @@ const BulkEditUserModal: React.FC<BulkEditUserModalProps> = ({
                 <>
                   <div>
                     <label htmlFor={selectedTeamsId} className="block text-sm font-medium text-foreground">
-                      Select Teams:
+                      选择团队：
                     </label>
                     <MultiSelect
                       id={selectedTeamsId}
                       className="mt-2"
-                      placeholder="Select teams to add users to"
+                      placeholder="选择要添加用户的团队"
                       value={selectedTeams}
                       onValueChange={setSelectedTeams}
                       options={
@@ -325,12 +324,12 @@ const BulkEditUserModal: React.FC<BulkEditUserModalProps> = ({
 
                   <div>
                     <label htmlFor={teamBudgetId} className="block text-sm font-medium text-foreground">
-                      Team Budget (Optional):
+                      团队预算（可选）：
                     </label>
                     <NumericalInput
                       id={teamBudgetId}
                       className="mt-2"
-                      placeholder="Max budget per user in team"
+                      placeholder="团队中每个用户的最大预算"
                       value={teamBudget ?? ""}
                       onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                         setTeamBudget(event.target.value === "" ? null : Number(event.target.value))
@@ -339,13 +338,12 @@ const BulkEditUserModal: React.FC<BulkEditUserModalProps> = ({
                       step={0.01}
                     />
                     <span className="text-xs text-muted-foreground">
-                      Leave empty for unlimited budget within team limits
+                      留空表示在团队限制内不单独限制预算
                     </span>
                   </div>
 
                   <span className="text-xs text-muted-foreground">
-                    Users will be added with &quot;user&quot; role by default. All users will be added to each selected
-                    team.
+                    用户默认会以 &quot;user&quot; 角色加入。所有用户都会添加到每个已选团队。
                   </span>
                 </>
               )}
@@ -370,7 +368,7 @@ const BulkEditUserModal: React.FC<BulkEditUserModalProps> = ({
         {loading && (
           <div className="mt-2.5 text-center">
             <span className="text-sm text-foreground">
-              Updating {updateAllUsers ? "all users" : selectedUsers.length} user(s)...
+              正在更新{updateAllUsers ? "全部用户" : `${selectedUsers.length} 个用户`}...
             </span>
           </div>
         )}

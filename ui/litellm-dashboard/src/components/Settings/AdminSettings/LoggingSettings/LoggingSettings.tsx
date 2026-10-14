@@ -40,7 +40,7 @@ const OPTIONAL_FIELDS: readonly OptionalField[] = [
   {
     name: GeneralSettingsFieldName.MAXIMUM_SPEND_LOGS_RETENTION_PERIOD,
     kind: "duration",
-    label: "Maximum Spend Logs Retention Period (Optional)",
+    label: "Spend Logs 最大保留周期（可选）",
     placeholder: "e.g., 7d, 30d",
     fallbackTooltip:
       "Set the maximum retention period for spend logs (e.g., '7d' for 7 days, '30d' for 30 days). Leave empty for no limit.",
@@ -48,14 +48,14 @@ const OPTIONAL_FIELDS: readonly OptionalField[] = [
   {
     name: GeneralSettingsFieldName.MAXIMUM_SPEND_LOGS_CLEANUP_BATCH_SIZE,
     kind: "count",
-    label: "Spend Logs Cleanup Batch Size (Optional)",
+    label: "Spend Logs 清理批大小（可选）",
     placeholder: "e.g., 1000",
     fallbackTooltip: "Rows deleted per DELETE statement during cleanup. Leave empty to use the default of 1000.",
   },
   {
     name: GeneralSettingsFieldName.MAXIMUM_SPEND_LOGS_CLEANUP_MAX_BATCHES,
     kind: "count",
-    label: "Spend Logs Cleanup Max Batches (Optional)",
+    label: "Spend Logs 清理最大批次数（可选）",
     placeholder: "e.g., 500",
     fallbackTooltip:
       "Maximum number of DELETE statements run per table per cleanup run. Leave empty to use the default of 500.",
@@ -63,7 +63,7 @@ const OPTIONAL_FIELDS: readonly OptionalField[] = [
   {
     name: GeneralSettingsFieldName.MAXIMUM_SPEND_LOGS_CLEANUP_RUN_BUDGET,
     kind: "duration",
-    label: "Spend Logs Cleanup Run Budget (Optional)",
+    label: "Spend Logs 清理运行预算（可选）",
     placeholder: "e.g., 5m",
     fallbackTooltip:
       "Wall-clock budget for a whole cleanup run, shared across every table it cleans (e.g., '5m'). Leave empty to use the default of 5m.",
@@ -71,7 +71,7 @@ const OPTIONAL_FIELDS: readonly OptionalField[] = [
   {
     name: GeneralSettingsFieldName.MAXIMUM_SPEND_LOGS_CLEANUP_BATCH_TIMEOUT,
     kind: "duration",
-    label: "Spend Logs Cleanup Batch Timeout (Optional)",
+    label: "Spend Logs 清理批超时（可选）",
     placeholder: "e.g., 30s",
     fallbackTooltip:
       "Postgres statement and lock timeout applied to each cleanup batch, so cleanup never monopolizes a connection (e.g., '30s'). Leave empty to use the default of 30s.",
@@ -168,7 +168,7 @@ const LoggingSettingsForm: React.FC<LoggingSettingsFormProps> = ({
             control={form.control}
             name={STORE_PROMPTS_FIELD_NAME}
             label={labelWithHint(
-              "Store Prompts in Spend Logs",
+              "在 Spend Logs 中存储 prompts",
               describeField(
                 STORE_PROMPTS_FIELD_NAME,
                 "When enabled, prompts will be stored in spend logs for tracking and analysis purposes.",
@@ -220,8 +220,8 @@ const LoggingSettingsForm: React.FC<LoggingSettingsFormProps> = ({
         </FieldGroup>
 
         <Button type="submit" className="mt-6" disabled={isSaving}>
-          {isSaving && <UiLoadingSpinner role="img" aria-label="loading" className="size-4" />}
-          {isSaving ? "Saving..." : "Save Settings"}
+          {isSaving && <UiLoadingSpinner role="img" aria-label="加载中" className="size-4" />}
+          {isSaving ? "保存中..." : "保存设置"}
         </Button>
       </form>
     </TooltipProvider>
@@ -295,8 +295,8 @@ const LoggingSettings: React.FC = () => {
     const updateParams = buildUpdateParams(formValues);
     const submitUpdate = () =>
       mutate(updateParams, {
-        onSuccess: () => toast.success("Spend logs settings updated successfully"),
-        onError: (error) => toast.fromError("Failed to save spend logs settings: " + parseErrorMessage(error)),
+        onSuccess: () => toast.success("Spend logs 设置更新成功"),
+        onError: (error) => toast.fromError("保存 spend logs 设置失败：" + parseErrorMessage(error)),
       });
 
     const fieldsToClear = omittedFieldNames(updateParams, isStored);
@@ -309,7 +309,7 @@ const LoggingSettings: React.FC = () => {
       if (failed.length > 0) {
         // Reporting an unqualified success here would tell the admin a setting
         // was reset to its default while the old value is still in force.
-        toast.fromError(`Failed to clear saved value for: ${failed.join(", ")}`);
+        toast.fromError(`清除已保存值失败：${failed.join(", ")}`);
         return;
       }
       submitUpdate();
@@ -319,12 +319,12 @@ const LoggingSettings: React.FC = () => {
   return (
     <Card>
       <CardHeader className="border-b">
-        <CardTitle>Logging Settings</CardTitle>
+        <CardTitle>日志设置</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="flex w-full flex-col gap-6">
           <p className="mb-0 text-muted-foreground">
-            Proxy-wide settings that control how request and response data are written to spend logs.
+            控制请求和响应数据如何写入 spend logs 的代理级设置。
           </p>
 
           {isLoadingConfig ? (

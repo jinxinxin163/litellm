@@ -12,7 +12,7 @@ interface DataTableViewOptionsProps<TData> {
   className?: string;
 }
 
-export function DataTableViewOptions<TData>({ table, label = "View", className }: DataTableViewOptionsProps<TData>) {
+export function DataTableViewOptions<TData>({ table, label = "视图", className }: DataTableViewOptionsProps<TData>) {
   const hideableColumns = table.getAllLeafColumns().filter((column) => column.getCanHide());
 
   if (hideableColumns.length === 0) {

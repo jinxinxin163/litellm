@@ -17,9 +17,9 @@ import { SEVERITY_ICONS, UserBannerMarkdown } from "@/components/UserBanner";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const SEVERITY_LABELS: Record<UserBannerSeverity, string> = {
-  info: "Info",
-  warning: "Warning",
-  error: "Error",
+  info: "信息",
+  warning: "警告",
+  error: "错误",
 };
 
 const SEVERITY_ITEMS = (Object.keys(SEVERITY_LABELS) as UserBannerSeverity[]).map((severity) => ({
@@ -65,7 +65,7 @@ function UserBannerSettingsForm({ persisted, isLoading, isPending, saveBanner }:
   const handleSave = () => {
     saveBanner(draft, {
       onSuccess: () => {
-        toast.success("User banner updated successfully");
+        toast.success("用户横幅更新成功");
       },
       onError: (error) => {
         toast.fromError(error);
@@ -76,10 +76,9 @@ function UserBannerSettingsForm({ persisted, isLoading, isPending, saveBanner }:
   return (
     <Card>
       <CardHeader>
-        <CardTitle>User Banner</CardTitle>
+        <CardTitle>用户横幅</CardTitle>
         <CardDescription>
-          Publish an announcement to all dashboard users. Markdown is supported; the banner appears below the header on
-          every page until you unpublish it. Users can dismiss it, and it reappears whenever the content changes.
+          向所有 dashboard 用户发布公告。支持 Markdown；横幅会显示在每个页面的顶部下方，直到取消发布。用户可以关闭横幅，内容变更后会再次显示。
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -91,13 +90,13 @@ function UserBannerSettingsForm({ persisted, isLoading, isPending, saveBanner }:
               <Switch
                 checked={draft.enabled}
                 onCheckedChange={(checked: boolean) => setDraft({ ...draft, enabled: checked })}
-                aria-label="Publish user banner"
+                aria-label="发布用户横幅"
               />
-              <Label>Publish user banner</Label>
+              <Label>发布用户横幅</Label>
             </div>
 
             <div className="flex flex-col gap-2">
-              <Label htmlFor="user-banner-message">Message</Label>
+              <Label htmlFor="user-banner-message">消息</Label>
               <Textarea
                 id="user-banner-message"
                 value={draft.message}
@@ -108,11 +107,11 @@ function UserBannerSettingsForm({ persisted, isLoading, isPending, saveBanner }:
                   setDraft({ ...draft, message: event.target.value })
                 }
               />
-              {messageMissing && <p className="text-sm text-destructive">Add a message before publishing.</p>}
+              {messageMissing && <p className="text-sm text-destructive">发布前请先填写消息。</p>}
             </div>
 
             <div className="flex flex-col gap-2">
-              <Label>Severity</Label>
+              <Label>严重程度</Label>
               <Select
                 items={SEVERITY_ITEMS}
                 value={draft.severity}
@@ -120,8 +119,8 @@ function UserBannerSettingsForm({ persisted, isLoading, isPending, saveBanner }:
                   setDraft({ ...draft, severity: (value ?? "info") as UserBannerSeverity })
                 }
               >
-                <SelectTrigger className="w-48" aria-label="Banner severity">
-                  <SelectValue placeholder="Severity" />
+                <SelectTrigger className="w-48" aria-label="横幅严重程度">
+                  <SelectValue placeholder="严重程度" />
                 </SelectTrigger>
                 <SelectContent>
                   {SEVERITY_ITEMS.map((item) => (
@@ -135,7 +134,7 @@ function UserBannerSettingsForm({ persisted, isLoading, isPending, saveBanner }:
 
             {draft.message.trim() !== "" && (
               <div className="flex flex-col gap-2">
-                <Label>Preview</Label>
+                <Label>预览</Label>
                 <Alert variant={draft.severity}>
                   {SEVERITY_ICONS[draft.severity]}
                   <AlertDescription>
@@ -147,7 +146,7 @@ function UserBannerSettingsForm({ persisted, isLoading, isPending, saveBanner }:
 
             <div>
               <Button onClick={handleSave} disabled={isPending || messageMissing}>
-                {isPending ? "Saving..." : "Save banner"}
+                {isPending ? "保存中..." : "保存横幅"}
               </Button>
             </div>
           </div>

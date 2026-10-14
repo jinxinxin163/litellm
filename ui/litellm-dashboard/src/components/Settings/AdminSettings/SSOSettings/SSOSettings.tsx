@@ -21,7 +21,7 @@ import { ssoProviderDisplayNames, ssoProviderLogoMap } from "./constants";
 import { detectSSOProvider } from "./utils";
 
 function NotConfigured() {
-  return <span className="text-muted-foreground italic">Not configured</span>;
+  return <span className="text-muted-foreground italic">未配置</span>;
 }
 
 function DetailRow({ children, label }: { children: React.ReactNode; label: string }) {
@@ -43,8 +43,8 @@ function EndpointValue({ value }: { value?: string | null }) {
         type="button"
         variant="ghost"
         size="icon-sm"
-        aria-label="Copy value"
-        onClick={() => void copyToClipboard(value, "Copied to clipboard")}
+        aria-label="复制值"
+        onClick={() => void copyToClipboard(value, "已复制到剪贴板")}
       >
         <Copy className="size-3.5" />
       </Button>
@@ -176,7 +176,7 @@ export default function SSOSettings() {
         {
           label: "IdP Metadata XML",
           render: (values: SSOSettingsValues) =>
-            values.saml_idp_metadata_xml ? <Badge variant="secondary">Provided</Badge> : <NotConfigured />,
+            values.saml_idp_metadata_xml ? <Badge variant="secondary">已提供</Badge> : <NotConfigured />,
         },
         {
           label: "SP Entity ID",
@@ -186,7 +186,7 @@ export default function SSOSettings() {
           label: "Allow IdP-initiated (unsolicited) responses",
           render: (values: SSOSettingsValues) => (
             <Badge variant={values.saml_allow_unsolicited === "true" ? "default" : "secondary"}>
-              {values.saml_allow_unsolicited === "true" ? "Enabled" : "Disabled"}
+              {values.saml_allow_unsolicited === "true" ? "已启用" : "已禁用"}
             </Badge>
           ),
         },
@@ -238,20 +238,20 @@ export default function SSOSettings() {
                 <Shield className="size-6 text-muted-foreground" />
                 <div>
                   <CardTitle>
-                    <h3>SSO Configuration</h3>
+                    <h3>SSO 配置</h3>
                   </CardTitle>
-                  <CardDescription>Manage Single Sign-On authentication settings</CardDescription>
+                  <CardDescription>管理单点登录认证设置</CardDescription>
                 </div>
               </div>
               {isSSOConfigured && (
                 <CardAction className="flex gap-2">
                   <Button type="button" variant="outline" onClick={() => setIsEditModalVisible(true)}>
                     <Edit />
-                    Edit SSO Settings
+                    编辑 SSO 设置
                   </Button>
                   <Button type="button" variant="destructive" onClick={() => setIsDeleteModalVisible(true)}>
                     <Trash2 />
-                    Delete SSO Settings
+                    删除 SSO 设置
                   </Button>
                 </CardAction>
               )}

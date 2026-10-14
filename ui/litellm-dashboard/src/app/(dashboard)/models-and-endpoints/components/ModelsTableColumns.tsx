@@ -71,26 +71,26 @@ function ModelInformationCell({ model, displayName }: { model: ModelData; displa
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2">
             {model.provider ? <ProviderLogo provider={model.provider} className="size-4 shrink-0" /> : null}
-            <span className="truncate text-xs text-muted-foreground">{model.provider || "Unknown provider"}</span>
+            <span className="truncate text-xs text-muted-foreground">{model.provider || "未知 provider"}</span>
           </div>
           <div className="flex flex-col gap-0.5">
-            <span className="text-xs text-muted-foreground">Public Model Name</span>
+            <span className="text-xs text-muted-foreground">公开模型名称</span>
             <span className="truncate text-sm font-medium text-foreground" title={displayName}>
               {displayName}
             </span>
           </div>
           <div className="flex flex-col gap-0.5">
-            <span className="text-xs text-muted-foreground">LiteLLM Model Name</span>
+            <span className="text-xs text-muted-foreground">LiteLLM 模型名称</span>
             <span className="flex min-w-0 items-center gap-1.5">
               <span className="truncate font-mono text-sm text-foreground" title={litellmModelName}>
                 {litellmModelName}
               </span>
               <button
                 type="button"
-                aria-label="Copy LiteLLM model name"
+                aria-label="复制 LiteLLM 模型名称"
                 data-testid={`copy-litellm-model-name-${model.model_info.id}`}
                 className="shrink-0 cursor-pointer text-muted-foreground hover:text-foreground"
-                onClick={() => void copyToClipboard(litellmModelName, "LiteLLM model name copied")}
+                onClick={() => void copyToClipboard(litellmModelName, "LiteLLM 模型名称已复制")}
               >
                 <Copy className="size-3.5" />
               </button>
@@ -105,13 +105,13 @@ function ModelInformationCell({ model, displayName }: { model: ModelData; displa
 function CredentialsHeader() {
   return (
     <span className="flex items-center gap-1">
-      Credentials
+      凭据
       <HoverCard>
         <HoverCardTrigger
           render={
             <button
               type="button"
-              aria-label="About credential types"
+              aria-label="关于凭据类型"
               data-testid="credentials-header-info"
               className="cursor-pointer text-muted-foreground hover:text-foreground"
             />
@@ -121,23 +121,23 @@ function CredentialsHeader() {
         </HoverCardTrigger>
         <HoverCardContent align="start" className="w-80">
           <div className="flex flex-col gap-3">
-            <span className="text-sm font-medium text-foreground">Credential types</span>
+            <span className="text-sm font-medium text-foreground">凭据类型</span>
             <div className="flex flex-col gap-1">
               <span className="flex items-center gap-1.5 text-sm font-medium text-info">
                 <RefreshCw className="size-3.5" />
-                Reusable
+                可复用
               </span>
               <span className="text-xs text-muted-foreground">
-                Credentials saved in LiteLLM that can be added to models repeatedly.
+                保存在 LiteLLM 中、可重复添加到模型的凭据。
               </span>
             </div>
             <div className="flex flex-col gap-1">
               <span className="flex items-center gap-1.5 text-sm font-medium text-foreground">
                 <Pencil className="size-3.5" />
-                Manual
+                手动
               </span>
               <span className="text-xs text-muted-foreground">
-                Credentials added directly during model creation or defined in the config file.
+                在模型创建时直接添加，或在配置文件中定义的凭据。
               </span>
             </div>
           </div>
@@ -152,7 +152,7 @@ function CredentialsCell({ credentialName }: { credentialName: string | undefine
     return (
       <Badge variant="outline" className="gap-1 font-normal text-muted-foreground">
         <Pencil className="size-3" />
-        Manual
+        手动
       </Badge>
     );
   }
@@ -168,8 +168,8 @@ function CredentialsCell({ credentialName }: { credentialName: string | undefine
 function CreatedByCell({ model }: { model: ModelData }) {
   const isConfigModel = !model.model_info?.db_model;
   const createdAt = formatShortDate(model.model_info.created_at);
-  const primary = isConfigModel ? "Defined in config" : model.model_info.created_by || "Unknown";
-  const secondaryForDbModel = createdAt ?? "Unknown date";
+  const primary = isConfigModel ? "配置中定义" : model.model_info.created_by || "未知";
+  const secondaryForDbModel = createdAt ?? "未知日期";
 
   return (
     <div className="flex min-w-0 flex-col gap-0.5">
@@ -190,7 +190,7 @@ function CostsCell({ model }: { model: ModelData }) {
 
   return (
     <CellTooltip
-      content="Cost per 1M tokens"
+      content="每 100 万 tokens 成本"
       trigger={
         <div className="flex flex-col gap-0.5 whitespace-nowrap">
           {inputCost != null && (
@@ -234,7 +234,7 @@ function AccessGroupsCell({ accessGroups }: { accessGroups: string[] | null }) {
           }
           trigger={
             <Badge variant="outline" className="shrink-0 cursor-default font-normal">
-              +{overflow.length} more
+              另有 {overflow.length} 个
             </Badge>
           }
         />
@@ -269,17 +269,17 @@ function ModelRowActions({
 
   const resolvePauseTooltip = (): string => {
     if (isConfigModel) {
-      return "Config models cannot be paused from the dashboard. Pause is DB-backed.";
+      return "配置模型不能从 dashboard 暂停。暂停状态依赖数据库。";
     }
     if (!isAdmin) {
-      return "Only proxy admins can pause or resume a model.";
+      return "只有代理管理员可以暂停或恢复模型。";
     }
-    return isBlocked ? "Resume model — restore normal routing." : "Pause model — stop routing requests until resumed.";
+    return isBlocked ? "恢复模型，恢复正常路由。" : "暂停模型，在恢复前停止路由请求。";
   };
 
   const deleteTooltip = isConfigModel
-    ? "Config model cannot be deleted on the dashboard. Please delete it from the config file."
-    : "Delete model";
+    ? "配置模型不能从 dashboard 删除。请从配置文件中删除。"
+    : "删除模型";
 
   return (
     <div className="flex items-center justify-end gap-1.5">
@@ -298,7 +298,7 @@ function ModelRowActions({
                   size="sm"
                   checked={!isBlocked}
                   disabled={!isPauseToggleable}
-                  aria-label={isBlocked ? "Resume model" : "Pause model"}
+                  aria-label={isBlocked ? "恢复模型" : "暂停模型"}
                   data-testid={`model-pause-toggle-${modelId}`}
                   onCheckedChange={(nextChecked) => {
                     if (isPauseToggleable && onTogglePauseClick && modelId) {
@@ -318,7 +318,7 @@ function ModelRowActions({
             <Button
               variant="ghost"
               size="icon-sm"
-              aria-label="Delete model"
+              aria-label="删除模型"
               data-testid={`model-delete-${modelId}`}
               disabled={isConfigModel || !canEditModel}
               className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
@@ -359,8 +359,8 @@ export const getModelsTableColumns = ({
   {
     id: MODEL_ID_COLUMN_ID,
     accessorFn: (row) => row.model_info.id,
-    meta: { title: "Model ID" },
-    header: "Model ID",
+    meta: { title: "模型 ID" },
+    header: "模型 ID",
     enableSorting: false,
     size: 140,
     minSize: 90,
@@ -375,8 +375,8 @@ export const getModelsTableColumns = ({
   {
     id: MODEL_NAME_COLUMN_ID,
     accessorFn: (row) => row.model_name ?? "",
-    meta: { title: "Model Information", skeleton: "twoLine" },
-    header: ({ column }) => <DataTableSortHeader column={column} title="Model Information" />,
+    meta: { title: "模型信息", skeleton: "twoLine" },
+    header: ({ column }) => <DataTableSortHeader column={column} title="模型信息" />,
     enableSorting: true,
     size: 280,
     minSize: 160,
@@ -387,7 +387,7 @@ export const getModelsTableColumns = ({
   {
     id: CREDENTIALS_COLUMN_ID,
     accessorFn: (row) => row.litellm_params?.litellm_credential_name ?? "",
-    meta: { title: "Credentials" },
+    meta: { title: "凭据" },
     header: () => <CredentialsHeader />,
     enableSorting: false,
     size: 180,
@@ -397,8 +397,8 @@ export const getModelsTableColumns = ({
   {
     id: CREATED_BY_COLUMN_ID,
     accessorFn: (row) => row.model_info.created_by ?? "",
-    meta: { title: "Created By", skeleton: "twoLine" },
-    header: ({ column }) => <DataTableSortHeader column={column} title="Created By" />,
+    meta: { title: "创建者", skeleton: "twoLine" },
+    header: ({ column }) => <DataTableSortHeader column={column} title="创建者" />,
     enableSorting: true,
     size: 180,
     minSize: 110,
@@ -407,8 +407,8 @@ export const getModelsTableColumns = ({
   {
     id: UPDATED_AT_COLUMN_ID,
     accessorFn: (row) => row.model_info.updated_at ?? "",
-    meta: { title: "Updated At" },
-    header: ({ column }) => <DataTableSortHeader column={column} title="Updated At" />,
+    meta: { title: "更新时间" },
+    header: ({ column }) => <DataTableSortHeader column={column} title="更新时间" />,
     enableSorting: true,
     size: 140,
     minSize: 100,
@@ -417,8 +417,8 @@ export const getModelsTableColumns = ({
   {
     id: COSTS_COLUMN_ID,
     accessorFn: (row) => row.input_cost,
-    meta: { title: "Costs" },
-    header: ({ column }) => <DataTableSortHeader column={column} title="Costs" />,
+    meta: { title: "成本" },
+    header: ({ column }) => <DataTableSortHeader column={column} title="成本" />,
     enableSorting: true,
     size: 130,
     minSize: 90,
@@ -427,8 +427,8 @@ export const getModelsTableColumns = ({
   {
     id: TEAM_ID_COLUMN_ID,
     accessorFn: (row) => row.model_info.team_id ?? "",
-    meta: { title: "Team ID" },
-    header: "Team ID",
+    meta: { title: "团队 ID" },
+    header: "团队 ID",
     enableSorting: false,
     size: 140,
     minSize: 90,
@@ -443,8 +443,8 @@ export const getModelsTableColumns = ({
   {
     id: ACCESS_GROUPS_COLUMN_ID,
     accessorFn: (row) => row.model_info.access_groups ?? [],
-    meta: { title: "Model Access Group", skeleton: "chips" },
-    header: "Model Access Group",
+    meta: { title: "模型访问组", skeleton: "chips" },
+    header: "模型访问组",
     enableSorting: false,
     size: 200,
     minSize: 120,
@@ -453,22 +453,22 @@ export const getModelsTableColumns = ({
   {
     id: STATUS_COLUMN_ID,
     accessorFn: (row) => row.model_info.db_model,
-    meta: { title: "Source", skeleton: "badge" },
-    header: ({ column }) => <DataTableSortHeader column={column} title="Source" />,
+    meta: { title: "来源", skeleton: "badge" },
+    header: ({ column }) => <DataTableSortHeader column={column} title="来源" />,
     enableSorting: true,
     size: 140,
     minSize: 100,
     cell: ({ row }) =>
       row.original.model_info.db_model ? (
-        <StatusBadge tone="info" label="DB Model" />
+        <StatusBadge tone="info" label="数据库模型" />
       ) : (
-        <StatusBadge tone="neutral" label="Config Model" />
+        <StatusBadge tone="neutral" label="配置模型" />
       ),
   },
   {
     id: "actions",
-    meta: { title: "Actions", className: "text-right", headerClassName: "text-right" },
-    header: "Actions",
+    meta: { title: "操作", className: "text-right", headerClassName: "text-right" },
+    header: "操作",
     enableSorting: false,
     enableHiding: false,
     enableResizing: false,

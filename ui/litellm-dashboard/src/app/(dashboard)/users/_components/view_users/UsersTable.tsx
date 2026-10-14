@@ -52,8 +52,8 @@ interface UsersTableProps {
 const FILTER_LABELS: Record<string, string> = {
   user_id: "User ID",
   sso_user_id: "SSO ID",
-  user_role: "Role",
-  team: "Team",
+  user_role: "角色",
+  team: "团队",
 };
 
 function EmptyState() {
@@ -62,8 +62,8 @@ function EmptyState() {
       <div className="mb-1 flex size-10 items-center justify-center rounded-lg bg-muted">
         <Users className="size-5 text-muted-foreground" />
       </div>
-      <div className="text-sm font-medium text-foreground">No users found</div>
-      <div className="text-sm text-muted-foreground">Try adjusting your search or filters.</div>
+      <div className="text-sm font-medium text-foreground">未找到用户</div>
+      <div className="text-sm text-muted-foreground">请尝试调整搜索或筛选条件。</div>
     </div>
   );
 }
@@ -149,7 +149,7 @@ export function UsersTable({
       rowSelection={rowSelection}
       onRowSelectionChange={onRowSelectionChange}
       isLoading={isLoading}
-      loadingMessage="Loading users…"
+      loadingMessage="正在加载用户…"
       noDataMessage={<EmptyState />}
       size="compact"
       toolbar={(table) => (
@@ -158,7 +158,7 @@ export function UsersTable({
             table={table}
             searchValue={searchValue}
             onSearchChange={onSearchChange}
-            searchPlaceholder="Search by email or ID…"
+            searchPlaceholder="按邮箱或 ID 搜索…"
             onOpenFilters={() => setFiltersOpen(true)}
             filterLabels={FILTER_LABELS}
             formatFilterValue={formatFilterValue}
@@ -167,8 +167,8 @@ export function UsersTable({
             table={table}
             open={filtersOpen}
             onOpenChange={setFiltersOpen}
-            title="Filters"
-            description="Narrow down your users"
+            title="筛选"
+            description="缩小用户范围"
           >
             {({ get, set }) => (
               <>
@@ -188,22 +188,22 @@ export function UsersTable({
                     data-testid="users-filter-sso-id"
                   />
                 </DataTableFilterField>
-                <DataTableFilterField label="Role">
+                <DataTableFilterField label="角色">
                   <SearchSelect
                     options={roleOptions}
                     value={(get("user_role") as string) || undefined}
                     onValueChange={(value) => set("user_role", value)}
-                    placeholder="Select a role…"
-                    emptyText="No roles found"
+                    placeholder="选择角色…"
+                    emptyText="未找到角色"
                   />
                 </DataTableFilterField>
-                <DataTableFilterField label="Team">
+                <DataTableFilterField label="团队">
                   <SearchSelect
                     options={teamOptions}
                     value={(get("team") as string) || undefined}
                     onValueChange={(value) => set("team", value)}
-                    placeholder="Select a team…"
-                    emptyText="No teams found"
+                    placeholder="选择团队…"
+                    emptyText="未找到团队"
                   />
                 </DataTableFilterField>
               </>

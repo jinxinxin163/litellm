@@ -19,9 +19,9 @@ import { cn } from "@/lib/cva.config";
 import { copyToClipboard } from "@/utils/dataUtils";
 
 const SSO_ID_HINT =
-  "SSO ID is the ID of the user in the SSO provider. If the user is not using SSO, this will be null.";
+  "SSO ID 是用户在 SSO provider 中的 ID。如果用户未使用 SSO，此值为空。";
 
-const SCIM_INACTIVE_HINT = "Deactivated via SCIM (external identity provider). The user's virtual keys are blocked.";
+const SCIM_INACTIVE_HINT = "已通过 SCIM（外部身份提供商）停用。该用户的虚拟密钥已被阻止。";
 
 function isScimInactive(user: UserInfo): boolean {
   return (user.metadata as Record<string, unknown> | null | undefined)?.scim_active === false;
@@ -38,7 +38,7 @@ function UserRowActions({ user, onUserClick, onDeleteUser, onResetPassword }: Us
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        aria-label="Open user actions"
+        aria-label="打开用户操作"
         data-testid={`user-actions-${user.user_id}`}
         className={cn(buttonVariants({ variant: "ghost", size: "icon-sm" }), "text-muted-foreground")}
       >
@@ -47,23 +47,23 @@ function UserRowActions({ user, onUserClick, onDeleteUser, onResetPassword }: Us
       <DropdownMenuContent align="end" className="w-48">
         <DropdownMenuItem onClick={() => onUserClick(user.user_id, true)} data-testid="user-action-edit">
           <Pencil />
-          Edit user
+          编辑用户
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => onResetPassword(user.user_id)} data-testid="user-action-reset-password">
           <KeyRound />
-          Reset password
+          重置密码
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => void copyToClipboard(user.user_id, "User ID copied")}
           data-testid="user-action-copy"
         >
           <Copy />
-          Copy user ID
+          复制 User ID
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem variant="destructive" onClick={() => onDeleteUser(user)} data-testid="user-action-delete">
           <Trash2 />
-          Delete user
+          删除用户
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -104,8 +104,8 @@ export const getUsersTableColumns = ({
     {
       id: "user_email",
       accessorKey: "user_email",
-      meta: { title: "Email" },
-      header: ({ column }) => <DataTableSortHeader column={column} title="Email" variant="header-cycle" />,
+      meta: { title: "邮箱" },
+      header: ({ column }) => <DataTableSortHeader column={column} title="邮箱" variant="header-cycle" />,
       size: 220,
       enableSorting: true,
       cell: ({ row }) => (
@@ -116,8 +116,8 @@ export const getUsersTableColumns = ({
     },
     {
       id: "status",
-      meta: { title: "Status", skeleton: "badge" },
-      header: "Status",
+      meta: { title: "状态", skeleton: "badge" },
+      header: "状态",
       size: 110,
       enableSorting: false,
       cell: ({ row }) => {
@@ -125,20 +125,20 @@ export const getUsersTableColumns = ({
           return (
             <StatusBadge
               tone="error"
-              label="Inactive"
+              label="未激活"
               tooltip={SCIM_INACTIVE_HINT}
               dataTestId={`user-status-${row.original.user_id}`}
             />
           );
         }
-        return <StatusBadge tone="success" label="Active" dataTestId={`user-status-${row.original.user_id}`} />;
+        return <StatusBadge tone="success" label="可用" dataTestId={`user-status-${row.original.user_id}`} />;
       },
     },
     {
       id: "user_role",
       accessorKey: "user_role",
-      meta: { title: "Global Proxy Role" },
-      header: ({ column }) => <DataTableSortHeader column={column} title="Global Proxy Role" variant="header-cycle" />,
+      meta: { title: "全局代理角色" },
+      header: ({ column }) => <DataTableSortHeader column={column} title="全局代理角色" variant="header-cycle" />,
       size: 160,
       enableSorting: true,
       cell: ({ row }) => <span className="text-sm">{possibleUIRoles?.[row.original.user_role]?.ui_label || "-"}</span>,
@@ -146,8 +146,8 @@ export const getUsersTableColumns = ({
     {
       id: "user_alias",
       accessorKey: "user_alias",
-      meta: { title: "User Alias" },
-      header: "User Alias",
+      meta: { title: "用户别名" },
+      header: "用户别名",
       size: 150,
       enableSorting: false,
       cell: ({ row }) => (
@@ -159,8 +159,8 @@ export const getUsersTableColumns = ({
     {
       id: "spend",
       accessorKey: "spend",
-      meta: { title: "Spend (USD)", numeric: true },
-      header: ({ column }) => <DataTableSortHeader column={column} title="Spend (USD)" variant="header-cycle" />,
+      meta: { title: "花费 (USD)", numeric: true },
+      header: ({ column }) => <DataTableSortHeader column={column} title="花费 (USD)" variant="header-cycle" />,
       size: 130,
       enableSorting: true,
       cell: ({ row }) => <MoneyCell value={row.original.spend} decimals={2} />,
@@ -168,11 +168,11 @@ export const getUsersTableColumns = ({
     {
       id: "max_budget",
       accessorKey: "max_budget",
-      meta: { title: "Budget (USD)", numeric: true },
-      header: "Budget (USD)",
+      meta: { title: "预算 (USD)", numeric: true },
+      header: "预算 (USD)",
       size: 130,
       enableSorting: false,
-      cell: ({ row }) => <MoneyCell value={row.original.max_budget} decimals={2} emptyText="Unlimited" showZero />,
+      cell: ({ row }) => <MoneyCell value={row.original.max_budget} decimals={2} emptyText="无限制" showZero />,
     },
     {
       id: "sso_user_id",
@@ -183,7 +183,7 @@ export const getUsersTableColumns = ({
           SSO ID
           <CellTooltip
             content={SSO_ID_HINT}
-            trigger={<Info className="size-3.5 shrink-0 text-muted-foreground" aria-label="About SSO ID" />}
+            trigger={<Info className="size-3.5 shrink-0 text-muted-foreground" aria-label="关于 SSO ID" />}
           />
         </span>
       ),
@@ -198,8 +198,8 @@ export const getUsersTableColumns = ({
     {
       id: "key_count",
       accessorKey: "key_count",
-      meta: { title: "Virtual Keys", skeleton: "badge" },
-      header: "Virtual Keys",
+      meta: { title: "虚拟密钥", skeleton: "badge" },
+      header: "虚拟密钥",
       size: 120,
       enableSorting: false,
       cell: ({ row }) => {
@@ -210,7 +210,7 @@ export const getUsersTableColumns = ({
               variant="outline"
               className="whitespace-nowrap border-indigo-200 bg-indigo-50 font-normal text-indigo-600 dark:border-indigo-800 dark:bg-indigo-950 dark:text-indigo-300"
             >
-              {keyCount} {keyCount === 1 ? "Key" : "Keys"}
+              {keyCount} 个密钥
             </Badge>
           );
         }
@@ -219,7 +219,7 @@ export const getUsersTableColumns = ({
             variant="outline"
             className="whitespace-nowrap border-border bg-muted font-normal text-muted-foreground"
           >
-            No Keys
+            无密钥
           </Badge>
         );
       },
@@ -227,8 +227,8 @@ export const getUsersTableColumns = ({
     {
       id: "created_at",
       accessorKey: "created_at",
-      meta: { title: "Created At" },
-      header: ({ column }) => <DataTableSortHeader column={column} title="Created At" variant="header-cycle" />,
+      meta: { title: "创建时间" },
+      header: ({ column }) => <DataTableSortHeader column={column} title="创建时间" variant="header-cycle" />,
       size: 130,
       enableSorting: true,
       cell: ({ row }) => <DateCell value={row.original.created_at} precision="date" />,
@@ -236,16 +236,16 @@ export const getUsersTableColumns = ({
     {
       id: "updated_at",
       accessorKey: "updated_at",
-      meta: { title: "Updated At" },
-      header: "Updated At",
+      meta: { title: "更新时间" },
+      header: "更新时间",
       size: 130,
       enableSorting: false,
       cell: ({ row }) => <DateCell value={row.original.updated_at} precision="date" />,
     },
     {
       id: "actions",
-      meta: { title: "Actions", className: "text-right", headerClassName: "text-right" },
-      header: () => <span className="sr-only">Actions</span>,
+      meta: { title: "操作", className: "text-right", headerClassName: "text-right" },
+      header: () => <span className="sr-only">操作</span>,
       size: 60,
       enableSorting: false,
       enableHiding: false,
@@ -268,7 +268,7 @@ export const getUsersTableColumns = ({
 
   return [
     createSelectionColumn<UserInfo>({
-      rowAriaLabel: (row) => `Select ${row.original.user_email || row.original.user_id}`,
+      rowAriaLabel: (row) => `选择 ${row.original.user_email || row.original.user_id}`,
     }),
     ...baseColumns,
   ];

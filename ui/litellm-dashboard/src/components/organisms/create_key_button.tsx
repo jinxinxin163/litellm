@@ -445,16 +445,14 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
       };
       const built = buildKeyCreatePayload(input);
       if (built.kind === "duplicate_alias") {
-        throw new Error(
-          `Key alias ${built.alias} already exists for team with ID ${built.teamId}, please provide another key alias`,
-        );
+        throw new Error(`密钥别名 ${built.alias} 已存在于团队 ${built.teamId}，请提供其他密钥别名`);
       }
 
-      toast.info("Making API Call");
+      toast.info("正在调用 API");
       setIsModalVisible(true);
 
       if (built.kind === "agent_not_selected") {
-        toast.fromError("Please select an agent");
+        toast.fromError("请选择 Agent");
         return;
       }
       const { payload, endpoint } = built;
@@ -627,10 +625,10 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
 
   const modelOptions: MultiSelectOption[] = [
     ...(selectedProjectId === null && selectedCreateKeyTeam
-      ? [{ value: "all-team-models", label: "All Team Models" }]
+      ? [{ value: "all-team-models", label: "全部团队模型" }]
       : []),
     ...(selectedProjectId === null && !selectedCreateKeyTeam
-      ? [{ value: "all-proxy-models", label: "All Proxy Models" }]
+      ? [{ value: "all-proxy-models", label: "全部代理模型" }]
       : []),
     ...modelsToPick.map((model) => ({
       value: model,
@@ -652,24 +650,24 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
     <div>
       {userRole && rolesWithWriteAccess.includes(userRole) && (
         <Button className="mx-auto" onClick={() => setIsModalVisible(true)} data-testid="create-key-button">
-          + Create New Key
+          + 创建新密钥
         </Button>
       )}
       <Dialog open={isModalVisible} onOpenChange={(open) => !open && handleCancel()}>
         <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-y-auto sm:max-w-[1000px]">
           <DialogHeader>
-            <DialogTitle className="text-xl font-semibold text-foreground">Create New Key</DialogTitle>
+            <DialogTitle className="text-xl font-semibold text-foreground">创建新密钥</DialogTitle>
           </DialogHeader>
           <MountedFormProvider value={mountedForm}>
             <form onSubmit={handleSubmit}>
               {/* Section 1: Key Ownership */}
               <div className="mb-8">
-                <h3 className="text-lg font-medium text-foreground mb-4">Key Ownership</h3>
+                <h3 className="text-lg font-medium text-foreground mb-4">密钥归属</h3>
                 <Field className="mb-4">
                   <FieldLabel>
                     <span>
-                      Owned By{" "}
-                      <SimpleTooltip content="Select who will own this Virtual Key">
+                      所有者{" "}
+                      <SimpleTooltip content="选择此虚拟密钥的所有者">
                         <Info className="ml-1 inline size-3.5 align-text-bottom" />
                       </SimpleTooltip>
                     </span>
@@ -681,7 +679,7 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                   >
                     <label className={KEY_OWNER_LABEL_CLASS}>
                       <RadioGroupItem value="you" />
-                      You
+                      你
                     </label>
                     <label className={KEY_OWNER_LABEL_CLASS}>
                       <RadioGroupItem value="service_account" />
@@ -690,12 +688,12 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                     {userRole === "Admin" && (
                       <label className={KEY_OWNER_LABEL_CLASS}>
                         <RadioGroupItem value="another_user" />
-                        Another User
+                        其他用户
                       </label>
                     )}
                     <label className={KEY_OWNER_LABEL_CLASS}>
                       <RadioGroupItem value="agent" />
-                      Agent <Badge>New</Badge>
+                      Agent <Badge>新</Badge>
                     </label>
                   </RadioGroup>
                 </Field>
@@ -705,7 +703,7 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                     label={
                       <span>
                         User ID{" "}
-                        <SimpleTooltip content="The user who will own this key and be responsible for its usage">
+                        <SimpleTooltip content="拥有此密钥并对其用量负责的用户">
                           <Info className="ml-1 inline size-3.5 align-text-bottom" />
                         </SimpleTooltip>
                       </span>
@@ -715,7 +713,7 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                     required
                     rules={requiredRule(
                       keyOwner === "another_user",
-                      `Please input the user ID of the user you are assigning the key to`,
+                      "请输入要分配密钥的用户 ID",
                     )}
                   >
                     {(control) => (
@@ -727,19 +725,19 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                             onValueChange={control.onChange}
                             onSearchChange={fetchUsers}
                             isLoading={userSearchLoading}
-                            placeholder="Type email to search for users"
-                            emptyText="No users found"
-                            loadingText="Searching..."
+                            placeholder="输入邮箱搜索用户"
+                            emptyText="未找到用户"
+                            loadingText="搜索中..."
                             inputId={control.id}
                             aria-required={control["aria-required"] === "true" ? true : undefined}
                             aria-invalid={control["aria-invalid"] === "true" ? true : undefined}
                             aria-describedby={control["aria-describedby"]}
                           />
                           <Button variant="outline" className="ml-2" onClick={() => setIsCreateUserModalVisible(true)}>
-                            Create User
+                            创建用户
                           </Button>
                         </div>
-                        <div className="text-xs text-muted-foreground">Search by email to find users</div>
+                        <div className="text-xs text-muted-foreground">按邮箱搜索用户</div>
                       </div>
                     )}
                   </MountedFormField>
@@ -748,13 +746,13 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                   <div className="mt-4 p-4 bg-purple-50 border border-purple-200 rounded-md dark:bg-purple-950 dark:border-purple-800">
                     <div className="mb-3">
                       <label htmlFor="create-key-agent" className="text-sm font-medium text-foreground">
-                        Select Agent <span className="text-destructive">*</span>
+                        选择 Agent <span className="text-destructive">*</span>
                       </label>
                     </div>
                     <SearchSelect
                       inputId="create-key-agent"
-                      placeholder="Select an agent"
-                      emptyText="No agents found"
+                      placeholder="选择 Agent"
+                      emptyText="未找到 Agent"
                       value={selectedAgentId ?? undefined}
                       onValueChange={(value) => setSelectedAgentId(value === "" ? null : value)}
                       options={agentsList.map((a) => ({
@@ -763,15 +761,15 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                       }))}
                     />
                     <div className="text-xs text-muted-foreground mt-2">
-                      This key will be used by the selected agent to make requests to LiteLLM
+                      此密钥将由所选 Agent 用于向 LiteLLM 发起请求
                     </div>
                   </div>
                 )}
                 <MountedFormField
                   label={
                     <span>
-                      Organization{" "}
-                      <SimpleTooltip content="The organization this key belongs to. Selecting an organization filters the available teams.">
+                      组织{" "}
+                      <SimpleTooltip content="此密钥所属的组织。选择组织会过滤可用团队。">
                         <Info className="ml-1 inline size-3.5 align-text-bottom" />
                       </SimpleTooltip>
                     </span>
@@ -793,8 +791,8 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                 <MountedFormField
                   label={
                     <span>
-                      Team{" "}
-                      <SimpleTooltip content="The team this key belongs to, which determines available models and budget limits">
+                      团队{" "}
+                      <SimpleTooltip content="此密钥所属的团队，决定可用模型和预算限制">
                         <Info className="ml-1 inline size-3.5 align-text-bottom" />
                       </SimpleTooltip>
                     </span>
@@ -802,8 +800,8 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                   name="team_id"
                   className="mt-4"
                   required={keyOwner === "service_account"}
-                  rules={requiredRule(keyOwner === "service_account", "Please select a team for the service account")}
-                  help={keyOwner === "service_account" ? "required" : ""}
+                  rules={requiredRule(keyOwner === "service_account", "请为服务账号选择团队")}
+                  help={keyOwner === "service_account" ? "必填" : ""}
                 >
                   {(control) => (
                     <TeamDropdown
@@ -820,8 +818,8 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                   <MountedFormField
                     label={
                       <span>
-                        Project{" "}
-                        <SimpleTooltip content="Assign this key to a project. Selecting a project will lock the team to the project's team.">
+                        项目{" "}
+                        <SimpleTooltip content="将此密钥分配给项目。选择项目后，团队会锁定为项目所属团队。">
                           <Info className="ml-1 inline size-3.5 align-text-bottom" />
                         </SimpleTooltip>
                       </span>
@@ -847,8 +845,7 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
               {isFormDisabled && (
                 <div className="mb-8 p-4 bg-info/10 border border-info/20 rounded-md">
                   <p className="text-info text-sm">
-                    Please select a team to continue configuring your Virtual Key. If you do not see any teams, please
-                    contact your Proxy Admin to either provide you with access to models or to add you to a team.
+                    请先选择团队，再继续配置虚拟密钥。如果看不到任何团队，请联系代理管理员为你开通模型访问权限或将你加入团队。
                   </p>
                 </div>
               )}
@@ -856,16 +853,16 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
               {/* Section 2: Key Details */}
               {!isFormDisabled && (
                 <div className="mb-8">
-                  <h3 className="text-lg font-medium text-foreground mb-4">Key Details</h3>
+                  <h3 className="text-lg font-medium text-foreground mb-4">密钥详情</h3>
                   <MountedFormField
                     label={
                       <span>
-                        {keyOwner === "you" || keyOwner === "another_user" ? "Key Name" : "Service Account ID"}{" "}
+                        {keyOwner === "you" || keyOwner === "another_user" ? "密钥名称" : "服务账号 ID"}{" "}
                         <SimpleTooltip
                           content={
                             keyOwner === "you" || keyOwner === "another_user"
-                              ? "A descriptive name to identify this key"
-                              : "Unique identifier for this service account"
+                              ? "用于识别此密钥的描述性名称"
+                              : "此服务账号的唯一标识"
                           }
                         >
                           <Info className="ml-1 inline size-3.5 align-text-bottom" />
@@ -876,9 +873,9 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                     required
                     rules={requiredRule(
                       true,
-                      `Please input a ${keyOwner === "you" ? "key name" : "service account ID"}`,
+                      `请输入${keyOwner === "you" ? "密钥名称" : "服务账号 ID"}`,
                     )}
-                    help="required"
+                    help="必填"
                   >
                     {(control) => <Input {...control} value={(control.value as string | undefined) ?? ""} />}
                   </MountedFormField>
@@ -886,8 +883,8 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                   <MountedFormField
                     label={
                       <span>
-                        Models{" "}
-                        <SimpleTooltip content="Select which models this key can access. Choose 'All Team Models' to grant access to all models available to the team. Leave empty to allow access to all models.">
+                        模型{" "}
+                        <SimpleTooltip content="选择此密钥可访问的模型。选择“全部团队模型”表示授予团队可用的全部模型访问权限；留空表示允许访问全部模型。">
                           <Info className="ml-1 inline size-3.5 align-text-bottom" />
                         </SimpleTooltip>
                       </span>
@@ -895,8 +892,8 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                     name="models"
                     help={
                       keyType === "management" || keyType === "read_only"
-                        ? "Models field is disabled for this key type"
-                        : "optional - leave empty to allow access to all models"
+                        ? "此密钥类型已禁用模型字段"
+                        : "可选，留空表示允许访问全部模型"
                     }
                     className="mt-4"
                   >
@@ -905,7 +902,7 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                         id={control.id}
                         options={modelOptions}
                         value={(control.value as string[] | undefined) ?? []}
-                        placeholder="Select models"
+                        placeholder="选择模型"
                         disabled={keyType === "management" || keyType === "read_only"}
                         onValueChange={(values) => {
                           control.onChange(values);
@@ -922,8 +919,8 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                   <MountedFormField
                     label={
                       <span>
-                        Key Type{" "}
-                        <SimpleTooltip content="Select the type of key to determine what routes and operations this key can access">
+                        密钥类型{" "}
+                        <SimpleTooltip content="选择密钥类型，以决定此密钥可访问的路由和操作">
                           <Info className="ml-1 inline size-3.5 align-text-bottom" />
                         </SimpleTooltip>
                       </span>
@@ -945,7 +942,7 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                           aria-invalid={control["aria-invalid"]}
                           aria-describedby={control["aria-describedby"]}
                         >
-                          <SelectValue placeholder="Select key type" />
+                          <SelectValue placeholder="选择密钥类型" />
                         </SelectTrigger>
                         <SelectContent>
                           {KEY_TYPE_OPTIONS.map((option) => (
@@ -969,7 +966,7 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                   <Collapsible className="mt-4 mb-4 overflow-hidden rounded-lg border">
                     <h3 className="m-0 text-lg font-medium text-foreground">
                       <CollapsibleTrigger className={SECTION_HEADER_CLASS}>
-                        Optional Settings
+                        可选设置
                         <ChevronDown className={SECTION_CHEVRON_CLASS} />
                       </CollapsibleTrigger>
                     </h3>
@@ -978,17 +975,17 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                         className="mt-4"
                         label={
                           <span>
-                            Max Budget (USD){" "}
-                            <SimpleTooltip content="Maximum amount in USD this key can spend. When reached, the key will be blocked from making further requests">
+                            最大预算 (USD){" "}
+                            <SimpleTooltip content="此密钥可消耗的最大美元金额。达到后，该密钥将无法继续发起请求">
                               <Info className="ml-1 inline size-3.5 align-text-bottom" />
                             </SimpleTooltip>
                           </span>
                         }
                         name="max_budget"
-                        help={`Budget cannot exceed team max budget: $${team?.max_budget !== null && team?.max_budget !== undefined ? team?.max_budget : "unlimited"}`}
+                        help={`预算不能超过团队最大预算：$${team?.max_budget !== null && team?.max_budget !== undefined ? team?.max_budget : "无限制"}`}
                         rules={ceilingRule(
                           team?.max_budget,
-                          (limit) => `Budget cannot exceed team max budget: $${formatNumberWithCommas(limit, 4)}`,
+                          (limit) => `预算不能超过团队最大预算：$${formatNumberWithCommas(limit, 4)}`,
                         )}
                       >
                         {(control) => (
@@ -1005,21 +1002,21 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                         className="mt-4"
                         label={
                           <span>
-                            Reset Budget{" "}
-                            <SimpleTooltip content="How often the budget should reset. For example, setting 'daily' will reset the budget every 24 hours">
+                            重置预算{" "}
+                            <SimpleTooltip content="预算重置频率。例如设置为 'daily' 会每 24 小时重置一次预算">
                               <Info className="ml-1 inline size-3.5 align-text-bottom" />
                             </SimpleTooltip>
                           </span>
                         }
                         name="budget_duration"
-                        help={`Team Reset Budget: ${team?.budget_duration !== null && team?.budget_duration !== undefined ? team?.budget_duration : "None"}`}
+                        help={`团队重置预算：${team?.budget_duration !== null && team?.budget_duration !== undefined ? team?.budget_duration : "无"}`}
                       >
                         {(control) => (
                           <BudgetDurationDropdown
                             id={control.id}
                             value={control.value as string | null | undefined}
                             showNeverResets
-                            placeholder="Not set"
+                            placeholder="未设置"
                             onChange={control.onChange}
                           />
                         )}
@@ -1027,8 +1024,8 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                       <Field className="mt-4">
                         <FieldLabel>
                           <span>
-                            Budget Windows{" "}
-                            <SimpleTooltip content="Set multiple independent budget windows (e.g., hourly $10 AND monthly $200). Each window tracks spend separately and resets on its own schedule.">
+                            预算窗口{" "}
+                            <SimpleTooltip content="设置多个独立预算窗口（例如每小时 $10 且每月 $200）。每个窗口会单独跟踪花费，并按自己的周期重置。">
                               <Info className="ml-1 inline size-3.5 align-text-bottom" />
                             </SimpleTooltip>
                           </span>
@@ -1038,7 +1035,7 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                       <Field className="mt-4">
                         <FieldLabel>
                           <span>
-                            Per-Model Budgets{" "}
+                            按模型预算{" "}
                             <SimpleTooltip content="Cap spend on individual models, each with its own reset window. Enforced across every request this key makes; usage is reported on the key's info page.">
                               <Info className="ml-1 inline size-3.5 align-text-bottom" />
                             </SimpleTooltip>
@@ -1054,8 +1051,8 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                       <Field className="mt-4">
                         <FieldLabel>
                           <span>
-                            Budget Fallbacks{" "}
-                            <SimpleTooltip content="When a model exceeds its per-model budget (model_max_budget), requests automatically reroute to fallback models instead of failing. Configure per-model budgets in Advanced Settings.">
+                            预算回退{" "}
+                            <SimpleTooltip content="当某个模型超过其按模型预算（model_max_budget）时，请求会自动路由到回退模型，而不是直接失败。按模型预算可在高级设置中配置。">
                               <Info className="ml-1 inline size-3.5 align-text-bottom" />
                             </SimpleTooltip>
                           </span>
@@ -1072,16 +1069,16 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                         label={
                           <span>
                             Tokens per minute Limit (TPM){" "}
-                            <SimpleTooltip content="Maximum number of tokens this key can process per minute. Helps control usage and costs">
+                            <SimpleTooltip content="此密钥每分钟可处理的最大 token 数，用于控制用量和成本">
                               <Info className="ml-1 inline size-3.5 align-text-bottom" />
                             </SimpleTooltip>
                           </span>
                         }
                         name="tpm_limit"
-                        help={`TPM cannot exceed team TPM limit: ${team?.tpm_limit !== null && team?.tpm_limit !== undefined ? team?.tpm_limit : "unlimited"}`}
+                        help={`TPM 不能超过团队 TPM 限制：${team?.tpm_limit !== null && team?.tpm_limit !== undefined ? team?.tpm_limit : "无限制"}`}
                         rules={ceilingRule(
                           team?.tpm_limit,
-                          (limit) => `TPM limit cannot exceed team TPM limit: ${limit}`,
+                          (limit) => `TPM 限制不能超过团队 TPM 限制：${limit}`,
                         )}
                       >
                         {(control) => (
@@ -1113,16 +1110,16 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                         label={
                           <span>
                             Requests per minute Limit (RPM){" "}
-                            <SimpleTooltip content="Maximum number of API requests this key can make per minute. Helps prevent abuse and manage load">
+                            <SimpleTooltip content="此密钥每分钟可发起的最大 API 请求数，用于防止滥用并管理负载">
                               <Info className="ml-1 inline size-3.5 align-text-bottom" />
                             </SimpleTooltip>
                           </span>
                         }
                         name="rpm_limit"
-                        help={`RPM cannot exceed team RPM limit: ${team?.rpm_limit !== null && team?.rpm_limit !== undefined ? team?.rpm_limit : "unlimited"}`}
+                        help={`RPM 不能超过团队 RPM 限制：${team?.rpm_limit !== null && team?.rpm_limit !== undefined ? team?.rpm_limit : "无限制"}`}
                         rules={ceilingRule(
                           team?.rpm_limit,
-                          (limit) => `RPM limit cannot exceed team RPM limit: ${limit}`,
+                          (limit) => `RPM 限制不能超过团队 RPM 限制：${limit}`,
                         )}
                       >
                         {(control) => (
@@ -1152,8 +1149,8 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                       <Field className="mt-4">
                         <FieldLabel>
                           <span>
-                            Per-Tag Rate Limits{" "}
-                            <SimpleTooltip content="Scope rate limits to a request tag so each tag (e.g. a cell or group) gets its own RPM counter. Requests without a matching tag fall back to the key-level limit.">
+                            按 Tag 速率限制{" "}
+                            <SimpleTooltip content="将速率限制限定到请求 tag，让每个 tag（例如单元或组）拥有自己的 RPM 计数器。没有匹配 tag 的请求会回退到密钥级限制。">
                               <Info className="ml-1 inline size-3.5 align-text-bottom" />
                             </SimpleTooltip>
                           </span>
@@ -1164,8 +1161,8 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                         className="mt-4"
                         label={
                           <span>
-                            Throttle on budget exceeded{" "}
-                            <SimpleTooltip content="When this key exceeds its max budget, throttle its TPM/RPM to the globally configured percentage instead of blocking access entirely. Requires budget_exceeded_throttle_percentage in litellm_settings and a TPM/RPM limit on the key.">
+                            超出预算时限流{" "}
+                            <SimpleTooltip content="当此密钥超过最大预算时，将其 TPM/RPM 限流到全局配置比例，而不是完全阻止访问。需要在 litellm_settings 中配置 budget_exceeded_throttle_percentage，并在密钥上设置 TPM/RPM 限制。">
                               <Info className="ml-1 inline size-3.5 align-text-bottom" />
                             </SimpleTooltip>
                           </span>
@@ -1185,8 +1182,8 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                         className="mt-4"
                         label={
                           <span>
-                            Enable Prompt Caching{" "}
-                            <SimpleTooltip content="Automatically add prompt caching breakpoints (cache_control markers) to requests made with this key, cutting input cost on repeated prompts. Applies to Anthropic and Bedrock Claude models; requests that already set their own cache_control markers are left untouched.">
+                            启用 Prompt Caching{" "}
+                            <SimpleTooltip content="为此密钥发起的请求自动添加 prompt caching 断点（cache_control markers），降低重复 prompts 的输入成本。适用于 Anthropic 和 Bedrock Claude 模型；已自行设置 cache_control markers 的请求不受影响。">
                               <Info className="ml-1 inline size-3.5 align-text-bottom" />
                             </SimpleTooltip>
                           </span>
@@ -1206,7 +1203,7 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                         label={
                           <span>
                             Guardrails{" "}
-                            <SimpleTooltip content="Apply safety guardrails to this key to filter content or enforce policies">
+                            <SimpleTooltip content="为此密钥应用安全 guardrails，用于过滤内容或执行 policies">
                               <a
                                 href="https://docs.litellm.ai/docs/proxy/guardrails/quick_start"
                                 target="_blank"
@@ -1222,8 +1219,8 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                         className="mt-4"
                         help={
                           canEditGuardrails
-                            ? "Select existing guardrails or enter new ones"
-                            : "Premium feature - Upgrade to set guardrails by key"
+                            ? "选择已有 guardrails 或输入新的 guardrails"
+                            : "高级功能：升级后可按密钥设置 guardrails"
                         }
                       >
                         {(control) => (
@@ -1234,8 +1231,8 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                             disabled={!canEditGuardrails}
                             placeholder={
                               !canEditGuardrails
-                                ? "Premium feature - Upgrade to set guardrails by key"
-                                : "Select or enter guardrails"
+                                ? "高级功能：升级后可按密钥设置 guardrails"
+                                : "选择或输入 guardrails"
                             }
                             options={guardrailsList.map((name) => ({ value: name, label: name }))}
                           />
@@ -1244,8 +1241,8 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                       <MountedFormField
                         label={
                           <span>
-                            Disable Global Guardrails{" "}
-                            <SimpleTooltip content="When enabled, this key will bypass any guardrails configured to run on every request (global guardrails)">
+                            禁用全局 Guardrails{" "}
+                            <SimpleTooltip content="启用后，此密钥会绕过所有配置为每次请求都运行的 guardrails（全局 guardrails）">
                               <a
                                 href="https://docs.litellm.ai/docs/proxy/guardrails/quick_start"
                                 target="_blank"
@@ -1261,8 +1258,8 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                         className="mt-4"
                         help={
                           canEditGuardrails
-                            ? "Bypass global guardrails for this key"
-                            : "Premium feature - Upgrade to disable global guardrails by key"
+                            ? "此密钥绕过全局 guardrails"
+                            : "高级功能：升级后可按密钥禁用全局 guardrails"
                         }
                       >
                         {(control) => (
@@ -1280,7 +1277,7 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                           label={
                             <span>
                               Policies{" "}
-                              <SimpleTooltip content="Apply policies to this key to control guardrails and other settings">
+                              <SimpleTooltip content="将 policies 应用于此密钥，以控制 guardrails 和其他设置">
                                 <a
                                   href="https://docs.litellm.ai/docs/proxy/guardrails/guardrail_policies"
                                   target="_blank"
@@ -1296,8 +1293,8 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                           className="mt-4"
                           help={
                             premiumUser
-                              ? "Select existing policies or enter new ones"
-                              : "Premium feature - Upgrade to set policies by key"
+                              ? "选择已有 policies 或输入新的 policies"
+                              : "高级功能：升级后可按密钥设置 policies"
                           }
                         >
                           {(control) => (
@@ -1308,8 +1305,8 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                               disabled={!premiumUser}
                               placeholder={
                                 !premiumUser
-                                  ? "Premium feature - Upgrade to set policies by key"
-                                  : "Select or enter policies"
+                                  ? "高级功能：升级后可按密钥设置 policies"
+                                  : "选择或输入 policies"
                               }
                               options={policiesList.map((name) => ({ value: name, label: name }))}
                             />
@@ -1321,7 +1318,7 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                           label={
                             <span>
                               Prompts{" "}
-                              <SimpleTooltip content="Allow this key to use specific prompt templates">
+                              <SimpleTooltip content="允许此密钥使用指定 prompt templates">
                                 <a
                                   href="https://docs.litellm.ai/docs/proxy/prompt_management"
                                   target="_blank"
@@ -1337,8 +1334,8 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                           className="mt-4"
                           help={
                             premiumUser
-                              ? "Select existing prompts or enter new ones"
-                              : "Premium feature - Upgrade to set prompts by key"
+                              ? "选择已有 prompts 或输入新的 prompts"
+                              : "高级功能：升级后可按密钥设置 prompts"
                           }
                         >
                           {(control) => (
@@ -1349,8 +1346,8 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                               disabled={!premiumUser}
                               placeholder={
                                 !premiumUser
-                                  ? "Premium feature - Upgrade to set prompts by key"
-                                  : "Select or enter prompts"
+                                  ? "高级功能：升级后可按密钥设置 prompts"
+                                  : "选择或输入 prompts"
                               }
                               options={promptsList.map((name) => ({ value: name, label: name }))}
                             />
@@ -1360,29 +1357,29 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                       <MountedFormField
                         label={
                           <span>
-                            Access Groups{" "}
-                            <SimpleTooltip content="Assign access groups to this key. Access groups control which models, MCP servers, and agents this key can use">
+                            访问组{" "}
+                            <SimpleTooltip content="为此密钥分配访问组。访问组控制此密钥可使用哪些模型、MCP servers 和 agents">
                               <Info className="ml-1 inline size-3.5 align-text-bottom" />
                             </SimpleTooltip>
                           </span>
                         }
                         name="access_group_ids"
                         className="mt-4"
-                        help="Select access groups to assign to this key"
+                        help="选择要分配给此密钥的访问组"
                       >
                         {(control) => (
                           <AccessGroupSelector
                             value={control.value as string[] | undefined}
                             onChange={control.onChange}
-                            placeholder="Select access groups (optional)"
+                            placeholder="选择访问组（可选）"
                           />
                         )}
                       </MountedFormField>
                       <MountedFormField
                         label={
                           <span>
-                            Allowed Pass Through Routes{" "}
-                            <SimpleTooltip content="Allow this key to use specific pass through routes">
+                            允许的透传路由{" "}
+                            <SimpleTooltip content="允许此密钥使用指定透传路由">
                               <a
                                 href="https://docs.litellm.ai/docs/proxy/pass_through"
                                 target="_blank"
@@ -1398,8 +1395,8 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                         className="mt-4"
                         help={
                           premiumUser
-                            ? "Select existing pass through routes or enter new ones"
-                            : "Premium feature - Upgrade to set pass through routes by key"
+                            ? "选择已有透传路由或输入新的透传路由"
+                            : "高级功能：升级后可按密钥设置透传路由"
                         }
                       >
                         {(control) => (
@@ -1409,8 +1406,8 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                             accessToken={accessToken}
                             placeholder={
                               !premiumUser
-                                ? "Premium feature - Upgrade to set pass through routes by key"
-                                : "Select or enter pass through routes"
+                                ? "高级功能：升级后可按密钥设置透传路由"
+                                : "选择或输入透传路由"
                             }
                             disabled={!premiumUser}
                             teamId={selectedCreateKeyTeam ? selectedCreateKeyTeam.team_id : null}
@@ -1420,22 +1417,22 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                       <MountedFormField
                         label={
                           <span>
-                            Allowed Vector Stores{" "}
-                            <SimpleTooltip content="Select which vector stores this key can access. If none selected, the key will have access to all available vector stores">
+                            允许的 Vector Stores{" "}
+                            <SimpleTooltip content="选择此密钥可访问的 vector stores。若不选择，则密钥可访问全部可用 vector stores">
                               <Info className="ml-1 inline size-3.5 align-text-bottom" />
                             </SimpleTooltip>
                           </span>
                         }
                         name="allowed_vector_store_ids"
                         className="mt-4"
-                        help="Select vector stores this key can access. Leave empty for access to all vector stores"
+                        help="选择此密钥可访问的 vector stores。留空表示允许访问全部 vector stores"
                       >
                         {(control) => (
                           <VectorStoreSelector
                             onChange={control.onChange}
                             value={control.value as string[] | undefined}
                             accessToken={accessToken}
-                            placeholder="Select vector stores (optional)"
+                            placeholder="选择 vector stores（可选）"
                           />
                         )}
                       </MountedFormField>
@@ -1443,7 +1440,7 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                         label={
                           <span>
                             Metadata{" "}
-                            <SimpleTooltip content="JSON object with additional information about this key. Used for tracking or custom logic">
+                            <SimpleTooltip content="包含此密钥附加信息的 JSON 对象，用于跟踪或自定义逻辑">
                               <Info className="ml-1 inline size-3.5 align-text-bottom" />
                             </SimpleTooltip>
                           </span>
@@ -1456,7 +1453,7 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                             {...control}
                             value={(control.value as string | undefined) ?? ""}
                             rows={4}
-                            placeholder="Enter metadata as JSON"
+                            placeholder="以 JSON 输入 metadata"
                           />
                         )}
                       </MountedFormField>
@@ -1464,21 +1461,21 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                         label={
                           <span>
                             Tags{" "}
-                            <SimpleTooltip content="Tags for tracking spend and/or doing tag-based routing. Used for analytics and filtering">
+                            <SimpleTooltip content="用于跟踪花费和/或基于 tag 路由的 tags，可用于分析和过滤">
                               <Info className="ml-1 inline size-3.5 align-text-bottom" />
                             </SimpleTooltip>
                           </span>
                         }
                         name="tags"
                         className="mt-4"
-                        help={`Tags for tracking spend and/or doing tag-based routing.`}
+                        help="用于跟踪花费和/或基于 tag 路由的 tags。"
                       >
                         {(control) => (
                           <TagsInput
                             id={control.id}
                             value={(control.value as string[] | undefined) ?? []}
                             onValueChange={control.onChange}
-                            placeholder="Select or enter tags"
+                            placeholder="选择或输入 tags"
                             tokenSeparators={[","]}
                             options={tagOptions}
                           />
@@ -1486,21 +1483,21 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                       </MountedFormField>
                       <Collapsible className="mt-4 mb-4 overflow-hidden rounded-lg border">
                         <CollapsibleTrigger className={SECTION_HEADER_CLASS}>
-                          <b>MCP Settings</b>
+                          <b>MCP 设置</b>
                           <ChevronDown className={SECTION_CHEVRON_CLASS} />
                         </CollapsibleTrigger>
                         <CollapsibleContent className="px-4 pb-3">
                           <MountedFormField
                             label={
                               <span>
-                                Allowed MCP Servers{" "}
-                                <SimpleTooltip content="Select which MCP servers or access groups this key can access">
+                                允许的 MCP Servers{" "}
+                                <SimpleTooltip content="选择此密钥可访问的 MCP servers 或访问组">
                                   <Info className="ml-1 inline size-3.5 align-text-bottom" />
                                 </SimpleTooltip>
                               </span>
                             }
                             name="allowed_mcp_servers_and_groups"
-                            help="Select MCP servers or access groups this key can access"
+                            help="选择此密钥可访问的 MCP servers 或访问组"
                           >
                             {(control) => (
                               <MCPServerSelector
@@ -1508,7 +1505,7 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                                 value={control.value as McpSelectorValue | undefined}
                                 accessToken={accessToken}
                                 teamId={selectedCreateKeyTeam?.team_id ?? null}
-                                placeholder="Select MCP servers or access groups (optional)"
+                                placeholder="选择 MCP servers 或访问组（可选）"
                                 allowNoMcpServers
                               />
                             )}
@@ -1529,28 +1526,28 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
 
                       <Collapsible className="mt-4 mb-4 overflow-hidden rounded-lg border">
                         <CollapsibleTrigger className={SECTION_HEADER_CLASS}>
-                          <b>Agent Settings</b>
+                          <b>Agent 设置</b>
                           <ChevronDown className={SECTION_CHEVRON_CLASS} />
                         </CollapsibleTrigger>
                         <CollapsibleContent className="px-4 pb-3">
                           <MountedFormField
                             label={
                               <span>
-                                Allowed Agents{" "}
-                                <SimpleTooltip content="Select which agents or access groups this key can access">
+                                允许的 Agents{" "}
+                                <SimpleTooltip content="选择此密钥可访问的 agents 或访问组">
                                   <Info className="ml-1 inline size-3.5 align-text-bottom" />
                                 </SimpleTooltip>
                               </span>
                             }
                             name="allowed_agents_and_groups"
-                            help="Select agents or access groups this key can access"
+                            help="选择此密钥可访问的 agents 或访问组"
                           >
                             {(control) => (
                               <AgentSelector
                                 onChange={control.onChange}
                                 value={control.value as AgentSelectorValue | undefined}
                                 accessToken={accessToken}
-                                placeholder="Select agents or access groups (optional)"
+                                placeholder="选择 agents 或访问组（可选）"
                               />
                             )}
                           </MountedFormField>
@@ -1560,7 +1557,7 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                       {premiumUser ? (
                         <Collapsible className="mt-4 mb-4 overflow-hidden rounded-lg border">
                           <CollapsibleTrigger className={SECTION_HEADER_CLASS}>
-                            <b>Logging Settings</b>
+                            <b>日志设置</b>
                             <ChevronDown className={SECTION_CHEVRON_CLASS} />
                           </CollapsibleTrigger>
                           <CollapsibleContent className="px-4 pb-3">
@@ -1580,7 +1577,7 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                           className="w-full"
                           content={
                             <span>
-                              Key-level logging settings is an enterprise feature, get in touch -
+                              密钥级日志设置是企业版功能，请联系 -
                               <a href="https://www.litellm.ai/enterprise" target="_blank">
                                 https://www.litellm.ai/enterprise
                               </a>
@@ -1592,7 +1589,7 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                             <div style={{ opacity: 0.5 }}>
                               <Collapsible className="mt-4 mb-4 overflow-hidden rounded-lg border">
                                 <CollapsibleTrigger className={SECTION_HEADER_CLASS}>
-                                  <b>Logging Settings</b>
+                                  <b>日志设置</b>
                                   <ChevronDown className={SECTION_CHEVRON_CLASS} />
                                 </CollapsibleTrigger>
                                 <CollapsibleContent className="px-4 pb-3">
@@ -1618,7 +1615,7 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                         className="mt-4 mb-4 overflow-hidden rounded-lg border"
                       >
                         <CollapsibleTrigger className={SECTION_HEADER_CLASS}>
-                          <b>Router Settings</b>
+                          <b>路由设置</b>
                           <ChevronDown className={SECTION_CHEVRON_CLASS} />
                         </CollapsibleTrigger>
                         <CollapsibleContent className="px-4 pb-3">
@@ -1641,14 +1638,13 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
 
                       <Collapsible className="mt-4 mb-4 overflow-hidden rounded-lg border">
                         <CollapsibleTrigger className={SECTION_HEADER_CLASS}>
-                          <b>Model Aliases</b>
+                          <b>模型别名</b>
                           <ChevronDown className={SECTION_CHEVRON_CLASS} />
                         </CollapsibleTrigger>
                         <CollapsibleContent className="px-4 pb-3">
                           <div className="mt-4">
                             <p className="text-sm text-muted-foreground mb-4">
-                              Create custom aliases for models that can be used in API calls. This allows you to create
-                              shortcuts for specific models.
+                              创建可在 API 调用中使用的自定义模型别名，用于为特定模型设置快捷名称。
                             </p>
                             <ModelAliasManager
                               accessToken={accessToken}
@@ -1662,7 +1658,7 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
 
                       <Collapsible className="mt-4 mb-4 overflow-hidden rounded-lg border">
                         <CollapsibleTrigger className={SECTION_HEADER_CLASS}>
-                          <b>Key Lifecycle</b>
+                          <b>密钥生命周期</b>
                           <ChevronDown className={SECTION_CHEVRON_CLASS} />
                         </CollapsibleTrigger>
                         <CollapsibleContent className="px-4 pb-3">
@@ -1687,11 +1683,11 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                       <Collapsible className="mt-4 mb-4 overflow-hidden rounded-lg border">
                         <CollapsibleTrigger className={SECTION_HEADER_CLASS}>
                           <div className="flex items-center gap-2">
-                            <b>Advanced Settings</b>
+                            <b>高级设置</b>
                             <SimpleTooltip
                               content={
                                 <span>
-                                  Learn more about advanced settings in our{" "}
+                                  在我们的{" "}
                                   <a
                                     href={
                                       proxyBaseUrl
@@ -1702,7 +1698,7 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                                     rel="noopener noreferrer"
                                     className="text-info hover:text-info/80"
                                   >
-                                    documentation
+                                    文档
                                   </a>
                                 </span>
                               }
@@ -1741,7 +1737,7 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
 
               <div style={{ textAlign: "right", marginTop: "10px" }}>
                 <Button type="submit" disabled={isFormDisabled}>
-                  Create Key
+                  创建密钥
                 </Button>
               </div>
             </form>
@@ -1754,7 +1750,7 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
         <Dialog open={isCreateUserModalVisible} onOpenChange={(open) => !open && setIsCreateUserModalVisible(false)}>
           <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-y-auto sm:max-w-[800px]">
             <DialogHeader>
-              <DialogTitle>Create New User</DialogTitle>
+              <DialogTitle>创建新用户</DialogTitle>
             </DialogHeader>
             <CreateUserButton
               userID={userID}
@@ -1771,11 +1767,11 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
         <Dialog open={isModalVisible} onOpenChange={(open) => !open && handleCancel()}>
           <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-y-auto">
             <div className="grid grid-cols-1 gap-2 w-full">
-              <DialogTitle className="text-lg font-medium text-foreground">Save your Key</DialogTitle>
+              <DialogTitle className="text-lg font-medium text-foreground">保存你的密钥</DialogTitle>
               {apiKey != null ? (
                 <CreatedKeyDisplay apiKey={apiKey} />
               ) : (
-                <p className="text-sm">Key being created, this might take 30s</p>
+                <p className="text-sm">密钥正在创建中，可能需要 30 秒</p>
               )}
             </div>
           </DialogContent>

@@ -43,11 +43,11 @@ export const hasAllModelsSentinel = (models: string[]): boolean =>
 
 export const getModelDisplayName = (model: string) => {
   if (model === "all-proxy-models") {
-    return "All Proxy Models";
+    return "全部代理模型";
   }
   if (model.endsWith("/*")) {
     const provider = model.replace("/*", "");
-    return `All ${provider} models`;
+    return `全部 ${provider} 模型`;
   }
   return model;
 };

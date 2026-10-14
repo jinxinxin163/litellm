@@ -37,19 +37,19 @@ export const LOG_FILTER_IDS = {
 } as const;
 
 export const LOG_FILTER_LABELS: Record<string, string> = {
-  [LOG_FILTER_IDS.TEAM_ID]: "Team ID",
-  [LOG_FILTER_IDS.STATUS]: "Status",
+  [LOG_FILTER_IDS.TEAM_ID]: "团队 ID",
+  [LOG_FILTER_IDS.STATUS]: "状态",
   [LOG_FILTER_IDS.CACHE_STATUS]: "Cache",
-  [LOG_FILTER_IDS.KEY_ALIAS]: "Key Alias",
+  [LOG_FILTER_IDS.KEY_ALIAS]: "密钥别名",
   [LOG_FILTER_IDS.USER_ID]: "User ID",
-  [LOG_FILTER_IDS.END_USER]: "End User",
-  [LOG_FILTER_IDS.ERROR_CODE]: "Error Code",
-  [LOG_FILTER_IDS.ERROR_MESSAGE]: "Error Message",
+  [LOG_FILTER_IDS.END_USER]: "终端用户",
+  [LOG_FILTER_IDS.ERROR_CODE]: "错误代码",
+  [LOG_FILTER_IDS.ERROR_MESSAGE]: "错误消息",
   [LOG_FILTER_IDS.KEY_HASH]: "Key Hash",
   [LOG_FILTER_IDS.SESSION_ID]: "Session ID",
-  [LOG_FILTER_IDS.MODEL_ID]: "Model",
-  [LOG_FILTER_IDS.PUBLIC_MODEL_OR_SEARCH_TOOL]: "Public model / search tool",
-  [LOG_FILTER_IDS.SEARCH]: "Search",
+  [LOG_FILTER_IDS.MODEL_ID]: "模型",
+  [LOG_FILTER_IDS.PUBLIC_MODEL_OR_SEARCH_TOOL]: "公开模型 / 搜索工具",
+  [LOG_FILTER_IDS.SEARCH]: "搜索",
 };
 
 export interface LogsWindow {

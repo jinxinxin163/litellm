@@ -183,7 +183,7 @@ const AllModelsTab = ({
 
   const teamOptions = useMemo(
     () => [
-      { value: PERSONAL_TEAM_VALUE, label: "Personal" },
+      { value: PERSONAL_TEAM_VALUE, label: "个人" },
       ...(teams ?? [])
         .filter((team) => team.team_id)
         .map((team) => ({ value: team.team_id, label: team.team_alias ? team.team_alias : team.team_id })),
@@ -206,7 +206,7 @@ const AllModelsTab = ({
     try {
       setDeleteLoading(true);
       await modelDeleteCall(accessToken, deleteModalModelId);
-      toast.success("Model deleted successfully");
+      toast.success("模型删除成功");
       queryClient.invalidateQueries({ queryKey: ["models", "list"] });
       refetchModels();
     } catch (error) {
@@ -224,7 +224,7 @@ const AllModelsTab = ({
       try {
         setPausingModelId(modelId);
         await modelPatchUpdateCall(accessToken, { blocked }, modelId);
-        toast.success(blocked ? "Model paused" : "Model resumed");
+        toast.success(blocked ? "模型已暂停" : "模型已恢复");
         // invalidateQueries already schedules a refetch for active observers
         // on this key — no need to also call refetchModels() (would double-fetch).
         queryClient.invalidateQueries({ queryKey: ["models", "list"] });
@@ -293,19 +293,19 @@ const AllModelsTab = ({
             <Info className="mt-0.5 size-3.5 shrink-0" />
             {selectedTeamValue === PERSONAL_TEAM_VALUE ? (
               <span>
-                To access these models, create a Virtual Key without selecting a team on the{" "}
+                如需访问这些模型，请在{" "}
                 <a href={migratedHref("api-keys")} className="font-medium text-info hover:underline">
-                  Virtual Keys page
+                  虚拟密钥页面
                 </a>
-                .
+                创建一个不选择团队的虚拟密钥。
               </span>
             ) : (
               <span>
-                To access these models, create a Virtual Key and select Team as &quot;{teamAccessLabel}&quot; on the{" "}
+                如需访问这些模型，请在{" "}
                 <a href={migratedHref("api-keys")} className="font-medium text-info hover:underline">
-                  Virtual Keys page
+                  虚拟密钥页面
                 </a>
-                .
+                创建虚拟密钥，并选择团队 &quot;{teamAccessLabel}&quot;。
               </span>
             )}
           </div>
@@ -314,28 +314,28 @@ const AllModelsTab = ({
 
       <DeleteResourceModal
         isOpen={!!deleteModalModelId}
-        title="Delete Model"
-        alertMessage="This action cannot be undone."
-        message="Are you sure you want to delete this model?"
-        resourceInformationTitle="Model Information"
+        title="删除模型"
+        alertMessage="此操作无法撤销。"
+        message="确定要删除此模型吗？"
+        resourceInformationTitle="模型信息"
         resourceInformation={
           modelToDelete
             ? [
                 {
-                  label: "Model Name",
-                  value: modelToDelete.model_name || "Not Set",
+                  label: "模型名称",
+                  value: modelToDelete.model_name || "未设置",
                 },
                 {
-                  label: "LiteLLM Model Name",
-                  value: modelToDelete.litellm_model_name || "Not Set",
+                  label: "LiteLLM 模型名称",
+                  value: modelToDelete.litellm_model_name || "未设置",
                 },
                 {
                   label: "Provider",
-                  value: modelToDelete.provider || "Not Set",
+                  value: modelToDelete.provider || "未设置",
                 },
                 {
-                  label: "Created By",
-                  value: modelToDelete.model_info?.created_by || "Not Set",
+                  label: "创建者",
+                  value: modelToDelete.model_info?.created_by || "未设置",
                 },
               ]
             : []

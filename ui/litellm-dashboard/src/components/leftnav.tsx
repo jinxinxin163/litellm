@@ -84,83 +84,83 @@ interface MenuGroup {
 // icons changed to lucide as part of the sidebar redesign.
 const menuGroups: MenuGroup[] = [
   {
-    groupLabel: "AI GATEWAY",
+    groupLabel: "AI 网关",
     items: [
-      { key: "api-keys", page: "api-keys", label: "Virtual Keys", icon: <KeyRound {...ICON} /> },
+      { key: "api-keys", page: "api-keys", label: "虚拟密钥", icon: <KeyRound {...ICON} /> },
       {
         key: "models",
         page: "models",
-        label: "Models + Endpoints",
+        label: "模型和端点",
         icon: <Network {...ICON} />,
         roles: rolesAllowedToViewWriteScopedPages,
       },
     ],
   },
   {
-    groupLabel: "OBSERVABILITY",
+    groupLabel: "可观测性",
     items: [
       {
         key: "new_usage",
         page: "new_usage",
         icon: <BarChart3 {...ICON} />,
         roles: [...all_admin_roles, ...internalUserRoles],
-        label: "Usage",
+        label: "用量",
       },
-      { key: "logs", page: "logs", label: "Logs", icon: <Activity {...ICON} /> },
+      { key: "logs", page: "logs", label: "日志", icon: <Activity {...ICON} /> },
     ],
   },
   {
-    groupLabel: "ACCESS CONTROL",
+    groupLabel: "访问控制",
     items: [
-      { key: "teams", page: "teams", label: "Teams", icon: <Users {...ICON} /> },
+      { key: "teams", page: "teams", label: "团队", icon: <Users {...ICON} /> },
       {
         key: "projects",
         page: "projects",
         label: (
           <span className="flex items-center gap-2">
-            Projects <BetaBadge />
+            项目 <BetaBadge />
           </span>
         ),
         icon: <Folder {...ICON} />,
         roles: all_admin_roles,
       },
-      { key: "users", page: "users", label: "Internal Users", icon: <User {...ICON} />, roles: all_admin_roles },
+      { key: "users", page: "users", label: "内部用户", icon: <User {...ICON} />, roles: all_admin_roles },
     ],
   },
   {
-    groupLabel: "DEVELOPER TOOLS",
+    groupLabel: "开发工具",
     items: [
       {
         key: "caching",
         page: "caching",
-        label: "Response Cache",
+        label: "响应缓存",
         icon: <Database {...ICON} />,
         roles: all_admin_roles,
       },
     ],
   },
   {
-    groupLabel: "SETTINGS",
+    groupLabel: "设置",
     roles: all_admin_roles,
     items: [
       {
         key: "settings",
         page: "settings",
-        label: "Settings",
+        label: "设置",
         icon: <SettingsIcon {...ICON} />,
         roles: all_admin_roles,
         children: [
           {
             key: "router-settings",
             page: "router-settings",
-            label: "Router Settings",
+            label: "路由设置",
             icon: <Route {...ICON} />,
             roles: all_admin_roles,
           },
           {
             key: "admin-panel",
             page: "admin-panel",
-            label: "Admin Settings",
+            label: "管理设置",
             icon: <SettingsIcon {...ICON} />,
             roles: all_admin_roles,
           },
@@ -191,11 +191,11 @@ const findMenuItemKey = (page: string): string => {
 };
 
 const SECTION_DISPLAY: Record<string, string> = {
-  "AI GATEWAY": "AI Gateway",
-  OBSERVABILITY: "Observability",
-  "ACCESS CONTROL": "Access Control",
-  "DEVELOPER TOOLS": "Developer Tools",
-  SETTINGS: "Settings",
+  "AI 网关": "AI 网关",
+  可观测性: "可观测性",
+  访问控制: "访问控制",
+  开发工具: "开发工具",
+  设置: "设置",
 };
 
 const prettify = (key: string): string =>
@@ -393,7 +393,7 @@ const Sidebar_: React.FC<SidebarProps> = ({
       <SidebarHeader className="h-14 border-b border-border group-data-[collapsed=true]/sidebar:h-auto">
         <div className="flex items-center justify-between gap-2 group-data-[collapsed=true]/sidebar:flex-col">
           <div className="flex min-w-0 items-center gap-2">
-            <Link href={migratedHref("")} className="flex min-w-0 items-center" aria-label="LiteLLM home">
+            <Link href={migratedHref("")} className="flex min-w-0 items-center" aria-label="LiteLLM 首页">
               <img src={logoSrc} alt="LiteLLM" className={cn(LOGO_CLASS_NAME, "dark:hidden")} />
               <img
                 src={darkLogoSrc}
@@ -418,7 +418,7 @@ const Sidebar_: React.FC<SidebarProps> = ({
               variant="ghost"
               size="icon-sm"
               onClick={onToggleCollapsed}
-              aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+              aria-label={collapsed ? "展开侧边栏" : "收起侧边栏"}
               className="flex-none text-muted-foreground"
             >
               {collapsed ? <PanelLeftOpen /> : <PanelLeftClose />}

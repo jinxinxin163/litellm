@@ -65,7 +65,7 @@ const budgetSchema = (unlimitedBudget: boolean) =>
       .nullish()
       .refine(
         (value) => unlimitedBudget || (value !== "" && value !== null && value !== undefined),
-        "Please enter a budget or select Unlimited Budget",
+        "请输入预算或选择无限预算",
       ),
   });
 
@@ -182,8 +182,8 @@ export function UserEditView({
   };
 
   const modelOptions = [
-    { label: "All Proxy Models", value: "all-proxy-models" },
-    { label: "No Default Models", value: "no-default-models" },
+    { label: "全部代理模型", value: "all-proxy-models" },
+    { label: "无默认模型", value: "no-default-models" },
     ...userModels.map((model) => ({ label: getModelDisplayName(model), value: model })),
   ];
 
@@ -204,12 +204,12 @@ export function UserEditView({
           )}
 
           {!isBulkEdit && (
-            <FormField control={form.control} name="user_email" label="Email">
+            <FormField control={form.control} name="user_email" label="邮箱">
               {({ ref, value, ...control }) => <Input {...control} ref={ref} value={value ?? ""} />}
             </FormField>
           )}
 
-          <FormField control={form.control} name="user_alias" label="User Alias">
+          <FormField control={form.control} name="user_alias" label="用户别名">
             {({ ref, value, ...control }) => <Input {...control} ref={ref} value={value ?? ""} />}
           </FormField>
 
@@ -217,8 +217,8 @@ export function UserEditView({
             control={form.control}
             name="user_role"
             label={labelWithHint(
-              "Global Proxy Role",
-              "This is the role that the user will globally on the proxy. This role is independent of any team/org specific roles.",
+              "全局代理角色",
+              "这是用户在代理上的全局角色，独立于任何团队或组织级角色。",
             )}
           >
             {({ id, value, onChange }) => (
@@ -246,8 +246,8 @@ export function UserEditView({
             control={form.control}
             name="models"
             label={labelWithHint(
-              "Personal Models",
-              "Select which models this user can access outside of team-scope. Choose 'All Proxy Models' to grant access to all models available on the proxy.",
+              "个人模型",
+              "选择此用户在团队范围之外可访问的模型。选择“全部代理模型”表示授予代理上全部可用模型的访问权限。",
             )}
           >
             {({ value, onChange }) => (
@@ -255,7 +255,7 @@ export function UserEditView({
                 options={modelOptions}
                 value={value}
                 onValueChange={onChange}
-                placeholder="Select models"
+                placeholder="选择模型"
                 disabled={!all_admin_roles.includes(userRole || "")}
               />
             )}
@@ -266,10 +266,10 @@ export function UserEditView({
             name="max_budget"
             label={
               <>
-                Max Budget (USD)
+                最大预算 (USD)
                 <label className="ml-3 inline-flex items-center gap-2 font-normal">
                   <Checkbox checked={unlimitedBudget} onCheckedChange={handleUnlimitedBudgetChange} />
-                  Unlimited Budget
+                  无限预算
                 </label>
               </>
             }
@@ -283,13 +283,13 @@ export function UserEditView({
                 value={value ?? ""}
                 onChange={(event) => onChange(event.target.value)}
                 onWheel={(event) => event.currentTarget.blur()}
-                placeholder="Enter a numerical value"
+                placeholder="输入数值"
                 disabled={unlimitedBudget}
               />
             )}
           </FormField>
 
-          <FormField control={form.control} name="budget_duration" label="Reset Budget">
+          <FormField control={form.control} name="budget_duration" label="重置预算">
             {({ id, value, onChange }) => <BudgetDurationDropdown id={id} value={value} onChange={onChange} />}
           </FormField>
 
@@ -303,13 +303,13 @@ export function UserEditView({
               onChange={setModelMaxBudget}
               availableModels={userModels}
               usage={userData.user_info?.model_max_budget_usage}
-              hint="Cap this user's spend on individual models, each with its own reset window. Applies across every key the user holds."
+              hint="限制此用户在单个模型上的花费，每个模型可设置自己的重置窗口。适用于该用户持有的所有密钥。"
             />
           )}
 
           <FormField control={form.control} name="metadata" label="Metadata">
             {({ ref, value, ...control }) => (
-              <Textarea {...control} ref={ref} value={value ?? ""} rows={4} placeholder="Enter metadata as JSON" />
+              <Textarea {...control} ref={ref} value={value ?? ""} rows={4} placeholder="以 JSON 输入 metadata" />
             )}
           </FormField>
 
@@ -319,8 +319,8 @@ export function UserEditView({
                 control={form.control}
                 name="mcp_servers_and_groups"
                 label={labelWithHint(
-                  "MCP Servers / Access Groups",
-                  "Caps which MCP servers, access groups, and tools this user may reach. Every key the user holds is limited to this set.",
+                  "MCP Servers / 访问组",
+                  "限制此用户可访问的 MCP servers、访问组和工具。该用户持有的所有密钥都会受此范围限制。",
                 )}
               >
                 {({ value, onChange }) => (
@@ -328,7 +328,7 @@ export function UserEditView({
                     onChange={onChange}
                     value={value}
                     accessToken={accessToken || ""}
-                    placeholder="Select MCP servers or access groups (optional)"
+                    placeholder="选择 MCP servers 或访问组（可选）"
                   />
                 )}
               </FormField>
@@ -345,9 +345,9 @@ export function UserEditView({
 
         <div className="mt-6 flex justify-end gap-2">
           <Button variant="secondary" type="button" onClick={onCancel}>
-            Cancel
+            取消
           </Button>
-          <Button type="submit">Save Changes</Button>
+          <Button type="submit">保存更改</Button>
         </div>
       </form>
     </TooltipProvider>

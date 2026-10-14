@@ -25,8 +25,8 @@ import { z } from "zod/v4";
 import { useWorker } from "@/hooks/useWorker";
 
 const loginSchema = z.object({
-  username: z.string().min(1, "Please enter your username"),
-  password: z.string().min(1, "Please enter your password"),
+  username: z.string().min(1, "请输入用户名"),
+  password: z.string().min(1, "请输入密码"),
 });
 
 type LoginFormValues = z.infer<typeof loginSchema>;
@@ -42,13 +42,12 @@ function SsoEnabledNotice() {
     <Alert variant="info" className="mt-4">
       <Info />
       <AlertTitle>
-        Single Sign-On (SSO) is enabled. LiteLLM no longer automatically redirects to the SSO login flow upon loading
-        this page. To re-enable auto-redirect-to-SSO, set{" "}
-        <code className="bg-muted px-1 py-0.5 rounded-sm text-xs">AUTO_REDIRECT_UI_LOGIN_TO_SSO=true</code> in your
-        environment configuration.
+        单点登录 (SSO) 已启用。LiteLLM 加载此页面时不再自动跳转到 SSO 登录流程。如需重新启用自动跳转到
+        SSO，请在环境配置中设置{" "}
+        <code className="bg-muted px-1 py-0.5 rounded-sm text-xs">AUTO_REDIRECT_UI_LOGIN_TO_SSO=true</code>。
       </AlertTitle>
       <AlertAction>
-        <Button variant="ghost" size="icon-sm" aria-label="Close" onClick={() => setDismissed(true)}>
+        <Button variant="ghost" size="icon-sm" aria-label="关闭" onClick={() => setDismissed(true)}>
           <X className="size-4" />
         </Button>
       </AlertAction>
@@ -197,11 +196,10 @@ function LoginPageContent() {
 
               <Alert variant="warning">
                 <TriangleAlert />
-                <AlertTitle>Admin UI Disabled</AlertTitle>
+                <AlertTitle>管理 UI 已禁用</AlertTitle>
                 <AlertDescription>
                   <p className="text-sm">
-                    The Admin UI has been disabled by the administrator. To re-enable it, please update the following
-                    environment variable:
+                    管理 UI 已被管理员禁用。如需重新启用，请更新以下环境变量：
                   </p>
                   <p className="mt-2 text-sm">
                     <code className="bg-muted px-1 py-0.5 rounded-sm text-xs">DISABLE_ADMIN_UI=False</code>
@@ -226,26 +224,26 @@ function LoginPageContent() {
               </div>
 
               <div className="text-center">
-                <h3 className="text-2xl font-semibold text-foreground">Login</h3>
-                <p className="text-sm text-muted-foreground">Access your LiteLLM Admin UI.</p>
+                <h3 className="text-2xl font-semibold text-foreground">登录</h3>
+                <p className="text-sm text-muted-foreground">访问 LiteLLM 管理 UI。</p>
               </div>
 
               {!uiConfig?.hide_default_credentials_hint && (
                 <Alert variant="info">
                   <Info />
-                  <AlertTitle>Default Credentials</AlertTitle>
+                  <AlertTitle>默认凭据</AlertTitle>
                   <AlertDescription>
                     <p className="text-sm">
-                      By default, Username is <code className="bg-muted px-1 py-0.5 rounded-sm text-xs">admin</code> and
-                      Password is your set LiteLLM Proxy
-                      <code className="bg-muted px-1 py-0.5 rounded-sm text-xs">MASTER_KEY</code>.
+                      默认情况下，用户名为 <code className="bg-muted px-1 py-0.5 rounded-sm text-xs">admin</code>，
+                      密码是你设置的 LiteLLM Proxy{" "}
+                      <code className="bg-muted px-1 py-0.5 rounded-sm text-xs">MASTER_KEY</code>。
                     </p>
                     <p className="mt-2 text-sm">
-                      Need to set UI credentials or SSO?{" "}
+                      需要设置 UI 凭据或 SSO？{" "}
                       <a href="https://docs.litellm.ai/docs/proxy/ui" target="_blank" rel="noopener noreferrer">
-                        Check the documentation
+                        查看文档
                       </a>
-                      .
+                      。
                     </p>
                   </AlertDescription>
                 </Alert>
@@ -269,7 +267,7 @@ function LoginPageContent() {
                         onValueChange={(value: string | null) => setSelectedWorkerId(value)}
                       >
                         <SelectTrigger id={workerFieldId} className="h-10 w-full">
-                          <SelectValue placeholder="Choose a worker to connect to" />
+                          <SelectValue placeholder="选择要连接的 worker" />
                         </SelectTrigger>
                         <SelectContent>
                           {workers.map((worker) => (
@@ -282,12 +280,12 @@ function LoginPageContent() {
                     </Field>
                   )}
 
-                  <FormField control={form.control} name="username" label="Username">
+                  <FormField control={form.control} name="username" label="用户名">
                     {({ ref, ...field }) => (
                       <Input
                         {...field}
                         ref={ref}
-                        placeholder="Enter your username"
+                        placeholder="请输入用户名"
                         autoComplete="username"
                         disabled={isLoginLoading}
                         className="h-10 rounded-md"
@@ -295,12 +293,12 @@ function LoginPageContent() {
                     )}
                   </FormField>
 
-                  <FormField control={form.control} name="password" label="Password">
+                  <FormField control={form.control} name="password" label="密码">
                     {({ ref, ...field }) => (
                       <PasswordInput
                         {...field}
                         ref={ref}
-                        placeholder="Enter your password"
+                        placeholder="请输入密码"
                         autoComplete="current-password"
                         disabled={isLoginLoading}
                         groupClassName="h-10"
@@ -309,18 +307,18 @@ function LoginPageContent() {
                   </FormField>
 
                   <Button type="submit" size="lg" disabled={isLoginLoading} className="w-full">
-                    {isLoginLoading && <UiLoadingSpinner className="size-4" role="img" aria-label="loading" />}
-                    {isLoginLoading ? "Logging in..." : "Login"}
+                    {isLoginLoading && <UiLoadingSpinner className="size-4" role="img" aria-label="加载中" />}
+                    {isLoginLoading ? "登录中..." : "登录"}
                   </Button>
 
                   {!uiConfig?.sso_configured ? (
                     <Tooltip>
                       <TooltipTrigger render={<span className="block w-full" />}>
                         <Button type="button" variant="outline" size="lg" disabled className="w-full">
-                          Login with SSO
+                          使用 SSO 登录
                         </Button>
                       </TooltipTrigger>
-                      <TooltipContent>Please configure SSO to log in with SSO.</TooltipContent>
+                      <TooltipContent>请先配置 SSO 后再使用 SSO 登录。</TooltipContent>
                     </Tooltip>
                   ) : (
                     <Button
@@ -343,7 +341,7 @@ function LoginPageContent() {
                       }}
                       className="w-full"
                     >
-                      Login with SSO
+                      使用 SSO 登录
                     </Button>
                   )}
                 </FieldGroup>

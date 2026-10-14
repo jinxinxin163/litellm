@@ -5,16 +5,16 @@
 
 // Page descriptions for UI Settings configuration
 export const pageDescriptions: Record<string, string> = {
-  "api-keys": "Manage virtual keys for API access and authentication",
-  models: "Configure and manage LLM models and endpoints",
-  new_usage: "View usage analytics and metrics",
-  logs: "Access request and response logs",
-  users: "Manage internal user accounts and permissions",
-  teams: "Create and manage teams for access control",
-  projects: "Manage projects within teams",
-  caching: "Configure response caching and coordination Redis settings",
-  "router-settings": "Configure routing and load balancing settings",
-  "admin-panel": "Access admin panel and settings",
+  "api-keys": "管理用于 API 访问和认证的虚拟密钥",
+  models: "配置和管理 LLM 模型及端点",
+  new_usage: "查看用量分析和指标",
+  logs: "查看请求和响应日志",
+  users: "管理内部用户账号和权限",
+  teams: "创建和管理访问控制团队",
+  projects: "管理团队内的项目",
+  caching: "配置响应缓存和协调 Redis 设置",
+  "router-settings": "配置路由和负载均衡设置",
+  "admin-panel": "访问管理面板和设置",
 };
 
 export interface PageMetadata {

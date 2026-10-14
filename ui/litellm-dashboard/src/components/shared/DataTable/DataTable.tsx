@@ -325,8 +325,8 @@ function DefaultEmptyState() {
       <div className="mb-1 flex size-10 items-center justify-center rounded-lg bg-muted">
         <SearchX className="size-5 text-muted-foreground" />
       </div>
-      <div className="text-sm font-medium text-foreground">No results</div>
-      <div className="text-sm text-muted-foreground">No rows match your search or filters.</div>
+      <div className="text-sm font-medium text-foreground">没有结果</div>
+      <div className="text-sm text-muted-foreground">没有行匹配当前搜索或筛选条件。</div>
     </div>
   );
 }
@@ -531,7 +531,7 @@ export function DataTable<TData extends RowData, TValue>(props: DataTableProps<T
 
   const {
     isLoading = false,
-    loadingMessage = "Loading…",
+    loadingMessage = "加载中…",
     skeletonRowCount = 8,
     noDataMessage,
     paginationMode = "none",

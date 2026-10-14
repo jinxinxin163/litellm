@@ -22,7 +22,7 @@ export default function RedactableField({
             value
           )
         ) : (
-          <span className="text-muted-foreground italic">Not configured</span>
+          <span className="text-muted-foreground italic">未配置</span>
         )}
       </span>
       {value && (
@@ -30,7 +30,7 @@ export default function RedactableField({
           type="button"
           variant="ghost"
           size="icon-sm"
-          aria-label={isHidden ? "Show value" : "Hide value"}
+          aria-label={isHidden ? "显示值" : "隐藏值"}
           onClick={() => setIsHidden(!isHidden)}
           className="text-muted-foreground"
         >

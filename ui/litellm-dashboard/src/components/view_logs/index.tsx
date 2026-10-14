@@ -22,10 +22,10 @@ interface LogsTab {
   label: string;
 }
 
-const REQUEST_LOGS_TAB: LogsTab = { id: "request logs", label: "Request Logs" };
-const AUDIT_LOGS_TAB: LogsTab = { id: "audit logs", label: "Audit Logs" };
-const DELETED_KEYS_TAB: LogsTab = { id: "deleted keys", label: "Deleted Keys" };
-const DELETED_TEAMS_TAB: LogsTab = { id: "deleted teams", label: "Deleted Teams" };
+const REQUEST_LOGS_TAB: LogsTab = { id: "request logs", label: "请求日志" };
+const AUDIT_LOGS_TAB: LogsTab = { id: "audit logs", label: "审计日志" };
+const DELETED_KEYS_TAB: LogsTab = { id: "deleted keys", label: "已删除密钥" };
+const DELETED_TEAMS_TAB: LogsTab = { id: "deleted teams", label: "已删除团队" };
 
 const tabContentClassName = (tabId: LogsTabId): string =>
   tabId === REQUEST_LOGS_TAB.id ? "flex min-h-0 flex-1 flex-col" : "min-h-0 flex-1 overflow-y-auto";
@@ -37,7 +37,7 @@ export default function SpendLogsTable({ accessToken, token, userRole, userID, p
 
   if (!accessToken || !token || !userRole || !userID) {
     return (
-      <div role="status" aria-busy="true" aria-label="Loading" className="flex h-64 items-center justify-center">
+      <div role="status" aria-busy="true" aria-label="加载中" className="flex h-64 items-center justify-center">
         <UiLoadingSpinner className="size-8 text-primary" />
       </div>
     );

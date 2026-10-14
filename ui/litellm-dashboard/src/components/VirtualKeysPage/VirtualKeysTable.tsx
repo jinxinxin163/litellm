@@ -32,10 +32,10 @@ const FILTER_COLUMNS = ["team_id", "org_id", "user_id", "key_hash"] as const;
 type FilterColumn = (typeof FILTER_COLUMNS)[number];
 
 const FILTER_LABELS: Record<FilterColumn, string> = {
-  team_id: "Team",
-  org_id: "Organization",
+  team_id: "团队",
+  org_id: "组织",
   user_id: "User ID",
-  key_hash: "Key ID",
+  key_hash: "密钥 ID",
 };
 
 const DEFAULT_SORT_BY = "created_at";
@@ -239,7 +239,7 @@ export function VirtualKeysTable({ headerActions }: VirtualKeysTableProps) {
 
   if (selectedKeyId) {
     if (!selectedKey && !selectedKeyLoadFailed) {
-      return <div className="p-4 text-sm text-muted-foreground">Loading key...</div>;
+      return <div className="p-4 text-sm text-muted-foreground">正在加载密钥...</div>;
     }
     return (
       <div className="w-full h-full overflow-hidden">
@@ -259,8 +259,8 @@ export function VirtualKeysTable({ headerActions }: VirtualKeysTableProps) {
     <div className="flex min-h-0 flex-1 flex-col gap-6">
       <PageHeader
         icon={<KeyRound />}
-        title="Virtual Keys"
-        subtitle="Every key that authenticates requests to the gateway."
+        title="虚拟密钥"
+        subtitle="所有用于认证网关请求的密钥。"
         primaryAction={headerActions}
       />
       <DataTable
@@ -281,8 +281,8 @@ export function VirtualKeysTable({ headerActions }: VirtualKeysTableProps) {
         enableColumnResizing
         columnResizeMode="onChange"
         isLoading={isLoading}
-        loadingMessage="Loading keys..."
-        noDataMessage="No keys found"
+        loadingMessage="正在加载密钥..."
+        noDataMessage="未找到密钥"
         fillHeight
         size="compact"
         toolbar={(table) => (
@@ -291,7 +291,7 @@ export function VirtualKeysTable({ headerActions }: VirtualKeysTableProps) {
               table={table}
               searchValue={searchInput}
               onSearchChange={handleSearchChange}
-              searchPlaceholder="Search by key alias or ID…"
+              searchPlaceholder="按密钥别名或 ID 搜索…"
               onRefresh={() => refetch?.()}
               isRefreshing={isFetching}
               onOpenFilters={() => setFiltersOpen(true)}
@@ -302,27 +302,27 @@ export function VirtualKeysTable({ headerActions }: VirtualKeysTableProps) {
               table={table}
               open={filtersOpen}
               onOpenChange={setFiltersOpen}
-              title="Filters"
-              description="Narrow down virtual keys"
+              title="筛选"
+              description="缩小虚拟密钥范围"
             >
               {({ get, set }) => (
                 <>
-                  <DataTableFilterField label="Team">
+                  <DataTableFilterField label="团队">
                     <SearchSelect
                       options={teamOptions}
                       value={(get("team_id") as string) || undefined}
                       onValueChange={(value) => set("team_id", value)}
-                      placeholder="Select a team…"
-                      emptyText="No teams found"
+                      placeholder="选择团队…"
+                      emptyText="未找到团队"
                     />
                   </DataTableFilterField>
-                  <DataTableFilterField label="Organization">
+                  <DataTableFilterField label="组织">
                     <SearchSelect
                       options={orgOptions}
                       value={(get("org_id") as string) || undefined}
                       onValueChange={(value) => set("org_id", value)}
-                      placeholder="Select an organization…"
-                      emptyText="No organizations found"
+                      placeholder="选择组织…"
+                      emptyText="未找到组织"
                     />
                   </DataTableFilterField>
                   <DataTableFilterField label="User ID">
@@ -332,11 +332,11 @@ export function VirtualKeysTable({ headerActions }: VirtualKeysTableProps) {
                       placeholder="Enter User ID…"
                     />
                   </DataTableFilterField>
-                  <DataTableFilterField label="Key ID">
+                  <DataTableFilterField label="密钥 ID">
                     <Input
                       value={(get("key_hash") as string) ?? ""}
                       onChange={(event) => set("key_hash", event.target.value)}
-                      placeholder="Enter Key ID…"
+                      placeholder="输入密钥 ID…"
                     />
                   </DataTableFilterField>
                 </>

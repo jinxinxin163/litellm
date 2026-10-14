@@ -17,7 +17,7 @@ const WILDCARD_MODEL = "all-proxy-models";
 
 const formatModel = (model: string): string => {
   if (model === WILDCARD_MODEL) {
-    return "All Proxy Models";
+    return "全部代理模型";
   }
   const name = getModelDisplayName(model);
   return name.length > 30 ? `${name.slice(0, 30)}...` : name;
@@ -29,16 +29,16 @@ export function ModelsCell({ models, maxVisible = 3, allowedRoutes, keyType }: M
     if (!scope.hasModelAccess) {
       return (
         <CellTooltip
-          content={`Scoped to ${scope.label} routes; this key cannot call any models`}
+          content={`限定到 ${scope.label} 路由；此密钥不能调用任何模型`}
           trigger={
             <Badge variant="secondary" className="cursor-default">
-              No model access
+              无模型访问权限
             </Badge>
           }
         />
       );
     }
-    return <Badge variant="secondary">All Proxy Models</Badge>;
+    return <Badge variant="secondary">全部代理模型</Badge>;
   }
 
   const visible = models.slice(0, maxVisible);
@@ -62,7 +62,7 @@ export function ModelsCell({ models, maxVisible = 3, allowedRoutes, keyType }: M
           }
           trigger={
             <Badge variant="outline" className="cursor-default">
-              +{overflow.length} more
+              +{overflow.length} 个更多
             </Badge>
           }
         />
