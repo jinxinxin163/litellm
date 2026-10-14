@@ -30,9 +30,9 @@ import CoordinationRedisSettings from "./coordination_redis_settings";
 import { ErrorDrilldownCard } from "./ErrorDrilldown";
 
 const REQUEST_SERIES = {
-  apiRequests: "LLM API requests",
-  cacheHits: "Cache hit",
-  failed: "Failed requests",
+  apiRequests: "LLM API 请求",
+  cacheHits: "Cache 命中",
+  failed: "失败请求",
 } as const;
 
 const toChartDatum = (group: CacheActivityGroup) => ({
@@ -40,8 +40,8 @@ const toChartDatum = (group: CacheActivityGroup) => ({
   [REQUEST_SERIES.apiRequests]: group.api_requests,
   [REQUEST_SERIES.cacheHits]: group.cache_hits,
   [REQUEST_SERIES.failed]: group.failed_requests,
-  "Cached Completion Tokens": group.cached_completion_tokens,
-  "Generated Completion Tokens": group.generated_completion_tokens,
+  "已缓存 Completion Tokens": group.cached_completion_tokens,
+  "生成的 Completion Tokens": group.generated_completion_tokens,
 });
 
 const formatDateWithoutTZ = (date: Date | undefined) => {
@@ -112,7 +112,7 @@ const CacheDashboard: React.FC<CachePageProps> = ({ accessToken, token, userRole
 
   const runCachingHealthCheck = async () => {
     try {
-      toast.info("Running cache health check...");
+      toast.info("正在运行 cache 健康检查...");
       setHealthCheckResponse("");
       const response = await cachingHealthCheckCall(accessToken !== null ? accessToken : "");
       setHealthCheckResponse(response);
@@ -132,7 +132,7 @@ const CacheDashboard: React.FC<CachePageProps> = ({ accessToken, token, userRole
           errorData = { message: error.message };
         }
       } else {
-        errorData = { message: "Unknown error occurred" };
+        errorData = { message: "发生未知错误" };
       }
       setHealthCheckResponse({ error: errorData });
     }
@@ -141,9 +141,9 @@ const CacheDashboard: React.FC<CachePageProps> = ({ accessToken, token, userRole
   const totals = activity?.totals;
   const hasRequests = totals != null && totals.api_requests + totals.cache_hits + totals.failed_requests > 0;
   const statCards = [
-    { label: "Cache Hit Ratio", value: `${hasRequests ? totals.cache_hit_ratio.toFixed(2) : "0"}%` },
-    { label: "Cache Hits", value: valueFormatterNumbers(totals?.cache_hits ?? 0) },
-    { label: "Cached Completion Tokens", value: valueFormatterNumbers(totals?.cached_completion_tokens ?? 0) },
+    { label: "Cache 命中率", value: `${hasRequests ? totals.cache_hit_ratio.toFixed(2) : "0"}%` },
+    { label: "Cache 命中次数", value: valueFormatterNumbers(totals?.cache_hits ?? 0) },
+    { label: "已缓存 Completion Tokens", value: valueFormatterNumbers(totals?.cached_completion_tokens ?? 0) },
   ];
 
   return (
@@ -156,8 +156,8 @@ const CacheDashboard: React.FC<CachePageProps> = ({ accessToken, token, userRole
         </TabsList>
 
         <div className="flex items-center space-x-2">
-          {lastRefreshed && <p className="text-sm text-muted-foreground">Last Refreshed: {lastRefreshed}</p>}
-          <Button variant="outline" size="icon-sm" onClick={handleRefreshClick} aria-label="Refresh">
+          {lastRefreshed && <p className="text-sm text-muted-foreground">上次刷新：{lastRefreshed}</p>}
+          <Button variant="outline" size="icon-sm" onClick={handleRefreshClick} aria-label="刷新">
             <RefreshCw />
           </Button>
         </div>
@@ -167,7 +167,7 @@ const CacheDashboard: React.FC<CachePageProps> = ({ accessToken, token, userRole
         <Card>
           <CardContent>
             <p className="text-sm text-muted-foreground">
-              Analytics for LiteLLM&apos;s{" "}
+              LiteLLM{" "}
               <a
                 href="https://docs.litellm.ai/docs/proxy/caching"
                 target="_blank"
@@ -176,7 +176,7 @@ const CacheDashboard: React.FC<CachePageProps> = ({ accessToken, token, userRole
               >
                 response cache
               </a>{" "}
-              (e.g. Redis / in-memory): requests answered from cache without calling the LLM provider. Provider-side{" "}
+              的分析数据（例如 Redis / in-memory）：这些请求由 cache 响应，无需调用 LLM provider。Provider 侧{" "}
               <a
                 href="https://docs.litellm.ai/docs/completion/prompt_caching"
                 target="_blank"
@@ -185,8 +185,8 @@ const CacheDashboard: React.FC<CachePageProps> = ({ accessToken, token, userRole
               >
                 prompt caching
               </a>{" "}
-              (cached input tokens from Anthropic, OpenAI, etc.) is not shown here; see &quot;Prompt Caching
-              Metrics&quot; on the Usage page or individual requests in the Logs page.
+              （来自 Anthropic、OpenAI 等的 cached input tokens）不会在这里展示；请在用量页面查看 &quot;Prompt Caching
+              Metrics&quot;，或在日志页面查看单个请求。
             </p>
 
             <div className="mt-4 grid grid-cols-1 items-center gap-4 md:grid-cols-[1fr_1fr_auto]">
@@ -206,10 +206,10 @@ const CacheDashboard: React.FC<CachePageProps> = ({ accessToken, token, userRole
                       ))
                     }
                   </ComboboxValue>
-                  <ComboboxChipsInput placeholder="Select Virtual Keys" />
+                  <ComboboxChipsInput placeholder="选择 Virtual Keys" />
                 </ComboboxChips>
                 <ComboboxContent anchor={anchor1}>
-                  <ComboboxEmpty>No virtual keys found</ComboboxEmpty>
+                  <ComboboxEmpty>未找到 virtual keys</ComboboxEmpty>
                   <ComboboxList>
                     {(key: string) => (
                       <ComboboxItem key={key} value={key}>
@@ -236,10 +236,10 @@ const CacheDashboard: React.FC<CachePageProps> = ({ accessToken, token, userRole
                       ))
                     }
                   </ComboboxValue>
-                  <ComboboxChipsInput placeholder="Select Models" />
+                  <ComboboxChipsInput placeholder="选择模型" />
                 </ComboboxChips>
                 <ComboboxContent anchor={anchor2}>
-                  <ComboboxEmpty>No models found</ComboboxEmpty>
+                  <ComboboxEmpty>未找到模型</ComboboxEmpty>
                   <ComboboxList>
                     {(model: string) => (
                       <ComboboxItem key={model} value={model}>
@@ -273,11 +273,11 @@ const CacheDashboard: React.FC<CachePageProps> = ({ accessToken, token, userRole
 
             <Card className="mt-4">
               <CardHeader>
-                <CardTitle className="text-base font-semibold">Cache Hits vs API Requests</CardTitle>
+                <CardTitle className="text-base font-semibold">Cache 命中 vs API 请求</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground">
-                  Click a red failed-requests segment to see which error codes caused those failures.
+                  点击红色失败请求区段，查看导致这些失败的错误码。
                 </p>
                 <BarChart
                   data={chartData}
@@ -307,7 +307,7 @@ const CacheDashboard: React.FC<CachePageProps> = ({ accessToken, token, userRole
             <Card className="mt-6">
               <CardHeader>
                 <CardTitle className="text-base font-semibold">
-                  Cached Completion Tokens vs Generated Completion Tokens
+                  已缓存 Completion Tokens vs 生成的 Completion Tokens
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -316,7 +316,7 @@ const CacheDashboard: React.FC<CachePageProps> = ({ accessToken, token, userRole
                   stack={true}
                   index="name"
                   valueFormatter={valueFormatterNumbers}
-                  categories={["Generated Completion Tokens", "Cached Completion Tokens"]}
+                  categories={["生成的 Completion Tokens", "已缓存 Completion Tokens"]}
                   colors={["sky", "teal"]}
                   yAxisWidth={48}
                 />

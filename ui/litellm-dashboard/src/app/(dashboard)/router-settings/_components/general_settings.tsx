@@ -255,10 +255,10 @@ const GeneralSettings: React.FC<GeneralSettingsPageProps> = ({ accessToken, user
     <div className="w-full">
       <Tabs defaultValue="loadbalancing" className="h-[75vh] w-full">
         <TabsList variant="line" className="mx-8 mt-4">
-          <TabsTrigger value="loadbalancing">Loadbalancing</TabsTrigger>
-          <TabsTrigger value="routing-groups">Routing Groups</TabsTrigger>
+          <TabsTrigger value="loadbalancing">负载均衡</TabsTrigger>
+          <TabsTrigger value="routing-groups">路由组</TabsTrigger>
           <TabsTrigger value="fallbacks">Fallbacks</TabsTrigger>
-          <TabsTrigger value="general">General</TabsTrigger>
+          <TabsTrigger value="general">通用</TabsTrigger>
         </TabsList>
         <TabsContent value="loadbalancing" className="px-8 py-6" keepMounted>
           <RouterSettings accessToken={accessToken} userRole={userRole} userID={userID} />

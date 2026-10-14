@@ -40,17 +40,17 @@ const ANTHROPIC_1M_HEADERS = JSON.stringify({ extra_headers: { "anthropic-beta":
 
 const publicNameTooltipContent = (
   <div className="flex flex-col gap-2 text-left font-normal">
-    <div>The name you specify in your API calls to LiteLLM Proxy</div>
+    <div>你在调用 LiteLLM Proxy API 时指定的名称</div>
     <div>
-      <strong>Example:</strong> If you name your public model <code className={tooltipCodeClassName}>example-name</code>
-      , and choose <code className={tooltipCodeClassName}>openai/qwen-plus-latest</code> as the LiteLLM model
+      <strong>示例：</strong>如果将 public model 命名为 <code className={tooltipCodeClassName}>example-name</code>
+      ，并选择 <code className={tooltipCodeClassName}>openai/qwen-plus-latest</code> 作为 LiteLLM model
     </div>
     <div>
-      <strong>Usage:</strong> You make an API call to the LiteLLM proxy with{" "}
+      <strong>用法：</strong>调用 LiteLLM proxy API 时传入{" "}
       <code className={tooltipCodeClassName}>model = &quot;example-name&quot;</code>
     </div>
     <div>
-      <strong>Result:</strong> LiteLLM sends <code className={tooltipCodeClassName}>qwen-plus-latest</code> to the
+      <strong>结果：</strong>LiteLLM 会将 <code className={tooltipCodeClassName}>qwen-plus-latest</code> 发送给
       provider
     </div>
   </div>
@@ -106,7 +106,7 @@ const columns: ColumnDef<ModelMapping>[] = [
     header: () => (
       <span className="flex items-center">
         LiteLLM Model Name
-        <SimpleTooltip content={<div>The model name LiteLLM will send to the LLM API</div>} width="360px" />
+        <SimpleTooltip content={<div>LiteLLM 会发送给 LLM API 的模型名称</div>} width="360px" />
       </span>
     ),
   },
@@ -205,8 +205,8 @@ const ConditionalPublicModelName: React.FC = () => {
       name="model_mappings"
       label={
         <span className="flex items-center">
-          Model Mappings
-          <SimpleTooltip content="Map public model names to LiteLLM model names for load balancing" />
+          模型映射
+          <SimpleTooltip content="将 public model names 映射到 LiteLLM model names，用于负载均衡" />
         </span>
       }
       required

@@ -104,12 +104,12 @@ const LiteLLMModelNameField: React.FC<LiteLLMModelNameFieldProps> = ({
     <>
       <MountedFormField
         name="model"
-        label={labelWithHint("LiteLLM Model Name(s)", "The model name LiteLLM will send to the LLM API")}
+        label={labelWithHint("LiteLLM 模型名称", "LiteLLM 会发送给 LLM API 的模型名称")}
         required
         rules={{
           validate: {
             required: requiredRule(
-              `Please enter ${selectedProvider === Providers.Azure ? "a deployment name" : "at least one model"}.`,
+              `请输入${selectedProvider === Providers.Azure ? "部署名称" : "至少一个模型"}。`,
             ),
           },
         }}
@@ -134,8 +134,8 @@ const LiteLLMModelNameField: React.FC<LiteLLMModelNameFieldProps> = ({
           ) : providerModels.length > 0 ? (
             <MultiSelect
               id={control.id}
-              placeholder="Select models"
-              emptyText="No models found"
+              placeholder="选择模型"
+              emptyText="未找到模型"
               value={(control.value as string[] | undefined) ?? []}
               onValueChange={(value: string[]) => {
                 control.onChange(value);
@@ -143,7 +143,7 @@ const LiteLLMModelNameField: React.FC<LiteLLMModelNameFieldProps> = ({
               }}
               options={[
                 {
-                  label: "Custom Model Name (Enter below)",
+                  label: "自定义模型名称（在下方输入）",
                   value: "custom",
                 },
                 {
@@ -173,7 +173,7 @@ const LiteLLMModelNameField: React.FC<LiteLLMModelNameFieldProps> = ({
         <MountedFormField
           name="custom_model_name"
           required
-          rules={{ validate: { required: requiredRule("Please enter a custom model name.") } }}
+          rules={{ validate: { required: requiredRule("请输入自定义模型名称。") } }}
           className="mt-2"
         >
           {(control) => (
@@ -182,7 +182,7 @@ const LiteLLMModelNameField: React.FC<LiteLLMModelNameFieldProps> = ({
               value={(control.value as string | undefined) ?? ""}
               onBlur={control.onBlur}
               placeholder={
-                selectedProvider === Providers.Azure ? "Enter Azure deployment name" : "Enter custom model name"
+                selectedProvider === Providers.Azure ? "输入 Azure 部署名称" : "输入自定义模型名称"
               }
               onChange={(event) => {
                 control.onChange(event);
@@ -195,8 +195,8 @@ const LiteLLMModelNameField: React.FC<LiteLLMModelNameFieldProps> = ({
       <div className="grid grid-cols-24">
         <p className="col-start-11 col-span-14 text-sm mb-3 mt-1">
           {selectedProvider === Providers.Azure
-            ? "Your deployment name will be saved as the public model name, and LiteLLM will use 'azure/deployment-name' internally"
-            : "The model name LiteLLM will send to the LLM API"}
+            ? "你的部署名称会保存为 public model name，LiteLLM 内部会使用 'azure/deployment-name'"
+            : "LiteLLM 会发送给 LLM API 的模型名称"}
         </p>
       </div>
     </>

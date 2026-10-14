@@ -131,7 +131,7 @@ const AddModelForm: React.FC<AddModelFormProps> = ({
 
   const credentialOptions: SearchSelectOption[] = useMemo(
     () => [
-      { label: "None", value: "" },
+      { label: "无", value: "" },
       ...credentials.map((credential) => ({
         label: credential.credential_name,
         value: credential.credential_name,
@@ -150,7 +150,7 @@ const AddModelForm: React.FC<AddModelFormProps> = ({
   const providerMetadataErrorText = providerMetadataError
     ? providerMetadataError instanceof Error
       ? providerMetadataError.message
-      : "Failed to load providers"
+      : "加载 provider 失败"
     : null;
 
   const isAdmin = all_admin_roles.includes(userRole);
@@ -165,7 +165,7 @@ const AddModelForm: React.FC<AddModelFormProps> = ({
 
   return (
     <>
-      <h2 className="mb-4 text-2xl font-semibold text-foreground">Add Model</h2>
+      <h2 className="mb-4 text-2xl font-semibold text-foreground">添加模型</h2>
 
       <Card>
         <CardContent>
@@ -185,10 +185,10 @@ const AddModelForm: React.FC<AddModelFormProps> = ({
                   {requiresTeamScope && (
                     <>
                       <MountedFormField
-                        label={labelWithHint("Select Team", "Select the team for which you want to add this model")}
+                        label={labelWithHint("选择团队", "选择要添加此模型的团队")}
                         name="team_id"
                         required
-                        rules={{ validate: { required: requiredRule("Please select a team to continue") } }}
+                        rules={{ validate: { required: requiredRule("请选择团队后继续") } }}
                         className="mb-4"
                       >
                         {(control) => (
@@ -204,9 +204,9 @@ const AddModelForm: React.FC<AddModelFormProps> = ({
                       {!teamAdminSelectedTeam && (
                         <Alert variant="info" className="mb-4">
                           <Info />
-                          <AlertTitle>Team Selection Required</AlertTitle>
+                          <AlertTitle>需要选择团队</AlertTitle>
                           <AlertDescription>
-                            As a team admin, you need to select your team first before adding models.
+                            作为团队管理员，你需要先选择团队，然后再添加模型。
                           </AlertDescription>
                         </Alert>
                       )}
@@ -215,18 +215,18 @@ const AddModelForm: React.FC<AddModelFormProps> = ({
                   {(isAdmin || (isTeamAdmin && teamAdminSelectedTeam)) && (
                     <>
                       <MountedFormField
-                        label={labelWithHint("Provider", "E.g. OpenAI, Azure OpenAI, Anthropic, Bedrock, etc.")}
+                        label={labelWithHint("Provider", "例如 OpenAI、Azure OpenAI、Anthropic、Bedrock 等")}
                         name="custom_llm_provider"
                         required
-                        rules={{ validate: { required: requiredRule("Required") } }}
+                        rules={{ validate: { required: requiredRule("必填") } }}
                         className="mb-4"
                       >
                         {(control) => (
                           <SearchSelect
                             inputId={control.id}
                             options={providerOptions}
-                            emptyText={providerMetadataErrorText ?? "No providers found"}
-                            placeholder={isProviderMetadataLoading ? "Loading providers..." : "Select a provider"}
+                            emptyText={providerMetadataErrorText ?? "未找到 provider"}
+                            placeholder={isProviderMetadataLoading ? "正在加载 provider..." : "选择 provider"}
                             value={(control.value as string | undefined) ?? ""}
                             onValueChange={(value) => {
                               control.onChange(value);
@@ -245,7 +245,7 @@ const AddModelForm: React.FC<AddModelFormProps> = ({
                       <ConditionalPublicModelName />
 
                       {/* Select Mode */}
-                      <MountedFormField label="Mode" name="mode" className="mb-1">
+                      <MountedFormField label="模式" name="mode" className="mb-1">
                         {(control) => (
                           <Select
                             items={TEST_MODES}
@@ -255,7 +255,7 @@ const AddModelForm: React.FC<AddModelFormProps> = ({
                               setTestMode(value ?? "");
                             }}
                           >
-                            <SelectTrigger id={control.id} className="w-full" aria-label="Mode">
+                            <SelectTrigger id={control.id} className="w-full" aria-label="模式">
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -272,14 +272,14 @@ const AddModelForm: React.FC<AddModelFormProps> = ({
                         <div className="col-span-5" />
                         <div className="col-span-5">
                           <p className="text-sm mb-5 mt-1">
-                            <strong>Optional</strong> - LiteLLM endpoint to use when health checking this model{" "}
+                            <strong>可选</strong> - 对此模型做健康检查时使用的 LiteLLM endpoint{" "}
                             <a
                               href="https://docs.litellm.ai/docs/proxy/health#health"
                               target="_blank"
                               rel="noreferrer"
                               className="text-primary hover:underline"
                             >
-                              Learn more
+                              了解更多
                             </a>
                           </p>
                         </div>
@@ -288,12 +288,12 @@ const AddModelForm: React.FC<AddModelFormProps> = ({
                       {/* Credentials */}
                       <div className="mb-4">
                         <span className="text-sm text-muted-foreground">
-                          Either select existing credentials OR enter new provider credentials below
+                          选择已有凭据，或在下方输入新的 provider 凭据
                         </span>
                       </div>
 
                       <MountedFormField
-                        label="Existing Credentials"
+                        label="已有凭据"
                         name="litellm_credential_name"
                         defaultValue={null}
                         className="mb-4"
@@ -301,7 +301,7 @@ const AddModelForm: React.FC<AddModelFormProps> = ({
                         {(control) => (
                           <SearchSelect
                             inputId={control.id}
-                            placeholder="Select or search for existing credentials"
+                            placeholder="选择或搜索已有凭据"
                             options={credentialOptions}
                             value={(control.value as string | null | undefined) ?? ""}
                             onValueChange={(value) => control.onChange(value === "" ? null : value)}
@@ -314,7 +314,7 @@ const AddModelForm: React.FC<AddModelFormProps> = ({
                         <>
                           <div className="flex items-center my-4">
                             <div className="grow border-t border-border"></div>
-                            <span className="px-4 text-muted-foreground text-sm">OR</span>
+                            <span className="px-4 text-muted-foreground text-sm">或</span>
                             <div className="grow border-t border-border"></div>
                           </div>
                           <ProviderSpecificFields selectedProvider={selectedProvider} />
@@ -322,7 +322,7 @@ const AddModelForm: React.FC<AddModelFormProps> = ({
                       )}
                       <div className="flex items-center my-4">
                         <div className="grow border-t border-border"></div>
-                        <span className="px-4 text-muted-foreground text-sm">Additional Model Info Settings</span>
+                        <span className="px-4 text-muted-foreground text-sm">其他模型信息设置</span>
                         <div className="grow border-t border-border"></div>
                       </div>
                       {/* Team-only Model Switch - Only show for proxy admins, not team admins */}
@@ -330,14 +330,14 @@ const AddModelForm: React.FC<AddModelFormProps> = ({
                         <Field className="mb-4">
                           <FieldLabel>
                             {labelWithHint(
-                              "Team-BYOK Model",
-                              "Only use this model + credential combination for this team. Useful when teams want to onboard their own OpenAI keys.",
+                              "Team-BYOK 模型",
+                              "仅此团队可使用该模型和凭据组合。适用于团队接入自己的 OpenAI keys。",
                             )}
                           </FieldLabel>
                           <SimpleTooltip
                             content={
                               !premiumUser
-                                ? "This is an enterprise-only feature. Upgrade to premium to restrict model+credential combinations to a specific team."
+                                ? "这是企业版功能。升级到 premium 后可将模型和凭据组合限制给特定团队。"
                                 : ""
                             }
                             side="top"
@@ -352,7 +352,7 @@ const AddModelForm: React.FC<AddModelFormProps> = ({
                                   }
                                 }}
                                 disabled={!premiumUser}
-                                aria-label="Team-BYOK Model"
+                                aria-label="Team-BYOK 模型"
                               />
                             </span>
                           </SimpleTooltip>
@@ -363,15 +363,15 @@ const AddModelForm: React.FC<AddModelFormProps> = ({
                       {isTeamOnly && !requiresTeamScope && (
                         <MountedFormField
                           label={labelWithHint(
-                            "Select Team",
-                            "Only keys for this team will be able to call this model.",
+                            "选择团队",
+                            "仅此团队的 keys 可以调用该模型。",
                           )}
                           name="team_id"
                           className="mb-4"
                           required={isTeamOnly && !isAdmin}
                           rules={
                             isTeamOnly && !isAdmin
-                              ? { validate: { required: requiredRule("Please select a team.") } }
+                              ? { validate: { required: requiredRule("请选择团队。") } }
                               : undefined
                           }
                         >
@@ -388,8 +388,8 @@ const AddModelForm: React.FC<AddModelFormProps> = ({
                         <>
                           <MountedFormField
                             label={labelWithHint(
-                              "Model Access Group",
-                              "Use model access groups to give users access to select models, and add new ones to the group over time.",
+                              "模型访问组",
+                              "使用模型访问组控制用户可访问的模型，并可持续向组中添加模型。",
                             )}
                             name="model_access_group"
                             className="mb-4"
@@ -418,12 +418,12 @@ const AddModelForm: React.FC<AddModelFormProps> = ({
                     </>
                   )}
                   <div className="flex justify-between items-center mb-4">
-                    <SimpleTooltip content="Get help on our github">
+                    <SimpleTooltip content="在 GitHub 上获取帮助">
                       <a
                         href="https://github.com/BerriAI/litellm/issues"
                         className="text-sm text-primary hover:underline"
                       >
-                        Need Help?
+                        需要帮助？
                       </a>
                     </SimpleTooltip>
                     <div className="space-x-2">
@@ -434,10 +434,10 @@ const AddModelForm: React.FC<AddModelFormProps> = ({
                         disabled={isTestingConnection}
                         aria-busy={isTestingConnection}
                       >
-                        Test Connect
+                        测试连接
                       </Button>
                       <Button data-testid="add-model-btn" type="submit">
-                        Add Model
+                        添加模型
                       </Button>
                     </div>
                   </div>
@@ -460,7 +460,7 @@ const AddModelForm: React.FC<AddModelFormProps> = ({
       >
         <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-y-auto sm:max-w-[700px]">
           <DialogHeader>
-            <DialogTitle>Connection Test Results</DialogTitle>
+            <DialogTitle>连接测试结果</DialogTitle>
           </DialogHeader>
           {/* Only render the ConnectionErrorDisplay when modal is visible and we have a test ID */}
           {isResultModalVisible && (
@@ -486,7 +486,7 @@ const AddModelForm: React.FC<AddModelFormProps> = ({
                 setIsTestingConnection(false);
               }}
             >
-              Close
+              关闭
             </Button>
           </DialogFooter>
         </DialogContent>

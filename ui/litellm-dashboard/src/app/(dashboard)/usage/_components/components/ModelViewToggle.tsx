@@ -2,7 +2,7 @@ export type ModelViewType = "groups" | "individual";
 
 const MODEL_VIEW_OPTIONS: readonly { value: ModelViewType; label: string }[] = [
   { value: "groups", label: "Public Model Name" },
-  { value: "individual", label: "Litellm Model Name" },
+  { value: "individual", label: "LiteLLM Model Name" },
 ];
 
 interface ModelViewToggleProps {

@@ -27,7 +27,7 @@ const EndpointUsageBarChart: React.FC<EndpointUsageBarChartProps> = ({ endpointD
     <Card>
       <CardHeader>
         <div className="flex justify-between items-center">
-          <CardTitle className="text-base font-semibold">Success vs Failed Requests by Endpoint</CardTitle>
+          <CardTitle className="text-base font-semibold">按 Endpoint 统计成功 vs 失败请求</CardTitle>
           <CustomLegend
             categories={["metrics.successful_requests", "metrics.failed_requests"]}
             colors={["green", "red"]}

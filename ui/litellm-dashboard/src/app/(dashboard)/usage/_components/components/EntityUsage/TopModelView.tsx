@@ -26,24 +26,24 @@ export default function TopModelView({ topModels, topModelsLimit, setTopModelsLi
 
   const columns = [
     {
-      header: "Model",
+      header: "模型",
       accessorKey: "key",
       cell: (info: any) => info.getValue() || "-",
     },
     {
-      header: "Spend (USD)",
+      header: "花费 (USD)",
       accessorKey: "spend",
       meta: { numeric: true },
       cell: (info: any) => <MoneyCell value={info.getValue()} decimals={2} />,
     },
     {
-      header: "Successful",
+      header: "成功",
       accessorKey: "successful_requests",
       meta: { numeric: true },
       cell: (info: any) => <span className="text-success">{info.getValue()?.toLocaleString() || 0}</span>,
     },
     {
-      header: "Failed",
+      header: "失败",
       accessorKey: "failed_requests",
       meta: { numeric: true },
       cell: (info: any) => <span className="text-destructive">{info.getValue()?.toLocaleString() || 0}</span>,
@@ -61,7 +61,7 @@ export default function TopModelView({ topModels, topModelsLimit, setTopModelsLi
     <>
       <div className="mb-4 flex justify-between items-center">
         <Tabs value={String(topModelsLimit)} onValueChange={(value: string) => setTopModelsLimit(Number(value))}>
-          <TabsList aria-label="Number of models to show">
+          <TabsList aria-label="要显示的模型数量">
             {TOP_MODEL_LIMITS.map((limit) => (
               <TabsTrigger key={limit} value={String(limit)} className="flex-none px-3">
                 {limit}
@@ -70,12 +70,12 @@ export default function TopModelView({ topModels, topModelsLimit, setTopModelsLi
           </TabsList>
         </Tabs>
         <Tabs value={modelViewMode} onValueChange={(value: string) => setModelViewMode(value as "chart" | "table")}>
-          <TabsList aria-label="Top model view mode">
+          <TabsList aria-label="Top 模型视图模式">
             <TabsTrigger value="table" className="flex-none px-3">
-              Table View
+              表格视图
             </TabsTrigger>
             <TabsTrigger value="chart" className="flex-none px-3">
-              Chart View
+              图表视图
             </TabsTrigger>
           </TabsList>
         </Tabs>

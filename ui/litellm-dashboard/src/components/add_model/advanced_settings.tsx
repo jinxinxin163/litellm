@@ -55,8 +55,8 @@ const USAGE_COST_FIELDS = [
 const REVALIDATED_WHEN_PTU_COUNT_CHANGES = [PTU_RATE_FIELD, PTU_START_FIELD, ...USAGE_COST_FIELDS];
 
 const PRICING_MODEL_ITEMS = [
-  { value: "per_token", label: "Per Million Tokens" },
-  { value: "per_second", label: "Per Second" },
+  { value: "per_token", label: "每百万 tokens" },
+  { value: "per_second", label: "每秒" },
 ] as const;
 
 const validateNumber = (_: unknown, value: unknown) => {
@@ -64,7 +64,7 @@ const validateNumber = (_: unknown, value: unknown) => {
     return Promise.resolve();
   }
   if (isNaN(Number(value)) || Number(value) < 0) {
-    return Promise.reject("Please enter a valid positive number");
+    return Promise.reject("请输入有效的正数");
   }
   return Promise.resolve();
 };
@@ -99,12 +99,12 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
     <>
       <Collapsible className="mt-2 mb-4 overflow-hidden rounded-lg border">
         <CollapsibleTrigger className="group/section flex w-full items-center justify-between px-4 py-3 text-left">
-          <b>Advanced Settings</b>
+          <b>高级设置</b>
           <ChevronDown className="size-5 shrink-0 text-muted-foreground transition-transform group-data-[panel-open]/section:rotate-180" />
         </CollapsibleTrigger>
         <CollapsibleContent className="px-4 pb-3">
           <div className="rounded-lg">
-            <MountedFormField name="custom_pricing" label="Custom Pricing" className="mb-4">
+            <MountedFormField name="custom_pricing" label="自定义价格" className="mb-4">
               {(control) => (
                 <Switch
                   id={control.id}
@@ -121,8 +121,8 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
               name="vector_store_ids"
               label={
                 <span>
-                  Attached Knowledge Bases (RAG){" "}
-                  <SimpleTooltip content="Vector stores to use for RAG. Every request to this model will automatically retrieve context from these knowledge bases.">
+                  关联知识库 (RAG){" "}
+                  <SimpleTooltip content="用于 RAG 的 vector stores。对此模型的每次请求都会自动从这些知识库检索上下文。">
                     <a
                       href="https://docs.litellm.ai/docs/completion/knowledgebase"
                       target="_blank"
@@ -135,14 +135,14 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                 </span>
               }
               className="mt-4"
-              help="Select vector stores to attach. Requests to this model will automatically use these for RAG. Set up vector stores in Tools > Vector Stores."
+              help="选择要关联的 vector stores。对此模型的请求会自动使用它们进行 RAG。可在工具 > Vector Stores 中配置。"
             >
               {(control) => (
                 <VectorStoreSelector
                   onChange={control.onChange}
                   value={control.value as string[] | undefined}
                   accessToken={accessToken}
-                  placeholder="Select knowledge bases (optional)"
+                  placeholder="选择知识库（可选）"
                 />
               )}
             </MountedFormField>
@@ -152,7 +152,7 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
               label={
                 <span>
                   Guardrails{" "}
-                  <SimpleTooltip content="Apply safety guardrails to this key to filter content or enforce policies">
+                  <SimpleTooltip content="将安全 guardrails 应用于此 key，以过滤内容或强制执行策略">
                     <a
                       href="https://docs.litellm.ai/docs/proxy/guardrails/quick_start"
                       target="_blank"
@@ -165,13 +165,13 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                 </span>
               }
               className="mt-4"
-              help="Select existing guardrails. Go to 'Guardrails' tab to create new guardrails."
+              help="选择已有 guardrails。可前往 Guardrails 标签页创建新的 guardrails。"
             >
               {(control) => (
                 <MultiSelect
                   id={control.id}
-                  placeholder="Select or enter guardrails"
-                  emptyText="Type to add a guardrail"
+                  placeholder="选择或输入 guardrails"
+                  emptyText="输入以添加 guardrail"
                   value={(control.value as string[] | undefined) ?? []}
                   onValueChange={control.onChange}
                   options={guardrailsList.map((name) => ({ value: name, label: name }))}
@@ -184,8 +184,8 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
               {(control) => (
                 <MultiSelect
                   id={control.id}
-                  placeholder="Select or enter tags"
-                  emptyText="Type to add a tag"
+                  placeholder="选择或输入 tags"
+                  emptyText="输入以添加 tag"
                   value={(control.value as string[] | undefined) ?? []}
                   onValueChange={control.onChange}
                   options={Object.values(tagsList).map((tag) => ({
@@ -203,8 +203,8 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                 <MountedFormField
                   name={PTU_COUNT_FIELD}
                   label={labelWithHint(
-                    "PTU Count",
-                    "Provisioned throughput units for this deployment. Set together with Cost per PTU / Hour and a Team to attribute a flat daily cost.",
+                    "PTU 数量",
+                    "此部署的 provisioned throughput units。与每 PTU / 小时成本和团队一起设置，用于归属每日固定成本。",
                   )}
                   rules={{
                     deps: REVALIDATED_WHEN_PTU_COUNT_CHANGES,
@@ -230,8 +230,8 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                 <MountedFormField
                   name={PTU_RATE_FIELD}
                   label={labelWithHint(
-                    "Calculated Cost per PTU / Hour (USD)",
-                    "Flat cost = PTU count * this rate * active hours, attributed to the deployment's team.",
+                    "计算后的每 PTU / 小时成本 (USD)",
+                    "固定成本 = PTU 数量 * 此费率 * 活跃小时数，并归属到部署所属团队。",
                   )}
                   rules={{
                     deps: [PTU_COUNT_FIELD],
@@ -257,8 +257,8 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                 <MountedFormField
                   name={PTU_START_FIELD}
                   label={labelWithHint(
-                    "PTU Effective From (UTC)",
-                    "Start of the PTU window, required when PTU Count is set. Flat cost accrues by the hour within the window; a window opening at 23:00 charges one hour that day.",
+                    "PTU 生效开始时间 (UTC)",
+                    "PTU 窗口的开始时间。设置 PTU 数量时必填。固定成本在窗口内按小时累计；窗口在 23:00 开始时，当天计费一小时。",
                   )}
                   rules={{
                     deps: [PTU_END_FIELD],
@@ -282,8 +282,8 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                 <MountedFormField
                   name={PTU_END_FIELD}
                   label={labelWithHint(
-                    "PTU Effective To (UTC)",
-                    "Optional end of the PTU window (exclusive). Leave blank for open-ended.",
+                    "PTU 生效结束时间 (UTC)",
+                    "PTU 窗口的可选结束时间（不包含）。留空表示无结束时间。",
                   )}
                   rules={{
                     deps: [PTU_START_FIELD],
@@ -305,7 +305,7 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
 
             {customPricing && (
               <div className="ml-6 pl-4 border-l-2 border-border">
-                <MountedFormField name="pricing_model" label="Pricing Model" className="mb-4">
+                <MountedFormField name="pricing_model" label="计价模型" className="mb-4">
                   {(control) => (
                     <Select
                       items={PRICING_MODEL_ITEMS}
@@ -330,7 +330,7 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                   <>
                     <MountedFormField
                       name="input_cost_per_token"
-                      label="Input Cost (per 1M tokens)"
+                      label="输入成本（每 1M tokens）"
                       rules={usageCostRules}
                       className="mb-4"
                     >
@@ -345,7 +345,7 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                     </MountedFormField>
                     <MountedFormField
                       name="output_cost_per_token"
-                      label="Output Cost (per 1M tokens)"
+                      label="输出成本（每 1M tokens）"
                       rules={usageCostRules}
                       className="mb-4"
                     >
@@ -360,7 +360,7 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                     </MountedFormField>
                     <MountedFormField
                       name="cache_read_input_token_cost"
-                      label={labelWithHint("Cache Read Cost (per 1M tokens)", "If left blank, defaults to Input Cost.")}
+                      label={labelWithHint("Cache 读取成本（每 1M tokens）", "留空时默认使用输入成本。")}
                       rules={usageCostRules}
                       className="mb-4"
                     >
@@ -370,15 +370,15 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                           value={(control.value as string | undefined) ?? ""}
                           onChange={control.onChange}
                           onBlur={control.onBlur}
-                          placeholder="Defaults to Input Cost if blank"
+                          placeholder="留空时默认使用输入成本"
                         />
                       )}
                     </MountedFormField>
                     <MountedFormField
                       name="cache_creation_input_token_cost"
                       label={labelWithHint(
-                        "Cache Write Cost (per 1M tokens)",
-                        "If left blank, defaults to Input Cost (the backend falls back to input_cost_per_token when no cache-write rate is set).",
+                        "Cache 写入成本（每 1M tokens）",
+                        "留空时默认使用输入成本（未设置 cache-write rate 时，后端会回退到 input_cost_per_token）。",
                       )}
                       rules={usageCostRules}
                       className="mb-4"
@@ -389,7 +389,7 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                           value={(control.value as string | undefined) ?? ""}
                           onChange={control.onChange}
                           onBlur={control.onBlur}
-                          placeholder="Defaults to Input Cost if blank"
+                          placeholder="留空时默认使用输入成本"
                         />
                       )}
                     </MountedFormField>
@@ -397,7 +397,7 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                 ) : (
                   <MountedFormField
                     name="input_cost_per_second"
-                    label="Cost Per Second"
+                    label="每秒成本"
                     rules={usageCostRules}
                     className="mb-4"
                   >
@@ -417,16 +417,16 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
             <MountedFormField
               name="use_in_pass_through"
               label={labelWithHint(
-                "Use in pass through routes",
+                "用于 pass through routes",
                 <span>
-                  Allow using these credentials in pass through routes.{" "}
+                  允许在 pass through routes 中使用这些凭据。{" "}
                   <a
                     href="https://docs.litellm.ai/docs/pass_through/vertex_ai"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-primary underline-offset-4 hover:underline"
                   >
-                    Learn more
+                    了解更多
                   </a>
                 </span>,
               )}
@@ -468,7 +468,7 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
               name="litellm_extra_params"
               label={labelWithHint(
                 "LiteLLM Params",
-                "Optional litellm params used for making a litellm.completion() call.",
+                "用于发起 litellm.completion() 调用的可选 litellm params。",
               )}
               className="mb-4 mt-4"
               rules={{ validate: validatorRules({ validator: formItemValidateJSON }) }}
@@ -490,7 +490,7 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
             </MountedFormField>
             <div className="grid grid-cols-24 mb-4">
               <p className="col-start-11 col-span-10 text-muted-foreground text-sm">
-                Pass JSON of litellm supported params{" "}
+                传入 litellm 支持的 params JSON{" "}
                 <a
                   href="https://docs.litellm.ai/docs/completion/input"
                   target="_blank"
@@ -504,8 +504,8 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
             <MountedFormField
               name="model_info_params"
               label={labelWithHint(
-                "Model Info",
-                "Optional model info params. Returned when calling `/model/info` endpoint.",
+                "模型信息",
+                "可选的模型信息 params。调用 `/model/info` endpoint 时会返回。",
               )}
               className="mb-0"
               rules={{ validate: validatorRules({ validator: formItemValidateJSON }) }}

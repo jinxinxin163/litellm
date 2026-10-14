@@ -168,9 +168,9 @@ const RouterSettings: React.FC<RouterSettingsProps> = ({ accessToken, userRole, 
 
     try {
       await setCallbacksCall(accessToken, payload);
-      toast.success("router settings updated successfully");
+      toast.success("路由设置更新成功");
     } catch (error) {
-      toast.fromError("Failed to update router settings: " + error);
+      toast.fromError("更新路由设置失败：" + error);
     }
   };
 
@@ -191,9 +191,9 @@ const RouterSettings: React.FC<RouterSettingsProps> = ({ accessToken, userRole, 
       {/* Actions - Sticky at bottom */}
       <div className="border-t border-border pt-6 flex justify-end gap-3">
         <Button variant="outline" onClick={() => window.location.reload()}>
-          Reset
+          重置
         </Button>
-        <Button onClick={handleSaveChanges}>Save Changes</Button>
+        <Button onClick={handleSaveChanges}>保存更改</Button>
       </div>
     </div>
   );

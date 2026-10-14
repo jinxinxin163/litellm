@@ -18,13 +18,13 @@ interface SpendSummaryMetadata {
 }
 
 export const TOTAL_COST_TOOLTIP =
-  "Request cost plus flat cost for reserved capacity. Select this tile to see the breakdown.";
+  "请求成本加上预留容量的固定成本。选择此卡片可查看明细。";
 
 export const REQUEST_COST_TOOLTIP =
-  "Usage-based cost of the requests this entity sent during the selected period, priced per token.";
+  "所选时间段内该实体发送请求产生的按用量计费成本，按 token 计价。";
 
 export const FLAT_COST_TOOLTIP =
-  "Reserved provisioned throughput, billed per hour whether or not requests are sent. Reported here only; it does not count toward team, key, user, or organization budgets.";
+  "预留的 provisioned throughput，无论是否发送请求都会按小时计费。此处仅用于展示，不计入团队、key、用户或组织预算。";
 
 export const hasFlatCost = (metadata: SpendSummaryMetadata): boolean => (metadata.total_flat_cost ?? 0) > 0;
 
@@ -33,32 +33,32 @@ export const buildSummaryTiles = (metadata: SpendSummaryMetadata, showFlatCost: 
   return [
     showFlatCost
       ? {
-          title: "Total Cost",
+          title: "总成本",
           value: `$${formatNumberWithCommas(metadata.total_spend + flatCost, 2)}`,
           tooltip: TOTAL_COST_TOOLTIP,
           expandable: true,
         }
-      : { title: "Total Spend", value: `$${formatNumberWithCommas(metadata.total_spend, 2)}` },
-    { title: "Total Requests", value: metadata.total_api_requests.toLocaleString() },
+      : { title: "总花费", value: `$${formatNumberWithCommas(metadata.total_spend, 2)}` },
+    { title: "总请求数", value: metadata.total_api_requests.toLocaleString() },
     {
-      title: "Successful Requests",
+      title: "成功请求",
       value: metadata.total_successful_requests.toLocaleString(),
       className: "text-success",
     },
-    { title: "Failed Requests", value: metadata.total_failed_requests.toLocaleString(), className: "text-destructive" },
-    { title: "Total Tokens", value: metadata.total_tokens.toLocaleString() },
+    { title: "失败请求", value: metadata.total_failed_requests.toLocaleString(), className: "text-destructive" },
+    { title: "总 Tokens", value: metadata.total_tokens.toLocaleString() },
   ];
 };
 
 export const buildCostBreakdownTiles = (metadata: SpendSummaryMetadata): SummaryTile[] => [
   {
-    title: "Request Cost",
+    title: "请求成本",
     value: `$${formatNumberWithCommas(metadata.total_spend, 2)}`,
     className: "text-info",
     tooltip: REQUEST_COST_TOOLTIP,
   },
   {
-    title: "Flat Cost",
+    title: "固定成本",
     value: `$${formatNumberWithCommas(metadata.total_flat_cost ?? 0, 2)}`,
     className: "text-violet-600",
     tooltip: FLAT_COST_TOOLTIP,

@@ -28,28 +28,28 @@ interface TeamUserSpendCardProps {
 }
 
 const columns: ColumnDef<TeamUserSpendRow>[] = [
-  { header: "Team", accessorFn: teamLabel, id: "team", cell: ({ row }) => teamLabel(row.original) },
-  { header: "User", accessorFn: userLabel, id: "user", cell: ({ row }) => userLabel(row.original) },
+  { header: "团队", accessorFn: teamLabel, id: "team", cell: ({ row }) => teamLabel(row.original) },
+  { header: "用户", accessorFn: userLabel, id: "user", cell: ({ row }) => userLabel(row.original) },
   {
-    header: "Spend",
+    header: "花费",
     accessorKey: "spend",
     meta: { numeric: true },
     cell: ({ row }) => <MoneyCell value={row.original.spend} decimals={4} />,
   },
   {
-    header: "Requests",
+    header: "请求数",
     accessorKey: "api_requests",
     meta: { numeric: true },
     cell: ({ row }) => row.original.api_requests.toLocaleString(),
   },
   {
-    header: "Successful",
+    header: "成功",
     accessorKey: "successful_requests",
     meta: { numeric: true, className: "text-success" },
     cell: ({ row }) => row.original.successful_requests.toLocaleString(),
   },
   {
-    header: "Failed",
+    header: "失败",
     accessorKey: "failed_requests",
     meta: { numeric: true, className: "text-destructive" },
     cell: ({ row }) => row.original.failed_requests.toLocaleString(),
@@ -77,9 +77,9 @@ const TeamUserSpendCard: React.FC<TeamUserSpendCardProps> = ({ accessToken, star
       <CardContent className="flex flex-col space-y-4">
         <div className="flex items-start justify-between">
           <div className="flex flex-col space-y-2">
-            <h3 className="text-lg font-medium text-foreground">Spend Per User Within Team</h3>
+            <h3 className="text-lg font-medium text-foreground">团队内每用户花费</h3>
             <p className="text-xs text-muted-foreground">
-              Attributed per request from spend logs, so it includes JWT/SSO traffic that does not use a virtual key
+              根据花费日志按请求归属，因此包含不使用 virtual key 的 JWT/SSO 流量
             </p>
           </div>
           <Button
@@ -89,7 +89,7 @@ const TeamUserSpendCard: React.FC<TeamUserSpendCardProps> = ({ accessToken, star
             onClick={() => data && downloadCsv(buildTeamUserSpendCsv(data), teamUserSpendCsvFileName(data))}
           >
             <Download />
-            Download CSV
+            下载 CSV
           </Button>
         </div>
         <DataTable
@@ -98,7 +98,7 @@ const TeamUserSpendCard: React.FC<TeamUserSpendCardProps> = ({ accessToken, star
           getRowId={teamUserSpendRowId}
           isLoading={isLoading}
           maxBodyHeight={320}
-          noDataMessage={teamIds.length === 0 ? "Select a team to see spend per user" : "No user spend in this range"}
+          noDataMessage={teamIds.length === 0 ? "选择团队以查看每用户花费" : "此时间范围内没有用户花费"}
           size="compact"
         />
       </CardContent>

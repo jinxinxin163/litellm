@@ -17,17 +17,17 @@ interface LatencyBasedConfigurationProps {
 
 const LatencyBasedConfiguration: React.FC<LatencyBasedConfigurationProps> = ({ routingStrategyArgs }) => {
   const paramExplanation: { [key: string]: string } = {
-    ttl: "Sliding window to look back over when calculating the average latency of a deployment. Default - 1 hour (in seconds).",
+    ttl: "计算部署平均延迟时回看的滑动窗口。默认值为 1 小时（单位：秒）。",
     lowest_latency_buffer:
-      "Shuffle between deployments within this % of the lowest latency. Default - 0 (i.e. always pick lowest latency).",
+      "在最低延迟的这个百分比范围内对部署进行 shuffle。默认值为 0（即始终选择最低延迟）。",
   };
 
   return (
     <>
       <div className="space-y-6">
         <div className="max-w-3xl">
-          <h3 className="text-sm font-medium text-foreground">Latency-Based Configuration</h3>
-          <p className="text-xs text-muted-foreground mt-1">Fine-tune latency-based routing behavior</p>
+          <h3 className="text-sm font-medium text-foreground">基于延迟的配置</h3>
+          <p className="text-xs text-muted-foreground mt-1">微调基于延迟的路由行为</p>
         </div>
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3">

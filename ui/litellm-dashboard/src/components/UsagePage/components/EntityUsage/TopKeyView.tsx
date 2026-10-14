@@ -122,10 +122,10 @@ const TopKeyView: React.FC<TopKeyViewProps> = ({ topKeys, teams, showTags = fals
                 content={
                   <div>
                     <div>
-                      <span className="text-muted-foreground">Tag Name:</span> {tag.tag}
+                      <span className="text-muted-foreground">Tag 名称：</span> {tag.tag}
                     </div>
                     <div>
-                      <span className="text-muted-foreground">Spend:</span>{" "}
+                      <span className="text-muted-foreground">花费：</span>{" "}
                       {tag.usage > 0 && tag.usage < 0.01 ? "<$0.01" : `$${formatNumberWithCommas(tag.usage, 2)}`}
                     </div>
                   </div>
@@ -138,7 +138,7 @@ const TopKeyView: React.FC<TopKeyViewProps> = ({ topKeys, teams, showTags = fals
               <button
                 onClick={() => toggleTagsExpansion(apiKey)}
                 className="ml-1 p-1 hover:bg-accent rounded-full transition-colors"
-                title={isExpanded ? "Show fewer tags" : "Show all tags"}
+                title={isExpanded ? "显示更少 tags" : "显示全部 tags"}
               >
                 {isExpanded ? (
                   <ChevronUpIcon className="h-3 w-3 text-muted-foreground" />
@@ -154,7 +154,7 @@ const TopKeyView: React.FC<TopKeyViewProps> = ({ topKeys, teams, showTags = fals
   };
 
   const spendColumn = {
-    header: "Spend (USD)",
+    header: "花费 (USD)",
     accessorKey: "spend",
     meta: { numeric: true },
     cell: (info: any) => <MoneyCell value={info.getValue()} decimals={2} />,
@@ -224,15 +224,15 @@ const TopKeyView: React.FC<TopKeyViewProps> = ({ topKeys, teams, showTags = fals
                 <div className="relative z-floating p-3 bg-black/90 shadow-lg rounded-lg text-white max-w-xs">
                   <div className="space-y-1.5">
                     <div className="text-sm">
-                      <span className="text-muted-foreground">Key Alias: </span>
+                      <span className="text-muted-foreground">Key Alias： </span>
                       <span className="font-mono text-gray-100 break-all">{item?.key_alias}</span>
                     </div>
                     <div className="text-sm">
-                      <span className="text-muted-foreground">Key ID: </span>
+                      <span className="text-muted-foreground">Key ID： </span>
                       <span className="font-mono text-gray-100 break-all">{item?.api_key}</span>
                     </div>
                     <div className="text-sm">
-                      <span className="text-muted-foreground">Spend: </span>
+                      <span className="text-muted-foreground">花费： </span>
                       <span className="text-white font-medium">${formatNumberWithCommas(item?.spend, 2)}</span>
                     </div>
                   </div>
@@ -255,7 +255,7 @@ const TopKeyView: React.FC<TopKeyViewProps> = ({ topKeys, teams, showTags = fals
             <button
               onClick={handleClose}
               className="absolute top-4 right-4 text-muted-foreground hover:text-foreground focus:outline-hidden"
-              aria-label="Close"
+              aria-label="关闭"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />

@@ -252,7 +252,7 @@ const ProviderSpecificFields: React.FC<ProviderSpecificFieldsProps> = ({ selecte
         <>
           <Button type="button" variant="outline" className="w-fit" onClick={() => credentialsFileRef.current?.click()}>
             <UploadIcon />
-            Click to Upload
+            点击上传
           </Button>
           <input
             ref={credentialsFileRef}
@@ -315,10 +315,10 @@ const ProviderSpecificFields: React.FC<ProviderSpecificFieldsProps> = ({ selecte
 
   return (
     <>
-      {isLoading && allFields.length === 0 && <p className="text-sm mb-2">Loading provider fields...</p>}
+      {isLoading && allFields.length === 0 && <p className="text-sm mb-2">正在加载 provider 字段...</p>}
       {loadError && allFields.length === 0 && (
         <p className="text-sm mb-2 text-destructive">
-          {loadError instanceof Error ? loadError.message : "Failed to load provider credential fields"}
+          {loadError instanceof Error ? loadError.message : "加载 provider 凭据字段失败"}
         </p>
       )}
       {allFields.map((field) => (
@@ -327,7 +327,7 @@ const ProviderSpecificFields: React.FC<ProviderSpecificFieldsProps> = ({ selecte
             label={field.tooltip ? labelWithHint(field.label, field.tooltip) : field.label}
             name={field.key}
             required={field.required}
-            rules={field.required ? { validate: { required: requiredRule("Required") } } : undefined}
+            rules={field.required ? { validate: { required: requiredRule("必填") } } : undefined}
             className={field.key === "vertex_credentials" ? "mb-0" : "mb-4"}
           >
             {(control) => renderFieldControl(field, control)}
@@ -335,21 +335,21 @@ const ProviderSpecificFields: React.FC<ProviderSpecificFieldsProps> = ({ selecte
 
           {/* Special case for Vertex Credentials help text */}
           {field.key === "vertex_credentials" && (
-            <p className="text-sm mb-3 mt-1">Give a gcp service account(.json file)</p>
+            <p className="text-sm mb-3 mt-1">提供 GCP service account（.json 文件）</p>
           )}
 
           {/* Special case for Azure Base Model help text */}
           {field.key === "base_model" && (
             <div className="grid grid-cols-24">
               <p className="col-start-11 col-span-10 text-sm mb-2">
-                The actual model your azure deployment uses. Used for accurate cost tracking. Select name from{" "}
+                Azure 部署实际使用的模型。用于准确追踪成本。可从{" "}
                 <a
                   href="https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-primary underline-offset-4 hover:underline"
                 >
-                  here
+                  这里
                 </a>
               </p>
             </div>

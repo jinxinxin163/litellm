@@ -38,19 +38,19 @@ const columns: ColumnDef<ProviderSpendData>[] = [
     ),
   },
   {
-    header: "Spend",
+    header: "花费",
     accessorKey: "spend",
     meta: { numeric: true },
     cell: ({ row }) => <MoneyCell value={row.original.spend} decimals={2} />,
   },
   {
-    header: "Successful",
+    header: "成功",
     accessorKey: "successful_requests",
     meta: { numeric: true, className: "text-success" },
     cell: ({ row }) => row.original.successful_requests.toLocaleString(),
   },
   {
-    header: "Failed",
+    header: "失败",
     accessorKey: "failed_requests",
     meta: { numeric: true, className: "text-destructive" },
     cell: ({ row }) => row.original.failed_requests.toLocaleString(),
@@ -87,18 +87,18 @@ const SpendByProvider: React.FC<SpendByProviderProps> = ({ loading, isDateChangi
   return (
     <Card className="h-full">
       <CardHeader>
-        <CardTitle>Spend by Provider</CardTitle>
+        <CardTitle>按 Provider 统计花费</CardTitle>
         <CardAction className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            <label className="text-sm text-foreground">Show Zero Spend</label>
+            <label className="text-sm text-foreground">显示零花费</label>
             <Switch checked={includeZeroSpend} onCheckedChange={setIncludeZeroSpend} />
           </div>
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1">
-              <label className="text-sm text-foreground">Show Unknown</label>
+              <label className="text-sm text-foreground">显示 Unknown</label>
               <Tooltip>
                 <TooltipTrigger render={<Info className="size-4 text-muted-foreground hover:text-foreground" />} />
-                <TooltipContent>Requests that failed to route to a provider</TooltipContent>
+                <TooltipContent>路由到 provider 失败的请求</TooltipContent>
               </Tooltip>
             </div>
             <Switch checked={includeUnknown} onCheckedChange={setIncludeUnknown} />
@@ -125,7 +125,7 @@ const SpendByProvider: React.FC<SpendByProviderProps> = ({ loading, isDateChangi
               columns={columns}
               data={filteredProviderSpend}
               getRowId={(row) => row.provider}
-              noDataMessage="No provider usage data"
+              noDataMessage="没有 provider 用量数据"
               size="compact"
             />
           </div>

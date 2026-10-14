@@ -1,4 +1,4 @@
-import { BarChart3, Bot, Building2, Globe, LineChart, ShoppingCart, Tags, User, Users } from "lucide-react";
+import { BarChart3, Globe, ShoppingCart, User, Users } from "lucide-react";
 import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -40,48 +40,48 @@ interface OptionConfig {
 const OPTIONS: OptionConfig[] = [
   {
     value: "global",
-    label: "Global Usage",
-    showForAdmin: "Global Usage",
-    showForNonAdmin: "Your Usage",
-    description: "View usage across all resources",
-    descriptionForAdmin: "View usage across all resources",
-    descriptionForNonAdmin: "View your usage",
+    label: "全局用量",
+    showForAdmin: "全局用量",
+    showForNonAdmin: "我的用量",
+    description: "查看所有资源的用量",
+    descriptionForAdmin: "查看所有资源的用量",
+    descriptionForNonAdmin: "查看你的用量",
     icon: <Globe className="size-4" />,
   },
   {
     value: "my-usage",
-    label: "Your Usage",
-    description: "View your own usage",
+    label: "我的用量",
+    description: "查看你自己的用量",
     icon: <User className="size-4" />,
     adminOnly: true,
   },
   /*
   {
     value: "organization",
-    label: "Organization Usage",
-    description: "View usage across all organizations",
+    label: "组织用量",
+    description: "查看所有组织的用量",
     icon: <Building2 className="size-4" />,
     capability: "viewOrganizationUsage",
   },
   */
   {
     value: "team",
-    label: "Team Usage",
-    description: "View usage by team",
+    label: "团队用量",
+    description: "按团队查看用量",
     icon: <Users className="size-4" />,
   },
   {
     value: "customer",
-    label: "Customer Usage",
-    description: "View usage by customer accounts",
+    label: "客户用量",
+    description: "按客户账号查看用量",
     icon: <ShoppingCart className="size-4" />,
     adminOnly: true,
   },
   /*
   {
     value: "tag",
-    label: "Tag Usage",
-    description: "View usage grouped by tags",
+    label: "Tag 用量",
+    description: "按 tags 分组查看用量",
     icon: <Tags className="size-4" />,
     adminOnly: true,
   },
@@ -89,24 +89,24 @@ const OPTIONS: OptionConfig[] = [
   /*
   {
     value: "agent",
-    label: "Agent Usage (A2A)",
-    description: "View usage by AI agents",
+    label: "Agent 用量 (A2A)",
+    description: "按 AI agents 查看用量",
     icon: <Bot className="size-4" />,
     capability: "viewAgentUsage",
   },
   */
   {
     value: "user",
-    label: "User Usage",
-    description: "View usage by individual users",
+    label: "用户用量",
+    description: "按单个用户查看用量",
     icon: <User className="size-4" />,
     adminOnly: true,
   },
   /*
   {
     value: "user-agent-activity",
-    label: "User Agent Activity",
-    description: "View detailed user agent activity logs",
+    label: "User Agent 活动",
+    description: "查看详细 user agent 活动日志",
     icon: <LineChart className="size-4" />,
     adminOnly: true,
   },
@@ -118,8 +118,8 @@ export const UsageViewSelect: React.FC<UsageViewSelectProps> = ({
   userRole,
   canViewTagUsage = false,
   isOrgAdmin = false,
-  title = "Usage View",
-  description = "Select the usage data you want to view",
+  title = "用量视图",
+  description = "选择要查看的用量数据",
   "data-id": dataId,
 }) => {
   const isAdmin = all_admin_roles.includes(userRole ?? "");

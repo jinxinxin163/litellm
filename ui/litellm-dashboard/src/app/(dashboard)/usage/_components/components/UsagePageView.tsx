@@ -496,7 +496,7 @@ const UsagePage: React.FC<UsagePageProps> = ({ teams, organizations }) => {
             <>
               {isAdmin && usageView === "global" && (
                 <div className="mb-4">
-                  <p className="mb-2 text-sm text-foreground">Filter by user</p>
+                  <p className="mb-2 text-sm text-foreground">按用户筛选</p>
                   <UserDropdown value={selectedUserId} onChange={setSelectedUserId} />
                 </div>
               )}
@@ -504,29 +504,29 @@ const UsagePage: React.FC<UsagePageProps> = ({ teams, organizations }) => {
                 <div className="flex justify-between items-center">
                   <TabsList className="mt-1">
                     <TabsTrigger value="cost" className="flex-none px-3">
-                      Cost
+                      成本
                     </TabsTrigger>
                     <TabsTrigger value="models" className="flex-none px-3">
-                      Model Activity
+                      模型活动
                     </TabsTrigger>
                     <TabsTrigger value="keys" className="flex-none px-3">
-                      Key Activity
+                      Key 活动
                     </TabsTrigger>
                     <TabsTrigger value="mcp" className="flex-none px-3">
-                      MCP Server Activity
+                      MCP Server 活动
                     </TabsTrigger>
                     <TabsTrigger value="endpoints" className="flex-none px-3">
-                      Endpoint Activity
+                      Endpoint 活动
                     </TabsTrigger>
                   </TabsList>
                   <div className="flex items-center gap-2">
                     <Button variant="outline" onClick={() => setIsAiChatOpen(true)}>
                       <Sparkles />
-                      Ask AI
+                      询问 AI
                     </Button>
                     <Button variant="outline" onClick={() => setIsGlobalExportModalOpen(true)}>
                       <Download />
-                      Export Data
+                      导出数据
                     </Button>
                   </div>
                 </div>
@@ -537,7 +537,7 @@ const UsagePage: React.FC<UsagePageProps> = ({ teams, organizations }) => {
                     <div className="col-span-2">
                       <div className="flex items-center gap-4 mt-2 mb-2">
                         <p className="text-lg text-muted-foreground">
-                          Project Spend{" "}
+                          项目花费{" "}
                           {dateValue.from && dateValue.to && (
                             <>
                               {dateValue.from.toLocaleDateString("en-US", {
@@ -567,11 +567,11 @@ const UsagePage: React.FC<UsagePageProps> = ({ teams, organizations }) => {
                     <div className="col-span-2">
                       <ShadcnCard>
                         <CardContent>
-                          <h3 className="text-lg font-medium text-foreground">Usage Metrics</h3>
+                          <h3 className="text-lg font-medium text-foreground">用量指标</h3>
                           <div className="grid grid-cols-5 gap-4 mt-4">
                             <ShadcnCard>
                               <CardContent>
-                                <h3 className="text-lg font-medium text-foreground">Total Requests</h3>
+                                <h3 className="text-lg font-medium text-foreground">总请求数</h3>
                                 <p className="text-2xl font-bold mt-2">
                                   {(gatewayActivity
                                     ? gatewayActivity.total_successful_requests + gatewayActivity.total_failed_requests
@@ -583,15 +583,14 @@ const UsagePage: React.FC<UsagePageProps> = ({ teams, organizations }) => {
                             <ShadcnCard>
                               <CardContent>
                                 <div className="flex items-center gap-2">
-                                  <h3 className="text-lg font-medium text-foreground">Successful Requests</h3>
+                                  <h3 className="text-lg font-medium text-foreground">成功请求</h3>
                                   {gatewayActivity && (
                                     <Tooltip>
                                       <TooltipTrigger
                                         render={<Info className="size-4 text-muted-foreground hover:text-foreground" />}
                                       />
                                       <TooltipContent>
-                                        Counted by the gateway when it answers a request, independent of spend logging.
-                                        Deployment-wide, so it will not match the per-key or per-model breakdowns below.
+                                        由 gateway 在响应请求时计数，独立于花费日志。该指标覆盖整个部署，因此不会与下方按 key 或按模型拆分的数据完全一致。
                                       </TooltipContent>
                                     </Tooltip>
                                   )}
@@ -613,15 +612,15 @@ const UsagePage: React.FC<UsagePageProps> = ({ teams, organizations }) => {
                             <ShadcnCard>
                               <CardContent>
                                 <div className="flex items-center gap-2">
-                                  <h3 className="text-lg font-medium text-foreground">Failed Requests</h3>
+                                  <h3 className="text-lg font-medium text-foreground">失败请求</h3>
                                   <Tooltip>
                                     <TooltipTrigger
                                       render={<Info className="size-4 text-muted-foreground hover:text-foreground" />}
                                     />
                                     <TooltipContent>
                                       {gatewayActivity
-                                        ? "Counted by the gateway when it answers a request, independent of spend logging. Deployment-wide, so it will not match the per-key or per-model breakdowns below."
-                                        : "Includes requests that failed to route to a provider, tool usage failures, and other request errors where the provider cannot be determined."}
+                                        ? "由 gateway 在响应请求时计数，独立于花费日志。该指标覆盖整个部署，因此不会与下方按 key 或按模型拆分的数据完全一致。"
+                                        : "包括路由到 provider 失败的请求、工具使用失败，以及其他无法确定 provider 的请求错误。"}
                                     </TooltipContent>
                                   </Tooltip>
                                 </div>
@@ -637,7 +636,7 @@ const UsagePage: React.FC<UsagePageProps> = ({ teams, organizations }) => {
                             </ShadcnCard>
                             <ShadcnCard>
                               <CardContent>
-                                <h3 className="text-lg font-medium text-foreground">Average Cost per Request</h3>
+                                <h3 className="text-lg font-medium text-foreground">平均每次请求成本</h3>
                                 <p className="text-2xl font-bold mt-2">
                                   $
                                   {formatNumberWithCommas(
@@ -653,7 +652,7 @@ const UsagePage: React.FC<UsagePageProps> = ({ teams, organizations }) => {
                             >
                               <CardContent>
                                 <div className="flex items-center gap-2">
-                                  <h3 className="text-lg font-medium text-foreground">Total Tokens</h3>
+                                  <h3 className="text-lg font-medium text-foreground">总 Tokens</h3>
                                   {showTokenBreakdown ? (
                                     <ChevronDown className="size-3 text-muted-foreground" />
                                   ) : (
@@ -670,7 +669,7 @@ const UsagePage: React.FC<UsagePageProps> = ({ teams, organizations }) => {
                             <div className="grid grid-cols-4 gap-4 mt-4">
                               <ShadcnCard>
                                 <CardContent>
-                                  <h3 className="text-lg font-medium text-foreground">Input Tokens</h3>
+                                  <h3 className="text-lg font-medium text-foreground">输入 Tokens</h3>
                                   <p className="text-2xl font-bold mt-2 text-info">
                                     {(userSpendData.metadata?.total_prompt_tokens || 0).toLocaleString()}
                                   </p>
@@ -678,7 +677,7 @@ const UsagePage: React.FC<UsagePageProps> = ({ teams, organizations }) => {
                               </ShadcnCard>
                               <ShadcnCard>
                                 <CardContent>
-                                  <h3 className="text-lg font-medium text-foreground">Output Tokens</h3>
+                                  <h3 className="text-lg font-medium text-foreground">输出 Tokens</h3>
                                   <p className="text-2xl font-bold mt-2 text-info">
                                     {userSpendData.metadata?.total_completion_tokens?.toLocaleString() || 0}
                                   </p>
@@ -686,7 +685,7 @@ const UsagePage: React.FC<UsagePageProps> = ({ teams, organizations }) => {
                               </ShadcnCard>
                               <ShadcnCard>
                                 <CardContent>
-                                  <h3 className="text-lg font-medium text-foreground">Cache Read Tokens</h3>
+                                  <h3 className="text-lg font-medium text-foreground">Cache 读取 Tokens</h3>
                                   <p className="text-2xl font-bold mt-2 text-success">
                                     {userSpendData.metadata?.total_cache_read_input_tokens?.toLocaleString() || 0}
                                   </p>
@@ -694,7 +693,7 @@ const UsagePage: React.FC<UsagePageProps> = ({ teams, organizations }) => {
                               </ShadcnCard>
                               <ShadcnCard>
                                 <CardContent>
-                                  <h3 className="text-lg font-medium text-foreground">Cache Write Tokens</h3>
+                                  <h3 className="text-lg font-medium text-foreground">Cache 写入 Tokens</h3>
                                   <p className="text-2xl font-bold mt-2 text-purple-600">
                                     {userSpendData.metadata?.total_cache_creation_input_tokens?.toLocaleString() || 0}
                                   </p>
@@ -710,7 +709,7 @@ const UsagePage: React.FC<UsagePageProps> = ({ teams, organizations }) => {
                     <div className="col-span-2">
                       <ShadcnCard>
                         <CardHeader>
-                          <CardTitle className="text-base font-semibold">Daily Spend</CardTitle>
+                          <CardTitle className="text-base font-semibold">每日花费</CardTitle>
                         </CardHeader>
                         <CardContent>
                           {loading ? (
@@ -730,13 +729,13 @@ const UsagePage: React.FC<UsagePageProps> = ({ teams, organizations }) => {
                                 return (
                                   <div className="bg-card p-4 shadow-lg rounded-lg border">
                                     <p className="font-bold">{data.date}</p>
-                                    <p className="text-info">Spend: ${formatNumberWithCommas(data.metrics.spend, 2)}</p>
-                                    <p className="text-muted-foreground">Requests: {data.metrics.api_requests}</p>
+                                    <p className="text-info">花费：${formatNumberWithCommas(data.metrics.spend, 2)}</p>
+                                    <p className="text-muted-foreground">请求数：{data.metrics.api_requests}</p>
                                     <p className="text-muted-foreground">
-                                      Successful: {data.metrics.successful_requests}
+                                      成功：{data.metrics.successful_requests}
                                     </p>
-                                    <p className="text-muted-foreground">Failed: {data.metrics.failed_requests}</p>
-                                    <p className="text-muted-foreground">Tokens: {data.metrics.total_tokens}</p>
+                                    <p className="text-muted-foreground">失败：{data.metrics.failed_requests}</p>
+                                    <p className="text-muted-foreground">Tokens：{data.metrics.total_tokens}</p>
                                   </div>
                                 );
                               }}
@@ -751,7 +750,7 @@ const UsagePage: React.FC<UsagePageProps> = ({ teams, organizations }) => {
                         <ShadcnCard data-testid="gateway-requests-by-endpoint">
                           <CardHeader>
                             <CardTitle className="text-base font-semibold">
-                              Gateway Requests by Endpoint
+                              按 Endpoint 统计的 Gateway 请求
                               <Tooltip>
                                 <TooltipTrigger
                                   render={
@@ -759,8 +758,7 @@ const UsagePage: React.FC<UsagePageProps> = ({ teams, organizations }) => {
                                   }
                                 />
                                 <TooltipContent>
-                                  Counted by the gateway middleware as each request is answered. Covers LLM, MCP and A2A
-                                  endpoints across the whole deployment.
+                                  由 gateway middleware 在每个请求响应时计数。覆盖整个部署中的 LLM、MCP 和 A2A endpoints。
                                 </TooltipContent>
                               </Tooltip>
                             </CardTitle>
@@ -840,18 +838,18 @@ const UsagePage: React.FC<UsagePageProps> = ({ teams, organizations }) => {
                                       return (
                                         <div className="bg-card p-4 shadow-lg rounded-lg border">
                                           <p className="font-bold">{data.key}</p>
-                                          <p className="text-info">Spend: ${formatNumberWithCommas(data.spend, 2)}</p>
+                                          <p className="text-info">花费：${formatNumberWithCommas(data.spend, 2)}</p>
                                           <p className="text-muted-foreground">
-                                            Total Requests: {data.requests.toLocaleString()}
+                                            总请求数：{data.requests.toLocaleString()}
                                           </p>
                                           <p className="text-success">
-                                            Successful: {data.successful_requests.toLocaleString()}
+                                            成功：{data.successful_requests.toLocaleString()}
                                           </p>
                                           <p className="text-destructive">
-                                            Failed: {data.failed_requests.toLocaleString()}
+                                            失败：{data.failed_requests.toLocaleString()}
                                           </p>
                                           <p className="text-muted-foreground">
-                                            Tokens: {data.tokens.toLocaleString()}
+                                            Tokens：{data.tokens.toLocaleString()}
                                           </p>
                                         </div>
                                       );
@@ -957,9 +955,9 @@ const UsagePage: React.FC<UsagePageProps> = ({ teams, organizations }) => {
             <>
               {showCredentialBanner && (
                 <Alert variant="info" className="mb-5">
-                  <AlertTitle>Reusable credentials are automatically tracked as tags</AlertTitle>
+                  <AlertTitle>可复用凭据会自动作为 tags 追踪</AlertTitle>
                   <AlertDescription className="text-inherit">
-                    When a reusable credential is used, it will appear as a tag prefixed with{" "}
+                    使用可复用凭据时，它会在此视图中显示为带有以下前缀的 tag：{" "}
                     <code className="rounded bg-black/5 px-1 py-0.5 font-mono text-xs">Credential: </code>
                     in this view.
                   </AlertDescription>
@@ -967,7 +965,7 @@ const UsagePage: React.FC<UsagePageProps> = ({ teams, organizations }) => {
                     <Button
                       variant="ghost"
                       size="icon-xs"
-                      aria-label="Close"
+                      aria-label="关闭"
                       onClick={() => setShowCredentialBanner(false)}
                     >
                       <X />
@@ -1036,7 +1034,7 @@ const UsagePage: React.FC<UsagePageProps> = ({ teams, organizations }) => {
         }}
         dateRange={dateValue}
         selectedFilters={[]}
-        customTitle="Export Usage Data"
+        customTitle="导出用量数据"
       />
 
       {/* AI Chat Panel */}
