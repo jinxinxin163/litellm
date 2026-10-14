@@ -36,7 +36,7 @@ function RoutingGroupRowActions({ group, onEdit, onDelete }: RoutingGroupRowActi
       <DropdownMenuContent align="end" className="w-44">
         <DropdownMenuItem data-testid="routing-group-action-edit" onClick={() => onEdit(group)}>
           <Pencil />
-          Edit
+          编辑
         </DropdownMenuItem>
         <DropdownMenuItem
           variant="destructive"
@@ -44,7 +44,7 @@ function RoutingGroupRowActions({ group, onEdit, onDelete }: RoutingGroupRowActi
           onClick={() => onDelete(group)}
         >
           <Trash2 />
-          Delete
+          删除
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -65,8 +65,8 @@ export const getRoutingGroupsTableColumns = ({
   {
     id: "group_name",
     accessorKey: "group_name",
-    meta: { title: "Group Name", skeleton: "text" },
-    header: ({ column }) => <DataTableSortHeader column={column} title="Group Name" />,
+    meta: { title: "Group 名称", skeleton: "text" },
+    header: ({ column }) => <DataTableSortHeader column={column} title="Group 名称" />,
     size: 240,
     enableSorting: true,
     cell: ({ row }) => (
@@ -75,8 +75,8 @@ export const getRoutingGroupsTableColumns = ({
   },
   {
     id: "models",
-    meta: { title: "Models", skeleton: "chips" },
-    header: "Models",
+    meta: { title: "模型", skeleton: "chips" },
+    header: "模型",
     size: 320,
     enableSorting: false,
     cell: ({ row }) => <ModelsCell models={row.original.models} />,
@@ -84,8 +84,8 @@ export const getRoutingGroupsTableColumns = ({
   {
     id: "routing_strategy",
     accessorKey: "routing_strategy",
-    meta: { title: "Strategy", skeleton: "text" },
-    header: ({ column }) => <DataTableSortHeader column={column} title="Strategy" />,
+    meta: { title: "策略", skeleton: "text" },
+    header: ({ column }) => <DataTableSortHeader column={column} title="策略" />,
     size: 180,
     enableSorting: true,
     cell: ({ row }) => (
@@ -98,7 +98,7 @@ export const getRoutingGroupsTableColumns = ({
   {
     id: "actions",
     meta: { className: "text-right", headerClassName: "text-right" },
-    header: () => <span className="sr-only">Actions</span>,
+    header: () => <span className="sr-only">操作</span>,
     size: 64,
     enableSorting: false,
     enableHiding: false,

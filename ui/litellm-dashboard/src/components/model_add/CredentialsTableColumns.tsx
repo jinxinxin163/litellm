@@ -50,7 +50,7 @@ function CredentialRowActions({ credential, onEdit, onDelete }: CredentialRowAct
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        aria-label="Open credential actions"
+        aria-label="打开凭据操作"
         data-testid={`credential-actions-${credential.credential_name}`}
         className={cn(buttonVariants({ variant: "ghost", size: "icon-sm" }), "text-muted-foreground")}
       >
@@ -59,14 +59,14 @@ function CredentialRowActions({ credential, onEdit, onDelete }: CredentialRowAct
       <DropdownMenuContent align="end" className="w-52">
         <DropdownMenuItem data-testid="credential-action-edit" onClick={() => onEdit(credential)}>
           <Pencil />
-          Edit
+          编辑
         </DropdownMenuItem>
         <DropdownMenuItem
           data-testid="credential-action-copy"
-          onClick={() => void copyToClipboard(credential.credential_name, "Credential name copied")}
+          onClick={() => void copyToClipboard(credential.credential_name, "凭据名称已复制")}
         >
           <Copy />
-          Copy credential name
+          复制凭据名称
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
@@ -75,7 +75,7 @@ function CredentialRowActions({ credential, onEdit, onDelete }: CredentialRowAct
           onClick={() => onDelete(credential)}
         >
           <Trash2 />
-          Delete
+          删除
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -97,8 +97,8 @@ export const getCredentialsTableColumns = ({
     {
       id: "credential_name",
       accessorKey: "credential_name",
-      meta: { title: "Credential Name" },
-      header: ({ column }) => <DataTableSortHeader column={column} title="Credential Name" />,
+      meta: { title: "凭据名称" },
+      header: ({ column }) => <DataTableSortHeader column={column} title="凭据名称" />,
       size: 260,
       enableSorting: true,
       cell: ({ row }) => (
@@ -125,7 +125,7 @@ export const getCredentialsTableColumns = ({
     {
       id: "actions",
       meta: { className: "text-right", headerClassName: "text-right" },
-      header: () => <span className="sr-only">Actions</span>,
+      header: () => <span className="sr-only">操作</span>,
       size: 64,
       enableSorting: false,
       enableHiding: false,

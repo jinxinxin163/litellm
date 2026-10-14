@@ -25,8 +25,8 @@ function EmptyState() {
       <div className="mb-1 flex size-10 items-center justify-center rounded-lg bg-muted">
         <KeyRound className="size-5 text-muted-foreground" />
       </div>
-      <div className="text-sm font-medium text-foreground">No credentials configured</div>
-      <div className="text-sm text-muted-foreground">Add a credential to connect an AI provider.</div>
+      <div className="text-sm font-medium text-foreground">尚未配置凭据</div>
+      <div className="text-sm text-muted-foreground">添加凭据以连接 AI provider。</div>
     </div>
   );
 }
@@ -55,7 +55,7 @@ const CredentialsTable: React.FC<CredentialsTableProps> = ({
       sorting={sorting}
       onSortingChange={setSorting}
       isLoading={isLoading}
-      loadingMessage="Loading credentials…"
+      loadingMessage="正在加载凭据..."
       noDataMessage={<EmptyState />}
       size="compact"
     />

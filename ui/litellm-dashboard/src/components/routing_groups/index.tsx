@@ -79,12 +79,12 @@ const RoutingGroups: React.FC = () => {
       await saveMutation.mutateAsync(next);
       toast.success(
         drawerMode === "create"
-          ? `Created routing group "${incoming.group_name}"`
-          : `Updated routing group "${incoming.group_name}"`,
+          ? `已创建 routing group "${incoming.group_name}"`
+          : `已更新 routing group "${incoming.group_name}"`,
       );
       setDrawerOpen(false);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to save routing group");
+      toast.error(err instanceof Error ? err.message : "保存 routing group 失败");
     }
   };
 
@@ -93,10 +93,10 @@ const RoutingGroups: React.FC = () => {
     const next = groups.filter((g) => g.group_name !== deletingGroup.group_name);
     try {
       await saveMutation.mutateAsync(next);
-      toast.success(`Deleted routing group "${deletingGroup.group_name}"`);
+      toast.success(`已删除 routing group "${deletingGroup.group_name}"`);
       setDeletingGroup(null);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to delete routing group");
+      toast.error(err instanceof Error ? err.message : "删除 routing group 失败");
     }
   };
 
@@ -110,13 +110,13 @@ const RoutingGroups: React.FC = () => {
                 <Search className="size-4 text-muted-foreground" />
               </InputGroupAddon>
               <InputGroupInput
-                placeholder="Search groups..."
+                placeholder="搜索 groups..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
               {searchQuery && (
                 <InputGroupAddon align="inline-end">
-                  <InputGroupButton size="icon-xs" aria-label="Clear search" onClick={() => setSearchQuery("")}>
+                  <InputGroupButton size="icon-xs" aria-label="清空搜索" onClick={() => setSearchQuery("")}>
                     <X />
                   </InputGroupButton>
                 </InputGroupAddon>
@@ -130,14 +130,14 @@ const RoutingGroups: React.FC = () => {
                 aria-busy={isFetching && !isLoading}
               >
                 <RefreshCw />
-                Refresh
+                刷新
               </Button>
               <Button onClick={openCreate}>
                 <Plus />
-                Create Group
+                创建 Group
               </Button>
               <span className="text-sm whitespace-nowrap text-muted-foreground">
-                Showing {filteredGroups.length} {filteredGroups.length === 1 ? "result" : "results"}
+                显示 {filteredGroups.length} 条结果
               </span>
             </div>
           </div>
@@ -168,15 +168,14 @@ const RoutingGroups: React.FC = () => {
       <Dialog open={Boolean(deletingGroup)} onOpenChange={(open) => !open && setDeletingGroup(null)}>
         <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Delete routing group?</DialogTitle>
+            <DialogTitle>删除 routing group？</DialogTitle>
           </DialogHeader>
           <p className="text-sm text-foreground">
-            Models in <span className="font-medium">{deletingGroup?.group_name}</span> will fall back to the
-            proxy&apos;s top-level routing strategy. This cannot be undone.
+            <span className="font-medium">{deletingGroup?.group_name}</span> 中的模型将回退到 proxy 顶层路由策略。此操作无法撤销。
           </p>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDeletingGroup(null)}>
-              Cancel
+              取消
             </Button>
             <Button
               onClick={confirmDelete}
@@ -184,7 +183,7 @@ const RoutingGroups: React.FC = () => {
               disabled={saveMutation.isPending}
               aria-busy={saveMutation.isPending}
             >
-              Delete
+              删除
             </Button>
           </DialogFooter>
         </DialogContent>

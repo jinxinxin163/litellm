@@ -46,7 +46,7 @@ interface RoutingGroupModalProps {
 }
 
 const ARGS_EXAMPLES: Record<string, string> = {
-  "latency-based-routing": 'Example: { "ttl": 3600, "lowest_latency_buffer": 0 }',
+  "latency-based-routing": '示例：{ "ttl": 3600, "lowest_latency_buffer": 0 }',
 };
 
 const RoutingGroupModal: React.FC<RoutingGroupModalProps> = ({
@@ -74,11 +74,11 @@ const RoutingGroupModal: React.FC<RoutingGroupModalProps> = ({
       group_name: z
         .string()
         .trim()
-        .min(1, "Group name is required")
-        .max(GROUP_NAME_MAX_LENGTH, `Must be ${GROUP_NAME_MAX_LENGTH} characters or fewer`)
-        .refine((value) => !reservedNames.has(value.toLowerCase()), "A group with this name already exists"),
-      models: z.array(z.string()).min(1, "Select at least one model"),
-      routing_strategy: z.string().min(1, "Strategy is required"),
+        .min(1, "Group 名称必填")
+        .max(GROUP_NAME_MAX_LENGTH, `必须不超过 ${GROUP_NAME_MAX_LENGTH} 个字符`)
+        .refine((value) => !reservedNames.has(value.toLowerCase()), "同名 group 已存在"),
+      models: z.array(z.string()).min(1, "请至少选择一个模型"),
+      routing_strategy: z.string().min(1, "策略必填"),
       routing_strategy_args: z.string(),
     };
     return z.object(shape);
@@ -106,7 +106,7 @@ const RoutingGroupModal: React.FC<RoutingGroupModalProps> = ({
       <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-y-auto sm:max-w-[560px]">
         <DialogHeader>
           <DialogTitle>
-            {mode === "create" ? "Create Routing Group" : `Edit ${initialValue?.group_name ?? ""}`}
+            {mode === "create" ? "创建 Routing Group" : `编辑 ${initialValue?.group_name ?? ""}`}
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={(event) => event.preventDefault()} noValidate>
@@ -114,8 +114,8 @@ const RoutingGroupModal: React.FC<RoutingGroupModalProps> = ({
             <FormField
               control={form.control}
               name="group_name"
-              label="Group Name"
-              description="Use this name as the model in API calls — LiteLLM routes the request to one of the group's models."
+              label="Group 名称"
+              description="在 API 调用中将此名称作为模型名使用，LiteLLM 会把请求路由到该 group 中的某个模型。"
             >
               {({ ref, ...field }) => <Input {...field} ref={ref} placeholder="fast-chat" disabled={mode === "edit"} />}
             </FormField>
@@ -123,8 +123,8 @@ const RoutingGroupModal: React.FC<RoutingGroupModalProps> = ({
             <FormField
               control={form.control}
               name="models"
-              label="Models"
-              description="Models from your model list that this group routes between."
+              label="模型"
+              description="此 group 会在这些模型之间路由。"
             >
               {({ id, value, onChange, "aria-invalid": ariaInvalid, "aria-describedby": ariaDescribedBy }) => (
                 <Combobox multiple items={modelOptions} value={value} onValueChange={onChange}>
@@ -141,14 +141,14 @@ const RoutingGroupModal: React.FC<RoutingGroupModalProps> = ({
                             id={id}
                             aria-invalid={ariaInvalid}
                             aria-describedby={ariaDescribedBy}
-                            placeholder="Select models"
+                            placeholder="选择模型"
                           />
                         </>
                       )}
                     </ComboboxValue>
                   </ComboboxChips>
                   <ComboboxContent anchor={modelsAnchor}>
-                    <ComboboxEmpty>No models found</ComboboxEmpty>
+                    <ComboboxEmpty>未找到模型</ComboboxEmpty>
                     <ComboboxList>
                       {(model: string) => (
                         <ComboboxItem key={model} value={model}>
@@ -164,7 +164,7 @@ const RoutingGroupModal: React.FC<RoutingGroupModalProps> = ({
             <FormField
               control={form.control}
               name="routing_strategy"
-              label="Routing Strategy"
+              label="路由策略"
               description={strategyDescriptions[selectedStrategy]}
             >
               {({ id, value, onChange, "aria-invalid": ariaInvalid, "aria-describedby": ariaDescribedBy }) => (
@@ -180,7 +180,7 @@ const RoutingGroupModal: React.FC<RoutingGroupModalProps> = ({
                   }}
                 >
                   <SelectTrigger id={id} aria-invalid={ariaInvalid} aria-describedby={ariaDescribedBy}>
-                    <SelectValue placeholder="Select strategy" />
+                    <SelectValue placeholder="选择策略" />
                   </SelectTrigger>
                   <SelectContent>
                     {availableStrategies.map((strategy) => (
@@ -197,8 +197,8 @@ const RoutingGroupModal: React.FC<RoutingGroupModalProps> = ({
               <FormField
                 control={form.control}
                 name="routing_strategy_args"
-                label="Strategy Arguments (JSON)"
-                description={ARGS_EXAMPLES[selectedStrategy] ?? 'Example: { "ttl": 60 }'}
+                label="策略参数 (JSON)"
+                description={ARGS_EXAMPLES[selectedStrategy] ?? '示例：{ "ttl": 60 }'}
               >
                 {({ ref, ...field }) => (
                   <Textarea {...field} ref={ref} rows={4} placeholder='{ "ttl": 3600 }' className="font-mono text-xs" />
@@ -207,16 +207,16 @@ const RoutingGroupModal: React.FC<RoutingGroupModalProps> = ({
             )}
 
             <p className="text-xs text-muted-foreground">
-              Models not claimed by an explicit group fall through to the proxy&apos;s top-level routing strategy.
+              未被显式 group 声明的模型会回退到 proxy 顶层路由策略。
             </p>
           </FieldGroup>
         </form>
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>
-            Cancel
+            取消
           </Button>
           <Button onClick={() => void form.handleSubmit(handleSubmit)()} disabled={saving} aria-busy={saving}>
-            {mode === "create" ? "Create Group" : "Save Changes"}
+            {mode === "create" ? "创建 Group" : "保存更改"}
           </Button>
         </DialogFooter>
       </DialogContent>

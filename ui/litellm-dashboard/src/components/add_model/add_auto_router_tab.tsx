@@ -97,11 +97,11 @@ const presetDisabledHint = (availability: PresetAvailability): string | null => 
     case "available":
       return null;
     case "loading":
-      return "Checking model availability...";
+      return "正在检查模型可用性...";
     case "unverifiable":
-      return "Cannot verify these models are available";
+      return "无法验证这些模型是否可用";
     case "missing_models":
-      return `Missing: ${availability.models.join(", ")}`;
+      return `缺失：${availability.models.join(", ")}`;
   }
 };
 
@@ -117,7 +117,7 @@ const tierConfigSummary = (config: ComplexityRouterConfigValue): string => {
   const parts = activeTierRows(config)
     .filter((row) => row.models.length > 0)
     .map((row) => `${tierRowLabel(row, config.tier_labels)}: ${row.models.join(", ")}`);
-  return parts.length > 0 ? parts.join(" · ") : "No tiers configured yet";
+  return parts.length > 0 ? parts.join(" · ") : "尚未配置 tier";
 };
 
 // Why the submit is unavailable, or null when it is available. The button reads this to disable
@@ -146,8 +146,8 @@ export const getSubmitBlockedReason = (
 
 const autoRouterSchema = (requiresTeamScope: boolean) =>
   z.object({
-    auto_router_name: z.string().min(1, "Auto router name is required"),
-    team_id: requiresTeamScope ? z.string().min(1, "Please select a team to continue") : z.string(),
+    auto_router_name: z.string().min(1, "Auto router 名称必填"),
+    team_id: requiresTeamScope ? z.string().min(1, "请选择 team 后继续") : z.string(),
     model_access_group: z.array(z.string()).optional(),
   });
 
@@ -315,7 +315,7 @@ const AddAutoRouterTab: React.FC<AddAutoRouterTabProps> = ({
   const templateItems = React.useMemo(
     () => [
       ...sortedPresetOptions.map(({ preset }) => ({ value: preset.key, label: preset.label })),
-      { value: "custom", label: "Custom Configuration" },
+      { value: "custom", label: "自定义配置" },
     ],
     [sortedPresetOptions],
   );
@@ -336,7 +336,7 @@ const AddAutoRouterTab: React.FC<AddAutoRouterTabProps> = ({
     setSelectedPreset(undefined);
     applyPrefill({ ...buildEmptyPrefill(), complexityRouterConfig: automaticRouterConfig });
     setDetailsExpanded(false);
-    toast.success("Automatic setup created", { description: tierConfigSummary(automaticRouterConfig) });
+    toast.success("已生成自动配置", { description: tierConfigSummary(automaticRouterConfig) });
   };
 
   const handlePresetChange = (presetKey: string | undefined) => {
@@ -445,7 +445,7 @@ const AddAutoRouterTab: React.FC<AddAutoRouterTabProps> = ({
       : (["auto_router_name"] as const);
 
     if (!(await form.trigger(validatedFields))) {
-      toast.fromError("Please fill in all required fields");
+      toast.fromError("请填写所有必填字段");
       return;
     }
 
@@ -485,7 +485,7 @@ const AddAutoRouterTab: React.FC<AddAutoRouterTabProps> = ({
     if (!name) {
       setShowValidationErrors(true);
       void form.trigger("auto_router_name");
-      toast.fromError("Please enter an Auto Router Name");
+      toast.fromError("请输入 Auto Router 名称");
       return;
     }
 
@@ -515,7 +515,7 @@ const AddAutoRouterTab: React.FC<AddAutoRouterTabProps> = ({
     const targets = buildAutoRouterTestTargets(testTargetParams);
 
     if (targets.length === 0) {
-      toast.fromError("Please select at least one model for a complexity tier");
+      toast.fromError("请至少为一个复杂度 tier 选择模型");
       return;
     }
 
@@ -535,7 +535,7 @@ const AddAutoRouterTab: React.FC<AddAutoRouterTabProps> = ({
                 <FormField
                   control={form.control}
                   name="auto_router_name"
-                  label={labelWithHint("Auto Router Name", "Unique name for this auto router configuration")}
+                  label={labelWithHint("Auto Router 名称", "此 auto router 配置的唯一名称")}
                 >
                   {({ ref, ...field }) => (
                     <Input {...field} ref={ref} placeholder="e.g., smart_router, auto_router_1" />
@@ -549,19 +549,19 @@ const AddAutoRouterTab: React.FC<AddAutoRouterTabProps> = ({
                     data-testid="configure-automatically-button"
                     onClick={handleAutomaticSetup}
                   >
-                    Configure automatically
+                    自动配置
                   </button>
                 )}
 
                 <div className="mt-5">
-                  <label className="block text-sm font-medium text-foreground mb-2">Template</label>
+                  <label className="block text-sm font-medium text-foreground mb-2">模板</label>
                   <Select
                     items={templateItems}
                     value={selectedPreset ?? null}
                     onValueChange={(presetKey: string | null) => handlePresetChange(presetKey ?? undefined)}
                   >
                     <SelectTrigger data-testid="template-selector" className="w-full">
-                      <SelectValue placeholder="Choose a template or select Custom to define your own" />
+                      <SelectValue placeholder="选择模板，或选择自定义来手动定义" />
                     </SelectTrigger>
                     <SelectContent>
                       {sortedPresetOptions.map(({ preset, availability: presetState }) => {
@@ -571,7 +571,7 @@ const AddAutoRouterTab: React.FC<AddAutoRouterTabProps> = ({
                           : "text-muted-foreground";
                         const matchedHint =
                           presetState.kind === "available" && presetState.viaDeployments
-                            ? "Matches your deployments"
+                            ? "匹配你的 deployments"
                             : null;
 
                         return (
@@ -591,28 +591,28 @@ const AddAutoRouterTab: React.FC<AddAutoRouterTabProps> = ({
                           </SelectItem>
                         );
                       })}
-                      <SelectItem value="custom" label="Custom Configuration">
+                      <SelectItem value="custom" label="自定义配置">
                         <div>
-                          <div className="font-medium">Custom Configuration</div>
-                          <div className="text-xs text-muted-foreground">Define your auto router from scratch</div>
+                          <div className="font-medium">自定义配置</div>
+                          <div className="text-xs text-muted-foreground">从零开始定义 auto router</div>
                         </div>
                       </SelectItem>
                     </SelectContent>
                   </Select>
                   {modelsUnverifiable && (
                     <div className="text-xs mt-1 text-destructive">
-                      Could not load available models.{" "}
+                      无法加载可用模型。{" "}
                       <button type="button" className="underline" onClick={() => refetchModels()}>
-                        Retry
+                        重试
                       </button>
                     </div>
                   )}
-                  {presetsPending && <div className="text-xs mt-1 text-muted-foreground">Loading templates...</div>}
+                  {presetsPending && <div className="text-xs mt-1 text-muted-foreground">正在加载模板...</div>}
                   {presetsUnavailable && (
                     <div className="text-xs mt-1 text-destructive">
-                      Could not load templates, so only Custom Configuration is shown.{" "}
+                      无法加载模板，因此仅显示自定义配置。{" "}
                       <button type="button" className="underline" onClick={() => void refetchPresets()}>
-                        Retry
+                        重试
                       </button>
                     </div>
                   )}
@@ -624,8 +624,8 @@ const AddAutoRouterTab: React.FC<AddAutoRouterTabProps> = ({
                   control={form.control}
                   name="team_id"
                   label={labelWithHint(
-                    "Select Team",
-                    "Select the team this auto router belongs to. Only keys for this team will be able to call it.",
+                    "选择 Team",
+                    "选择此 auto router 所属的 team。只有该 team 的 key 可以调用它。",
                   )}
                 >
                   {({ id, value, onChange }) => (
@@ -647,7 +647,7 @@ const AddAutoRouterTab: React.FC<AddAutoRouterTabProps> = ({
                     ) : (
                       <ChevronRight className="size-3 text-muted-foreground" />
                     )}
-                    Detailed Configuration
+                    详细配置
                   </span>
                   {!detailsExpanded && (
                     <span className="text-xs text-muted-foreground line-clamp-2">
@@ -692,8 +692,8 @@ const AddAutoRouterTab: React.FC<AddAutoRouterTabProps> = ({
                   control={form.control}
                   name="model_access_group"
                   label={labelWithHint(
-                    "Model Access Group",
-                    "Use model access groups to control who can access this auto router",
+                    "模型访问组",
+                    "使用模型访问组控制谁可以访问此 auto router",
                   )}
                 >
                   {({ id, value, onChange, "aria-invalid": ariaInvalid, "aria-describedby": ariaDescribedBy }) => (
@@ -717,11 +717,11 @@ const AddAutoRouterTab: React.FC<AddAutoRouterTabProps> = ({
                         href="https://github.com/BerriAI/litellm/issues"
                         className="text-sm text-primary underline-offset-4 hover:underline"
                       >
-                        Need Help?
+                        需要帮助？
                       </a>
                     }
                   />
-                  <TooltipContent>Get help on our github</TooltipContent>
+                  <TooltipContent>在 GitHub 上获取帮助</TooltipContent>
                 </Tooltip>
                 <div className="flex gap-2">
                   <BlockedReasonTooltip reason={submitBlockedReason}>
@@ -732,7 +732,7 @@ const AddAutoRouterTab: React.FC<AddAutoRouterTabProps> = ({
                       disabled={submitBlockedReason !== null || isSubmitting}
                       onClick={() => setIsRoutingTestVisible(true)}
                     >
-                      Test Routing
+                      测试路由
                     </Button>
                   </BlockedReasonTooltip>
                   <Button
@@ -743,7 +743,7 @@ const AddAutoRouterTab: React.FC<AddAutoRouterTabProps> = ({
                     disabled={isTestingConnection}
                   >
                     {isTestingConnection && <UiLoadingSpinner className="size-4" />}
-                    Test Connection
+                    测试连接
                   </Button>
                   <BlockedReasonTooltip reason={submitBlockedReason}>
                     <Button
@@ -753,7 +753,7 @@ const AddAutoRouterTab: React.FC<AddAutoRouterTabProps> = ({
                         void handleAutoRouterSubmit();
                       }}
                     >
-                      Add Auto Router
+                      添加 Auto Router
                     </Button>
                   </BlockedReasonTooltip>
                 </div>
@@ -766,7 +766,7 @@ const AddAutoRouterTab: React.FC<AddAutoRouterTabProps> = ({
       <Dialog open={isRoutingTestVisible} onOpenChange={(open) => !open && setIsRoutingTestVisible(false)}>
         <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-y-auto sm:max-w-[760px]">
           <DialogHeader>
-            <DialogTitle>Test Routing</DialogTitle>
+            <DialogTitle>测试路由</DialogTitle>
           </DialogHeader>
           {isRoutingTestVisible && (
             <AutoRouterRoutingTest
@@ -780,7 +780,7 @@ const AddAutoRouterTab: React.FC<AddAutoRouterTabProps> = ({
           <DialogFooter>
             {" "}
             <Button variant="outline" onClick={() => setIsRoutingTestVisible(false)}>
-              Close
+              关闭
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -797,7 +797,7 @@ const AddAutoRouterTab: React.FC<AddAutoRouterTabProps> = ({
       >
         <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-y-auto sm:max-w-[700px]">
           <DialogHeader>
-            <DialogTitle>Connection Test Results</DialogTitle>
+            <DialogTitle>连接测试结果</DialogTitle>
           </DialogHeader>
           {isTestModalVisible && (
             <AutoRouterConnectionTest
@@ -816,7 +816,7 @@ const AddAutoRouterTab: React.FC<AddAutoRouterTabProps> = ({
                 setIsTestingConnection(false);
               }}
             >
-              Close
+              关闭
             </Button>
           </DialogFooter>
         </DialogContent>

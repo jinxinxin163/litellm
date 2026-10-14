@@ -35,7 +35,7 @@ const retryPolicyMap: Record<string, string> = {
   "ContentPolicyViolationError (400)": "ContentPolicyViolationErrorRetries",
   "InternalServerError (500)": "InternalServerErrorRetries",
   "ServiceUnavailableError (503)": "ServiceUnavailableErrorRetries",
-  "All other errors": "DefaultRetries",
+  "其他所有错误": "DefaultRetries",
 };
 
 const isValidRetryCount = (value: number) => Number.isFinite(value) && Number.isInteger(value) && value >= 0;
@@ -54,7 +54,7 @@ const ModelRetrySettingsTab = ({
 }: ModelRetrySettingsTabProps) => {
   const isGlobalScope = selectedModelGroup === "global";
   const scopeItems = [
-    { value: "global", label: "Global Default" },
+    { value: "global", label: "全局默认" },
     ...availableModelGroups.map((group) => ({ value: group, label: group })),
   ];
 
@@ -85,7 +85,7 @@ const ModelRetrySettingsTab = ({
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
-        <Label htmlFor="retry-policy-scope">Retry Policy Scope:</Label>
+        <Label htmlFor="retry-policy-scope">重试策略范围：</Label>
         <div className="w-48">
           <Select
             items={scopeItems}
@@ -108,16 +108,16 @@ const ModelRetrySettingsTab = ({
 
       {isGlobalScope ? (
         <div>
-          <h2 className="text-lg font-semibold">Global Retry Policy</h2>
+          <h2 className="text-lg font-semibold">全局重试策略</h2>
           <p className="text-sm text-muted-foreground">
-            Default retry settings applied to all model groups unless overridden
+            默认重试设置会应用到所有 model groups，除非被覆盖
           </p>
         </div>
       ) : (
         <div>
-          <h2 className="text-lg font-semibold">Retry Policy for {selectedModelGroup}</h2>
+          <h2 className="text-lg font-semibold">{selectedModelGroup} 的重试策略</h2>
           <p className="text-sm text-muted-foreground">
-            Model-specific retry settings. Falls back to global defaults if not set.
+            模型特定的重试设置。未设置时回退到全局默认值。
           </p>
         </div>
       )}
@@ -133,14 +133,14 @@ const ModelRetrySettingsTab = ({
                 <td className="text-sm">
                   <span>{exceptionType}</span>
                   {!isGlobalScope && (
-                    <span className="ml-2 text-xs text-muted-foreground">(Global: {inheritedValue})</span>
+                    <span className="ml-2 text-xs text-muted-foreground">（全局：{inheritedValue}）</span>
                   )}
                 </td>
                 <td className="flex items-center gap-2">
                   <Input
                     className="w-28"
                     type="number"
-                    aria-label={`${exceptionType} retry count`}
+                    aria-label={`${exceptionType} 重试次数`}
                     min={0}
                     step={1}
                     value={isGlobalScope ? inheritedValue : hasOverride ? override : ""}
@@ -149,7 +149,7 @@ const ModelRetrySettingsTab = ({
                   />
                   {!isGlobalScope && hasOverride && (
                     <Button variant="ghost" size="xs" onClick={() => setModelOverride(retryPolicyKey, null)}>
-                      Reset
+                      重置
                     </Button>
                   )}
                 </td>
@@ -160,7 +160,7 @@ const ModelRetrySettingsTab = ({
       </table>
       <Button onClick={handleSaveRetrySettings} disabled={isSaving}>
         {isSaving && <LoaderCircle className="animate-spin" />}
-        Save
+        保存
       </Button>
     </div>
   );

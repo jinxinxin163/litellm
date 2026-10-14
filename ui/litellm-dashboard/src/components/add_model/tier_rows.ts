@@ -107,29 +107,29 @@ export interface TierRestriction {
 export const CUSTOM_TIER_RESTRICTIONS = {
   displayNames: {
     omit: ["tier_labels"],
-    reason: "Display names rename the built-in tiers, which your tier set replaces. Name each tier directly",
+    reason: "显示名称用于重命名内置 tiers，而你的 tier 集合会替代它们。请直接命名每个 tier",
   },
   escalation: {
     omit: ["escalation_keywords"],
-    reason: "Escalation bumps a request along the built-in tier ladder, which your tier set replaces",
+    reason: "升级会沿内置 tier 阶梯提升请求，而你的 tier 集合会替代该阶梯",
   },
   stallEscalation: {
     omit: ["stall_escalation_enabled", "stall_escalation_window", "stall_escalation_repeat_threshold"],
-    reason: "Stall escalation bumps a request along the built-in tier ladder, which your tier set replaces",
+    reason: "停滞升级会沿内置 tier 阶梯提升请求，而你的 tier 集合会替代该阶梯",
   },
   adaptive: {
     omit: ["adaptive", "adaptive_weights", "tier_distance_penalty", "adaptive_eligible"],
-    reason: "Adaptive routing scores models along the built-in tier ladder, which your tier set replaces",
+    reason: "自适应路由会沿内置 tier 阶梯为模型评分，而你的 tier 集合会替代该阶梯",
   },
   sessionAffinity: {
     omit: [],
-    reason: "Session pinning escalates along the built-in tier ladder, which your tier set replaces",
+    reason: "Session pinning 会沿内置 tier 阶梯升级，而你的 tier 集合会替代该阶梯",
   },
   heuristicClassifier: {
     omit: ["heuristic_first_max_tier", "hybrid_boundary_margin"],
     reason:
-      "The heuristic scorer only produces the built-in tiers, so an edited set needs the LLM classifier. " +
-      "Heuristic first and hybrid are out for the same reason: their local scorer decides the traffic it is sure of",
+      "heuristic scorer 只能生成内置 tiers，因此编辑后的集合需要 LLM 分类器。" +
+      "Heuristic first 和 hybrid 也因同样原因不可用：它们的本地 scorer 会直接决定有把握的流量",
   },
   heuristicScoring: {
     omit: [
@@ -139,15 +139,15 @@ export const CUSTOM_TIER_RESTRICTIONS = {
       "reasoning_override_min_score",
       "custom_technical_keywords",
     ],
-    reason: "The heuristic scorer never runs under an edited tier set, so its inputs have no effect",
+    reason: "编辑后的 tier 集合下 heuristic scorer 不会运行，因此这些输入不会生效",
   },
   classificationRubric: {
     omit: [],
-    reason: "The preset calibration examples are written against the built-in tiers, which your tier set replaces",
+    reason: "预设校准示例是基于内置 tiers 编写的，而你的 tier 集合会替代它们",
   },
   classifierFallback: {
     omit: ["classifier_fallback"],
-    reason: "Fallback Tier is where an edited tier set routes when the classifier fails",
+    reason: "分类器失败时，编辑后的 tier 集合会路由到 Fallback Tier",
   },
 } as const satisfies Record<string, TierRestriction>;
 
@@ -159,12 +159,12 @@ export const CUSTOM_TIER_OMITTED_KEYS: readonly string[] = Object.values(CUSTOM_
 export const getCustomTierRowsError = (customTierSet: CustomTierSet): string | null => {
   const rows = customTierSet.tiers;
   if (rows.length < MIN_TIER_COUNT || rows.length > MAX_TIER_COUNT)
-    return `A tier set needs ${MIN_TIER_COUNT} to ${MAX_TIER_COUNT} tiers`;
-  if (rows.some((row) => !activeTierName(row))) return "Name every tier";
+    return `tier 集合需要 ${MIN_TIER_COUNT} 到 ${MAX_TIER_COUNT} 个 tiers`;
+  if (rows.some((row) => !activeTierName(row))) return "请命名每个 tier";
   const folded = rows.map((row) => row.name.trim().toLowerCase());
-  if (new Set(folded).size !== folded.length) return "Tier names must be unique, ignoring case";
+  if (new Set(folded).size !== folded.length) return "Tier 名称必须唯一（忽略大小写）";
   if (rows.some((row) => !row.definition.trim() && !isBuiltInTierName(row.name)))
-    return "Every custom tier needs a definition: it is the rubric the classifier routes on";
-  if (!tierRowById(rows, customTierSet.fallback_tier_id)) return "Pick a Fallback Tier for classifier failures";
+    return "每个自定义 tier 都需要定义：分类器会根据它进行路由";
+  if (!tierRowById(rows, customTierSet.fallback_tier_id)) return "请选择分类器失败时使用的 Fallback Tier";
   return null;
 };

@@ -41,37 +41,36 @@ const SemanticKeywordMatching: React.FC<SemanticKeywordMatchingProps> = ({
       <div className="flex items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="font-medium">Semantic keyword matching</span>
-            <SimpleTooltip content="Recognize related phrasing beyond exact keyword matches by comparing embeddings instead of plain text. Overrides direct keyword matching">
+            <span className="font-medium">Semantic 关键词匹配</span>
+            <SimpleTooltip content="通过比较 embeddings 而不是纯文本，识别精确关键词之外的相关表达。会覆盖直接关键词匹配。">
               <Info className="size-4 text-muted-foreground" />
             </SimpleTooltip>
           </div>
           <span className="text-muted-foreground text-sm">
-            Uses same keyword-tier pairs as above and overrides direct keyword matching. Adds latency based on embedding
-            model network request.
+            使用上方相同的关键词-tier 对，并覆盖直接关键词匹配。会增加 embedding 模型网络请求带来的延迟。
           </span>
         </div>
-        <Switch checked={enabled} onCheckedChange={onEnabledChange} aria-label="Semantic keyword matching" />
+        <Switch checked={enabled} onCheckedChange={onEnabledChange} aria-label="Semantic 关键词匹配" />
       </div>
 
       {enabled && (
         <div className="grid gap-4 md:grid-cols-2 mt-4 pt-4 border-t border-border">
           <div>
-            <span className="mb-1 block text-sm font-medium">Embedding model</span>
+            <span className="mb-1 block text-sm font-medium">Embedding 模型</span>
             <SearchSelect
               options={modelOptions}
               value={embeddingModel ?? ""}
               onValueChange={onEmbeddingModelChange}
-              placeholder="Select an embedding model"
-              emptyText="No embedding models found"
-              aria-label="Embedding model"
+              placeholder="选择 embedding 模型"
+              emptyText="未找到 embedding 模型"
+              aria-label="Embedding 模型"
               allowClear={false}
               className={embeddingModelMissing ? "border-destructive" : undefined}
             />
-            {embeddingModelMissing && <span className="text-xs text-destructive">An embedding model is required</span>}
+            {embeddingModelMissing && <span className="text-xs text-destructive">Embedding 模型必填</span>}
           </div>
           <div>
-            <span className="mb-1 block text-sm font-medium">Minimum match score</span>
+            <span className="mb-1 block text-sm font-medium">最低匹配分数</span>
             <Input
               type="number"
               value={matchThreshold}
@@ -84,7 +83,7 @@ const SemanticKeywordMatching: React.FC<SemanticKeywordMatchingProps> = ({
               className="w-full"
             />
             <span className="mt-1 block text-xs text-muted-foreground">
-              Match only at or above this similarity score.
+              仅匹配达到或高于此相似度分数的内容。
             </span>
           </div>
         </div>

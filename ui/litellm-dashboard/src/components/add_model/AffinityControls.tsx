@@ -28,17 +28,16 @@ export const AffinityControls: React.FC<{
         <Switch
           checked={value.deployment_affinity ?? DEFAULT_DEPLOYMENT_AFFINITY}
           onCheckedChange={(deploymentAffinity) => onChange({ ...value, deployment_affinity: deploymentAffinity })}
-          aria-label="Pin a session to one deployment per model group"
+          aria-label="将 session pin 到每个 model group 的一个 deployment"
         />
-        <strong className="font-semibold">Pin a session to one deployment per model group</strong>
+        <strong className="font-semibold">将 session pin 到每个 model group 的一个 deployment</strong>
       </div>
       <span className="block text-xs mb-3 text-muted-foreground">
-        Keeps a session on the same deployment within a group, so provider prompt caches stay warm. Turn off to
-        load-balance every turn.
+        让同一个 session 保持在 group 内的同一个 deployment 上，以便 provider prompt cache 保持命中。关闭后每轮都会重新做 load balance。
       </span>
       <div style={{ maxWidth: 320 }}>
         <label className="block text-sm font-medium mb-1" htmlFor="session-affinity-ttl">
-          How long a pin survives idle (seconds)
+          pin 空闲保留时长（秒）
         </label>
         <Input
           id="session-affinity-ttl"
@@ -49,8 +48,7 @@ export const AffinityControls: React.FC<{
           onBlur={(event) => commitTtl(event.target.value)}
         />
         <span className="block text-xs mt-1 text-muted-foreground">
-          Refreshes after every request that reuses a pin. Empty tracks the backend default of{" "}
-          {DEFAULT_SESSION_AFFINITY_TTL_SECONDS} seconds.
+          每次复用 pin 的请求后刷新。留空时使用后端默认值 {DEFAULT_SESSION_AFFINITY_TTL_SECONDS} 秒。
         </span>
       </div>
     </>

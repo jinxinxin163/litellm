@@ -26,18 +26,17 @@ const ContextWindowEscalationConfig: React.FC<{
         <Switch
           checked={enabled}
           onCheckedChange={(next) => onChange({ ...value, enable_context_window_escalation: next })}
-          aria-label="Escalate oversized prompts to a tier that fits"
+          aria-label="将超大 prompts 升级到可容纳的 tier"
         />
-        <strong className="font-semibold">Escalate oversized prompts to a tier that fits</strong>
+        <strong className="font-semibold">将超大 prompts 升级到可容纳的 tier</strong>
       </div>
       <span className="block text-xs mb-3 text-muted-foreground">
-        When a prompt provably cannot fit the decided tier&apos;s context windows, route it to the lowest tier whose
-        window holds it instead of letting the provider reject it. Off means requests dispatch on complexity alone.
+        当 prompt 明确无法放入已决策 tier 的上下文窗口时，将它路由到能够容纳它的最低 tier，而不是让 provider 拒绝。关闭后，请求只按复杂度分发。
       </span>
       {enabled && (
         <div style={{ maxWidth: 320 }}>
           <label className="block text-sm font-medium mb-1" htmlFor="context-window-escalation-buffer">
-            Window fit buffer
+            窗口适配缓冲
           </label>
           <Input
             id="context-window-escalation-buffer"
@@ -48,8 +47,7 @@ const ContextWindowEscalationConfig: React.FC<{
             onBlur={(event) => commitBuffer(event.target.value)}
           />
           <span className="block text-xs mt-1 text-muted-foreground">
-            Fraction of a model&apos;s window the counted prompt must fit within, above 0 up to 1. Empty tracks the
-            backend default of 0.95.
+            计数后的 prompt 必须适配的模型窗口比例，范围为大于 0 且不超过 1。留空时使用后端默认值 0.95。
           </span>
         </div>
       )}

@@ -56,10 +56,10 @@ const asStringArray = (value: unknown): string[] =>
 const dedupe = (models: string[]): string[] => Array.from(new Set(models));
 
 const COMPLEXITY_TYPE_LABELS: Record<string, string> = {
-  llm: "LLM Classifier",
-  heuristic_first: "Heuristic first",
+  llm: "LLM 分类器",
+  heuristic_first: "Heuristic 优先",
   hybrid: "Hybrid",
-  custom: "Custom classifier",
+  custom: "自定义分类器",
 };
 
 export const complexityTypeLabel = (config: Record<string, unknown>): string =>

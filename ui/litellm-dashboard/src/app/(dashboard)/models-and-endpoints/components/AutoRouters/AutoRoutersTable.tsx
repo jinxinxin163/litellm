@@ -30,11 +30,11 @@ function EmptyState({ canModify }: { canModify: boolean }) {
       <div className="mb-1 flex size-10 items-center justify-center rounded-lg bg-muted">
         <AutoRouterIcon size={20} className="text-muted-foreground" />
       </div>
-      <div className="text-sm font-medium text-foreground">No auto routers yet</div>
+      <div className="text-sm font-medium text-foreground">还没有 auto routers</div>
       <div className="text-sm text-muted-foreground">
         {canModify
-          ? "Create an auto router to pick the right model per request instead of pinning one."
-          : "An auto router picks the right model per request instead of pinning one."}
+          ? "创建 auto router，为每个请求选择合适的模型，而不是固定到单个模型。"
+          : "Auto router 会为每个请求选择合适的模型，而不是固定到单个模型。"}
       </div>
     </div>
   );
@@ -62,7 +62,7 @@ export function AutoRoutersTable({
       paginationMode="client"
       pageSizeOptions={PAGE_SIZE_OPTIONS}
       isLoading={isLoading}
-      loadingMessage="Loading auto routers…"
+      loadingMessage="正在加载 auto routers..."
       noDataMessage={<EmptyState canModify={canModify} />}
       size="compact"
     />

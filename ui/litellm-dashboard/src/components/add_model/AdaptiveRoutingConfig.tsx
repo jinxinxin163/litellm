@@ -50,21 +50,18 @@ const AdaptiveRoutingConfig: React.FC<AdaptiveRoutingConfigProps> = ({ value, on
     <>
       <Label className="mb-2">
         <Switch checked={value.adaptive ?? false} onCheckedChange={handleAdaptiveToggle} />
-        <strong className="font-semibold">Enable adaptive bandit selection</strong>
+        <strong className="font-semibold">启用自适应 bandit 选择</strong>
       </Label>
       <span className="block text-xs text-muted-foreground">
-        When disabled, each request always uses the model assigned to its classified tier.
+        关闭后，每个请求始终使用其分类 tier 分配的模型。
       </span>
 
       <Card className="bg-muted mt-4">
         <CardContent>
-          <strong className="mb-2 block font-semibold">How Adaptive Routing Works</strong>
+          <strong className="mb-2 block font-semibold">自适应路由如何工作</strong>
           <span className="text-[13px] text-muted-foreground">
-            It learns from how each conversation actually goes: does the user have to rephrase or correct the model,
-            does it get stuck repeating itself, does it run out of tool calls, does the user seem satisfied. Combined
-            with cost, this live feedback shifts future routing toward the models that are actually working well, and
-            improves as more conversations come in. Until there&apos;s enough feedback, it defaults to the classified
-            tier&apos;s model.
+            它会从每段对话的实际表现中学习：用户是否需要重述或纠正模型，模型是否卡住并重复自身，是否耗尽 tool call，用户看起来是否满意。结合成本后，
+            这些实时反馈会把后续路由推向实际效果更好的模型，并随着对话增多而改进。在反馈足够之前，默认使用分类 tier 的模型。
           </span>
         </CardContent>
       </Card>
@@ -73,24 +70,23 @@ const AdaptiveRoutingConfig: React.FC<AdaptiveRoutingConfigProps> = ({ value, on
         <div className="mt-4 space-y-4">
           <div>
             <strong className="mb-1 block font-semibold">
-              Quality vs. Cost ({Math.round(adaptiveWeights.quality * 100)}% quality /{" "}
-              {Math.round(adaptiveWeights.cost * 100)}% cost)
+              质量 vs. 成本（{Math.round(adaptiveWeights.quality * 100)}% 质量 /{" "}
+              {Math.round(adaptiveWeights.cost * 100)}% 成本）
             </strong>
             <Slider
-              aria-label="Quality vs. Cost"
+              aria-label="质量 vs. 成本"
               min={0}
               max={100}
               value={[Math.round(adaptiveWeights.quality * 100)]}
               onValueChange={(next) => handleQualityWeightChange(Array.isArray(next) ? next[0] : next)}
             />
             <span className="text-xs text-muted-foreground">
-              Higher quality weight favors more capable (pricier) models; higher cost weight favors cheaper models when
-              the bandit has feedback to act on. Recommended: 30% quality / 70% cost split.
+              更高的质量权重会偏向能力更强（更贵）的模型；当 bandit 有可用反馈时，更高的成本权重会偏向更便宜的模型。推荐：30% 质量 / 70% 成本。
             </span>
           </div>
 
           <div>
-            <strong className="mb-1 block font-semibold">Eligible Model Pool</strong>
+            <strong className="mb-1 block font-semibold">可选模型池</strong>
             <RadioGroup
               value={adaptiveEligible}
               onValueChange={(eligible: unknown) => handleAdaptiveEligibleChange(eligible as AdaptiveEligible)}
@@ -100,17 +96,17 @@ const AdaptiveRoutingConfig: React.FC<AdaptiveRoutingConfigProps> = ({ value, on
                 <Label className="items-start font-normal leading-normal">
                   <RadioGroupItem value="all" className="mt-0.5" />
                   <span>
-                    <strong className="font-semibold">All tiers (soft floor)</strong>{" "}
+                    <strong className="font-semibold">所有 tiers（软下限）</strong>{" "}
                     <span className="text-muted-foreground">
-                      — router can pick across tiers, depending on the best fit for the prompt
+                      - router 可跨 tier 选择，取决于与 prompt 的最佳匹配
                     </span>
                   </span>
                 </Label>
                 <Label className="items-start font-normal leading-normal">
                   <RadioGroupItem value="classified_tier" className="mt-0.5" />
                   <span>
-                    <strong className="font-semibold">Classified tier only</strong>{" "}
-                    <span className="text-muted-foreground">— router can only pick models within tier</span>
+                    <strong className="font-semibold">仅分类 tier</strong>{" "}
+                    <span className="text-muted-foreground">- router 只能选择该 tier 内的模型</span>
                   </span>
                 </Label>
               </div>
@@ -119,7 +115,7 @@ const AdaptiveRoutingConfig: React.FC<AdaptiveRoutingConfigProps> = ({ value, on
 
           {adaptiveEligible === "all" && (
             <div>
-              <strong className="mb-1 block font-semibold">Tier Distance Penalty</strong>
+              <strong className="mb-1 block font-semibold">Tier 距离惩罚</strong>
               <Input
                 type="number"
                 value={tierDistancePenalty}
@@ -131,7 +127,7 @@ const AdaptiveRoutingConfig: React.FC<AdaptiveRoutingConfigProps> = ({ value, on
                 className="w-full"
               />
               <span className="text-xs text-muted-foreground">
-                Score penalty applied per tier-step away from the classified tier.
+                每远离分类 tier 一个 tier-step 时应用的分数惩罚。
               </span>
             </div>
           )}

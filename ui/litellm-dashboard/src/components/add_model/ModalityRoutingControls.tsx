@@ -15,27 +15,25 @@ export const ModalityRoutingControls: React.FC<{
         <Switch
           checked={modalityRouting}
           onCheckedChange={(nextModalityRouting) => onChange({ ...value, modality_routing: nextModalityRouting })}
-          aria-label="Route image requests to vision-capable models"
+          aria-label="将图片请求路由到支持视觉的模型"
         />
-        <strong className="font-semibold">Route image requests to vision-capable models</strong>
+        <strong className="font-semibold">将图片请求路由到支持视觉的模型</strong>
       </div>
       <span className="block text-xs mb-3 text-muted-foreground">
-        Replaces a routed model that cannot take image input with the nearest higher tier that can, then the default
-        model, instead of failing with a provider 400. Only models explicitly declared supports_vision false are
-        replaced, and a kept session pin still wins unless you turn on the override below.
+        当路由到的模型不能接收图片输入时，改用最近的更高 tier 中支持视觉的模型，再回退到默认模型，避免 provider 400。只有明确声明
+        supports_vision false 的模型会被替换；除非开启下面的覆盖项，否则已有 session pin 仍优先。
       </span>
       <div className="flex items-center gap-2 mb-2">
         <Switch
           checked={value.modality_pin_override ?? false}
           onCheckedChange={(modalityPinOverride) => onChange({ ...value, modality_pin_override: modalityPinOverride })}
           disabled={!modalityRouting}
-          aria-label="Override session pin for image requests"
+          aria-label="为图片请求覆盖 session pin"
         />
-        <strong className="font-semibold">Override session pin for image requests</strong>
+        <strong className="font-semibold">为图片请求覆盖 session pin</strong>
       </div>
       <span className="block text-xs text-muted-foreground">
-        Route an image turn to a capable model even when the session is pinned to one that cannot take images. The pin
-        is kept, so the next text turn goes back to it. Needs image routing turned on.
+        即使 session 被 pin 到不支持图片的模型，也会把图片轮次路由到可用模型。pin 会保留，所以下一个文本轮次会回到原模型。需要先开启图片路由。
       </span>
     </>
   );

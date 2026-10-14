@@ -63,7 +63,7 @@ const truncate = (value: string): string => (value.length > 100 ? `${value.subst
 
 // Helper function to extract meaningful error information
 const extractMeaningfulError = (error: unknown): string => {
-  if (!error) return "Health check failed";
+  if (!error) return "健康检查失败";
 
   const errorStr = typeof error === "string" ? error : JSON.stringify(error);
 
@@ -194,8 +194,8 @@ const HealthCheckComponent: React.FC<HealthCheckComponentProps> = ({
         if (modelId) {
           healthStatusMap[modelId] = {
             status: "none",
-            lastCheck: "None",
-            lastSuccess: "None",
+            lastCheck: "无",
+            lastSuccess: "无",
             loading: false,
             error: undefined,
             fullError: undefined,
@@ -226,7 +226,7 @@ const HealthCheckComponent: React.FC<HealthCheckComponentProps> = ({
             healthStatusMap[modelId] = {
               status: checkData.status || "unknown",
               lastCheck: toCheckedAtLabel(checkData.checked_at, "None"),
-              lastSuccess: toLastSuccessLabel(checkData, "None"),
+              lastSuccess: toLastSuccessLabel(checkData, "无"),
               loading: false,
               error: fullError ? extractMeaningfulError(fullError) : undefined,
               fullError: fullError,
@@ -262,14 +262,14 @@ const HealthCheckComponent: React.FC<HealthCheckComponentProps> = ({
         const currentTime = new Date().toLocaleString();
 
         if (response.unhealthy_count > 0 && response.unhealthy_endpoints && response.unhealthy_endpoints.length > 0) {
-          const rawError = response.unhealthy_endpoints[0]?.error || "Health check failed";
+          const rawError = response.unhealthy_endpoints[0]?.error || "健康检查失败";
           const errorMessage = extractMeaningfulError(rawError);
           setModelHealthStatuses((prev) => ({
             ...prev,
             [modelId]: {
               status: "unhealthy",
               lastCheck: currentTime,
-              lastSuccess: prev[modelId]?.lastSuccess || "None",
+              lastSuccess: prev[modelId]?.lastSuccess || "无",
               loading: false,
               error: errorMessage,
               fullError: rawError,
@@ -299,7 +299,7 @@ const HealthCheckComponent: React.FC<HealthCheckComponentProps> = ({
               [modelId]: {
                 status: checkData.status || prev[modelId]?.status || "unknown",
                 lastCheck: toCheckedAtLabel(checkData.checked_at, prev[modelId]?.lastCheck || "None"),
-                lastSuccess: toLastSuccessLabel(checkData, prev[modelId]?.lastSuccess || "None"),
+                lastSuccess: toLastSuccessLabel(checkData, prev[modelId]?.lastSuccess || "无"),
                 loading: false,
                 error: fullError ? extractMeaningfulError(fullError) : prev[modelId]?.error,
                 fullError: fullError || prev[modelId]?.fullError,
@@ -317,7 +317,7 @@ const HealthCheckComponent: React.FC<HealthCheckComponentProps> = ({
           [modelId]: {
             status: "unhealthy",
             lastCheck: currentTime,
-            lastSuccess: prev[modelId]?.lastSuccess || "None",
+            lastSuccess: prev[modelId]?.lastSuccess || "无",
             loading: false,
             error: errorMessage,
             fullError: rawError,
@@ -358,14 +358,14 @@ const HealthCheckComponent: React.FC<HealthCheckComponentProps> = ({
 
         const currentTime = new Date().toLocaleString();
         if (response.unhealthy_count > 0 && response.unhealthy_endpoints && response.unhealthy_endpoints.length > 0) {
-          const rawError = response.unhealthy_endpoints[0]?.error || "Health check failed";
+          const rawError = response.unhealthy_endpoints[0]?.error || "健康检查失败";
           const errorMessage = extractMeaningfulError(rawError);
           setModelHealthStatuses((prev) => ({
             ...prev,
             [modelId]: {
               status: "unhealthy",
               lastCheck: currentTime,
-              lastSuccess: prev[modelId]?.lastSuccess || "None",
+              lastSuccess: prev[modelId]?.lastSuccess || "无",
               loading: false,
               error: errorMessage,
               fullError: rawError,
@@ -420,8 +420,8 @@ const HealthCheckComponent: React.FC<HealthCheckComponentProps> = ({
               ...prev,
               [modelId]: {
                 status: checkData.status || currentStatus?.status || "unknown",
-                lastCheck: toCheckedAtLabel(checkData.checked_at, currentStatus?.lastCheck || "None"),
-                lastSuccess: toLastSuccessLabel(checkData, currentStatus?.lastSuccess || "None"),
+                lastCheck: toCheckedAtLabel(checkData.checked_at, currentStatus?.lastCheck || "无"),
+                lastSuccess: toLastSuccessLabel(checkData, currentStatus?.lastSuccess || "无"),
                 loading: false,
                 error: fullError ? extractMeaningfulError(fullError) : currentStatus?.error,
                 fullError: fullError || currentStatus?.fullError,
@@ -484,7 +484,7 @@ const HealthCheckComponent: React.FC<HealthCheckComponentProps> = ({
           litellm_model_name: model.litellm_model_name,
           health_status: status.status,
           last_check: status.lastCheck,
-          last_success: status.lastSuccess || "None",
+          last_success: status.lastSuccess || "无",
           health_loading: status.loading,
           health_error: status.error,
           health_full_error: status.fullError,
@@ -501,9 +501,9 @@ const HealthCheckComponent: React.FC<HealthCheckComponentProps> = ({
       <div className="mb-6">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-semibold text-foreground">Model Health Status</h2>
+            <h2 className="text-lg font-semibold text-foreground">模型健康状态</h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              Run health checks on individual models to verify they are working correctly
+              对单个模型运行健康检查，确认它们是否正常工作
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -514,7 +514,7 @@ const HealthCheckComponent: React.FC<HealthCheckComponentProps> = ({
                 onClick={() => setRowSelection({})}
                 data-testid="clear-health-selection"
               >
-                Clear Selection
+                清空选择
               </Button>
             )}
             <Button
@@ -524,7 +524,7 @@ const HealthCheckComponent: React.FC<HealthCheckComponentProps> = ({
               disabled={anyCheckRunning}
               data-testid="run-health-checks"
             >
-              {isPartialSelection ? "Run Selected Checks" : "Run All Checks"}
+              {isPartialSelection ? "运行所选检查" : "运行全部检查"}
             </Button>
           </div>
         </div>
@@ -556,21 +556,21 @@ const HealthCheckComponent: React.FC<HealthCheckComponentProps> = ({
         <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-y-auto sm:max-w-3xl">
           <DialogHeader>
             <DialogTitle>
-              {selectedErrorDetails ? `Health Check Error - ${selectedErrorDetails.modelName}` : "Error Details"}
+              {selectedErrorDetails ? `健康检查错误 - ${selectedErrorDetails.modelName}` : "错误详情"}
             </DialogTitle>
-            <DialogDescription>Details returned by the model health check.</DialogDescription>
+            <DialogDescription>模型健康检查返回的详情。</DialogDescription>
           </DialogHeader>
           {selectedErrorDetails && (
             <div className="space-y-4">
               <div>
-                <span className="font-medium">Error:</span>
+                <span className="font-medium">错误：</span>
                 <div className="mt-2 rounded-md border border-destructive/30 bg-destructive/10 p-3">
                   <span className="text-destructive">{selectedErrorDetails.cleanedError}</span>
                 </div>
               </div>
 
               <div>
-                <span className="font-medium">Full Error Details:</span>
+                <span className="font-medium">完整错误详情：</span>
                 <div className="mt-2 max-h-96 overflow-y-auto rounded-md border bg-muted/50 p-3">
                   <pre className="whitespace-pre-wrap text-sm text-foreground">{selectedErrorDetails.fullError}</pre>
                 </div>
@@ -579,7 +579,7 @@ const HealthCheckComponent: React.FC<HealthCheckComponentProps> = ({
           )}
           <DialogFooter>
             <Button type="button" variant="outline" onClick={closeErrorModal}>
-              Close
+              关闭
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -595,22 +595,22 @@ const HealthCheckComponent: React.FC<HealthCheckComponentProps> = ({
           <DialogHeader>
             <DialogTitle>
               {selectedSuccessDetails
-                ? `Health Check Response - ${selectedSuccessDetails.modelName}`
-                : "Response Details"}
+                ? `健康检查响应 - ${selectedSuccessDetails.modelName}`
+                : "响应详情"}
             </DialogTitle>
-            <DialogDescription>Response returned by the successful model health check.</DialogDescription>
+            <DialogDescription>模型健康检查成功后返回的响应。</DialogDescription>
           </DialogHeader>
           {selectedSuccessDetails && (
             <div className="space-y-4">
               <div>
-                <span className="font-medium">Status:</span>
+                <span className="font-medium">状态：</span>
                 <div className="mt-2 rounded-md border border-primary/30 bg-primary/5 p-3">
-                  <span className="text-foreground">Health check passed successfully</span>
+                  <span className="text-foreground">健康检查通过</span>
                 </div>
               </div>
 
               <div>
-                <span className="font-medium">Response Details:</span>
+                <span className="font-medium">响应详情：</span>
                 <div className="mt-2 max-h-96 overflow-y-auto rounded-md border bg-muted/50 p-3">
                   <pre className="whitespace-pre-wrap text-sm text-foreground">
                     {JSON.stringify(selectedSuccessDetails.response, null, 2)}
@@ -621,7 +621,7 @@ const HealthCheckComponent: React.FC<HealthCheckComponentProps> = ({
           )}
           <DialogFooter>
             <Button type="button" variant="outline" onClick={closeSuccessModal}>
-              Close
+              关闭
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -44,12 +44,11 @@ import {
 } from "./ComplexityRouterConfig";
 
 const DEFAULT_SCORING_EXPLANATION =
-  "The router scores each request across 7 dimensions: token count, code presence, reasoning markers, technical " +
-  "terms, simple indicators, multi-step patterns, and question complexity. The weighted score determines the tier:";
+  "router 会从 7 个维度为每个请求评分：token 数量、是否包含代码、推理标记、技术术语、简单指标、多步骤模式和问题复杂度。" +
+  "加权分数决定 tier：";
 
 const HEURISTIC_V2_EXPLANATION =
-  "The router estimates success probability for all four tiers with the bundled calibrated model, then selects " +
-  "the first tier that meets its trained threshold. It runs locally with no classifier API call.";
+  "router 使用内置校准模型估算四个 tier 的成功概率，然后选择第一个达到训练阈值的 tier。它在本地运行，不会调用分类器 API。";
 
 const CLASSIFIER_TIMEOUT_ID = "classifier-timeout-ms";
 const CLASSIFIER_CONTEXT_WINDOW_SIZE_ID = "classifier-context-window-size";
@@ -57,13 +56,12 @@ const CLASSIFIER_CONTEXT_BUDGET_CHARS_ID = "classifier-context-budget-chars";
 const HYBRID_BOUNDARY_MARGIN_ID = "hybrid-boundary-margin";
 
 const CUSTOM_PROMPT_WITH_HEURISTIC_FALLBACK =
-  "This router classifies with your own prompt, so the tier comes from whatever rubric it states. The four tier " +
-  "names stay fixed. The scoring below is the heuristic, which now runs only when the classifier call fails:";
+  "此 router 使用你的 prompt 分类，因此 tier 取决于 prompt 中声明的 rubric。四个 tier 名称保持固定。下面的评分是 heuristic，" +
+  "现在只会在分类器调用失败时运行：";
 
 const CUSTOM_PROMPT_WITH_DEFAULT_MODEL_FALLBACK =
-  "This router classifies with your own prompt, so the tier comes from whatever rubric it states. The four tier " +
-  "names stay fixed. The scoring below no longer runs at all, since a failed classifier routes to the default " +
-  "model instead:";
+  "此 router 使用你的 prompt 分类，因此 tier 取决于 prompt 中声明的 rubric。四个 tier 名称保持固定。下面的评分不再运行，" +
+  "因为分类器失败会改为路由到默认模型：";
 
 /**
  * What the scoring breakdown below it actually describes. A custom prompt means the score no longer
@@ -121,31 +119,30 @@ const HowClassificationWorks: React.FC<{ value: ComplexityRouterConfigValue }> =
   return (
     <Card className="bg-muted mt-4">
       <CardContent>
-        <strong className="block mb-2 font-semibold">How Classification Works</strong>
+        <strong className="block mb-2 font-semibold">分类如何工作</strong>
         <span className="text-[13px] text-muted-foreground">{scoringExplanation(value)}</span>
         {scorerRuns && ranges && (
           <ul className="mt-2 pl-5 text-[13px] text-muted-foreground">
             <li>
-              <strong>{effectiveTierLabel("SIMPLE", value.tier_labels)}</strong>: Score &lt; {ranges.simpleMedium}
+              <strong>{effectiveTierLabel("SIMPLE", value.tier_labels)}</strong>: 分数 &lt; {ranges.simpleMedium}
             </li>
             <li>
-              <strong>{effectiveTierLabel("MEDIUM", value.tier_labels)}</strong>: Score {ranges.simpleMedium} -{" "}
+              <strong>{effectiveTierLabel("MEDIUM", value.tier_labels)}</strong>: 分数 {ranges.simpleMedium} -{" "}
               {ranges.mediumComplex}
             </li>
             <li>
-              <strong>{effectiveTierLabel("COMPLEX", value.tier_labels)}</strong>: Score {ranges.mediumComplex} -{" "}
+              <strong>{effectiveTierLabel("COMPLEX", value.tier_labels)}</strong>: 分数 {ranges.mediumComplex} -{" "}
               {ranges.complexReasoning}
             </li>
             <li>
-              <strong>{effectiveTierLabel("REASONING", value.tier_labels)}</strong>: Score &gt;{" "}
-              {ranges.complexReasoning} (or 2+ reasoning markers with a score of at least{" "}
-              {ranges.reasoningOverrideFloor})
+              <strong>{effectiveTierLabel("REASONING", value.tier_labels)}</strong>: 分数 &gt;{" "}
+              {ranges.complexReasoning}（或 2+ reasoning markers 且分数至少为 {ranges.reasoningOverrideFloor}）
             </li>
           </ul>
         )}
         {!ranges && isError && (
           <span className="text-[13px] block mt-2 text-muted-foreground">
-            The tier score ranges could not be loaded from the proxy.
+            无法从 proxy 加载 tier 分数范围。
           </span>
         )}
       </CardContent>
@@ -185,7 +182,7 @@ const ClassifierTypeRadios: React.FC<{
             <span>
               <strong className="font-semibold">Heuristic</strong>{" "}
               <span className="text-muted-foreground">
-                (default), rule-based scoring with no API calls and &lt;1ms latency
+                （默认），基于规则评分，无 API 调用，延迟 &lt;1ms
               </span>
             </span>
           </Label>
@@ -196,7 +193,7 @@ const ClassifierTypeRadios: React.FC<{
             <span>
               <strong className="font-semibold">Heuristic v2</strong>{" "}
               <span className="text-muted-foreground">
-                uses bundled calibrated four-tier probabilities with no API call
+                使用内置校准的四 tier 概率，无 API 调用
               </span>
             </span>
           </Label>
@@ -204,8 +201,8 @@ const ClassifierTypeRadios: React.FC<{
         <Label className="items-start font-normal leading-normal">
           <RadioGroupItem value="llm" className="mt-0.5" />
           <span>
-            <strong className="font-semibold">LLM Classifier</strong>{" "}
-            <span className="text-muted-foreground">calls a model to decide the tier (e.g. a small/fast model)</span>
+            <strong className="font-semibold">LLM 分类器</strong>{" "}
+            <span className="text-muted-foreground">调用模型来决定 tier（例如小型/快速模型）</span>
           </span>
         </Label>
         <SimpleTooltip content={scorerLockedReason}>
@@ -214,7 +211,7 @@ const ClassifierTypeRadios: React.FC<{
             <span>
               <strong className="font-semibold">Heuristic first</strong>{" "}
               <span className="text-muted-foreground">
-                scores locally, and only pays for the classifier when the score does not confidently land a cheap tier
+                先在本地评分；只有分数无法可靠落到低价 tier 时，才付费调用分类器
               </span>
             </span>
           </Label>
@@ -225,8 +222,7 @@ const ClassifierTypeRadios: React.FC<{
             <span>
               <strong className="font-semibold">Hybrid</strong>{" "}
               <span className="text-muted-foreground">
-                keeps the local score at any tier, and only pays for the classifier when that score lands near a tier
-                boundary
+                在任意 tier 保留本地分数；只有分数接近 tier 边界时，才付费调用分类器
               </span>
             </span>
           </Label>
@@ -435,7 +431,7 @@ const ClassificationMethodConfig: React.FC<ClassificationMethodConfigProps> = ({
 
       {classifierType === "heuristic_first" && (
         <div className="mt-4 space-y-2">
-          <strong className="block font-semibold">Decide locally up to</strong>
+          <strong className="block font-semibold">本地决策最高到</strong>
           <Select
             value={value.heuristic_first_max_tier}
             onValueChange={(tier: unknown) => handleHeuristicFirstMaxTierChange(tier as string)}
@@ -452,15 +448,14 @@ const ClassificationMethodConfig: React.FC<ClassificationMethodConfigProps> = ({
             </SelectContent>
           </Select>
           <p className="text-sm text-muted-foreground">
-            A request the scorer places at or below this tier routes there without a classifier call. Anything the
-            scorer places higher, and anything it found no signal for at all, goes to the classifier instead
+            scorer 放在此 tier 或更低 tier 的请求会直接路由过去，不调用分类器。scorer 放到更高 tier 的请求，以及完全找不到信号的请求，会改交给分类器。
           </p>
         </div>
       )}
 
       {classifierType === "hybrid" && (
         <div className="mt-4 space-y-2">
-          <strong className="block font-semibold">Boundary margin</strong>
+          <strong className="block font-semibold">边界裕量</strong>
           <Input
             id={HYBRID_BOUNDARY_MARGIN_ID}
             type="text"
@@ -475,15 +470,13 @@ const ClassificationMethodConfig: React.FC<ClassificationMethodConfigProps> = ({
             className="w-full"
           />
           <p className="text-sm text-muted-foreground">
-            A score further than this from every tier boundary routes on the scorer&apos;s own tier, however expensive
-            that tier is. A score closer than this, and anything the scorer found no signal for at all, goes to the
-            classifier to break the tie
+            如果分数距离每个 tier 边界都超过此值，则按 scorer 自己的 tier 路由，无论该 tier 成本多高。更接近边界的分数，以及 scorer 完全找不到信号的请求，会交给分类器裁决。
           </p>
         </div>
       )}
 
       <div className="mt-4 space-y-2">
-        <strong className="block font-semibold">How often to classify</strong>
+        <strong className="block font-semibold">分类频率</strong>
         <RadioGroup
           value={classificationFrequency(value)}
           onValueChange={(frequency: unknown) =>
@@ -494,52 +487,51 @@ const ClassificationMethodConfig: React.FC<ClassificationMethodConfigProps> = ({
             <Label className="items-start font-normal leading-normal">
               <RadioGroupItem value="every_request" className="mt-0.5" />
               <span>
-                <span>Every request</span>{" "}
-                <span className="text-muted-foreground">: score every turn, tool-result continuations included</span>
+                <span>每个请求</span>{" "}
+                <span className="text-muted-foreground">：每一轮都评分，包括 tool-result 后续轮次</span>
               </span>
             </Label>
             <Label className="items-start font-normal leading-normal">
               <RadioGroupItem value="user_turn" className="mt-0.5" />
               <span>
-                <span>Every new user message</span>{" "}
+                <span>每条新用户消息</span>{" "}
                 <span className="text-muted-foreground">
-                  : score each new human ask, then hold that tier for the tool calls that follow it
+                  ：每个新的人工提问评分一次，然后为其后的 tool calls 保持该 tier
                 </span>
               </span>
             </Label>
             <Label className="items-start font-normal leading-normal">
               <RadioGroupItem value="session" className="mt-0.5" disabled={Boolean(sessionFrequencyRestriction)} />
               <span>
-                <span>Once per session</span>{" "}
+                <span>每个 session 一次</span>{" "}
                 <span className="text-muted-foreground">
                   {sessionFrequencyRestriction?.reason ??
-                    ": score the first turn only, then hold that tier and its deployment for the whole session"}
+                    "：只为第一轮评分，然后在整个 session 中保持该 tier 及其 deployment"}
                 </span>
               </span>
             </Label>
           </div>
         </RadioGroup>
         <p className="text-sm text-muted-foreground">
-          Holding the tier keeps an agent on one model for a whole tool loop and cuts scoring cost. A turn the router
-          cannot match to a held decision, such as one with no session id or an expired one, is scored again
+          保持 tier 可以让 agent 在整个 tool loop 中停留在同一个模型上，并降低评分成本。router 无法匹配到已保持决策的轮次（例如没有 session id 或已过期）会重新评分。
         </p>
       </div>
 
       {usesLlmClassifier(classifierType) && (
         <div className="mt-4 space-y-3">
           <div>
-            <strong className="block mb-1 font-semibold">Classifier Model</strong>
+            <strong className="block mb-1 font-semibold">分类器模型</strong>
             <SearchSelect
               options={modelOptions}
               value={value.classifier_llm_config?.model ?? ""}
               onValueChange={handleClassifierModelChange}
-              placeholder="Select the model that will classify request complexity"
-              emptyText="No models found"
+              placeholder="选择用于分类请求复杂度的模型"
+              emptyText="未找到模型"
               allowClear={false}
               className={classifierModelMissing ? "border-destructive" : undefined}
-              aria-label="Classifier Model"
+              aria-label="分类器模型"
             />
-            {classifierModelMissing && <span className="text-xs text-destructive">A classifier model is required</span>}
+            {classifierModelMissing && <span className="text-xs text-destructive">分类器模型必填</span>}
           </div>
           <ClassifierReasoningEffortSelect
             model={classifierModel}
@@ -549,7 +541,7 @@ const ClassificationMethodConfig: React.FC<ClassificationMethodConfigProps> = ({
           />
           <div>
             <Label htmlFor={CLASSIFIER_TIMEOUT_ID} className="block mb-1 font-semibold">
-              Timeout (ms)
+              超时（ms）
             </Label>
             <Input
               id={CLASSIFIER_TIMEOUT_ID}
@@ -572,7 +564,7 @@ const ClassificationMethodConfig: React.FC<ClassificationMethodConfigProps> = ({
               className="w-full"
             />
             <span className="text-xs text-muted-foreground">
-              How long the classifier call has before it fails and the fallback below takes over.
+              分类器调用在失败并交由下方 fallback 处理前可等待的时间。
             </span>
           </div>
           <ClassifierCircuitBreakerConfig
@@ -585,8 +577,8 @@ const ClassificationMethodConfig: React.FC<ClassificationMethodConfigProps> = ({
           />
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <strong className="font-semibold">Classifier Prompt</strong>
-              <SimpleTooltip content="Every rubric uses the same four tiers. They differ in the worked examples that show the classifier where the boundary between tiers sits, and the Business rubric also rewrites the tier definitions for business traffic. Pick the rubric, and write your own opening instructions and calibration examples, inside the prompt editor.">
+              <strong className="font-semibold">分类器 Prompt</strong>
+              <SimpleTooltip content="每个 rubric 都使用相同的四个 tiers。差异在于用于提示分类器 tier 边界的 worked examples，Business rubric 还会为业务流量重写 tier 定义。选择 rubric，并在 prompt 编辑器中编写自己的开场说明和校准示例。">
                 <Info className="size-4 text-muted-foreground" />
               </SimpleTooltip>
             </div>
@@ -617,7 +609,7 @@ const ClassificationMethodConfig: React.FC<ClassificationMethodConfigProps> = ({
               />
             )}
           </div>
-          <RestrictedSection heading="If the classifier fails" by={restrictedBy(value, "classifierFallback")}>
+          <RestrictedSection heading="分类器失败时" by={restrictedBy(value, "classifierFallback")}>
             <RadioGroup
               value={value.classifier_fallback ?? DEFAULT_CLASSIFIER_FALLBACK}
               onValueChange={(fallback: unknown) => handleClassifierFallbackChange(fallback as ClassifierFallback)}
@@ -626,8 +618,8 @@ const ClassificationMethodConfig: React.FC<ClassificationMethodConfigProps> = ({
                 <Label className="items-start font-normal leading-normal">
                   <RadioGroupItem value="heuristic" className="mt-0.5" />
                   <span>
-                    <span>Score with the heuristic</span>{" "}
-                    <span className="text-muted-foreground">— right when the classifier grades complexity too</span>
+                    <span>使用 heuristic 评分</span>{" "}
+                    <span className="text-muted-foreground">- 在分类器评估复杂度时同步进行</span>
                   </span>
                 </Label>
                 <Label className="items-start font-normal leading-normal has-data-disabled:cursor-not-allowed has-data-disabled:opacity-50">
@@ -635,14 +627,14 @@ const ClassificationMethodConfig: React.FC<ClassificationMethodConfigProps> = ({
                   <SimpleTooltip
                     content={
                       hasDefaultModel
-                        ? "Change it from the Default Model select."
-                        : "Set a default model on this router to use this option"
+                        ? "请在默认模型选择器中修改。"
+                        : "为此 router 设置默认模型后即可使用此选项"
                     }
                   >
                     <span>
-                      <span>Route to the default model{defaultModel ? ` (${defaultModel})` : ""}</span>{" "}
+                      <span>路由到默认模型{defaultModel ? ` (${defaultModel})` : ""}</span>{" "}
                       <span className="text-muted-foreground">
-                        — right when your prompt grades something other than complexity
+                        - 当你的 prompt 评估的不是复杂度时使用
                       </span>
                     </span>
                   </SimpleTooltip>
@@ -650,12 +642,12 @@ const ClassificationMethodConfig: React.FC<ClassificationMethodConfigProps> = ({
               </div>
             </RadioGroup>
             <span className="block text-xs text-muted-foreground">
-              Applies when the classifier call errors, times out, or returns an unparseable response.
+              适用于分类器调用报错、超时或返回无法解析的响应时。
             </span>
           </RestrictedSection>
           <div>
             <Label htmlFor={CLASSIFIER_CONTEXT_WINDOW_SIZE_ID} className="block mb-1 font-semibold">
-              Context Window Size
+              上下文窗口大小
             </Label>
             <Input
               id={CLASSIFIER_CONTEXT_WINDOW_SIZE_ID}
@@ -678,14 +670,13 @@ const ClassificationMethodConfig: React.FC<ClassificationMethodConfigProps> = ({
               className="w-full"
             />
             <span className="text-xs text-muted-foreground">
-              Number of prior user turns (tool output and harness reminders excluded) sent to the classifier as context,
-              so a referring follow-up like &quot;now do the same for the streaming path&quot; is classified against
-              what it refers to. Set to 0 to send only the current message.
+              作为上下文发送给分类器的历史用户轮次数（不包括 tool output 和 harness reminders），因此类似 &quot;now do the same for the streaming path&quot;
+              的引用式后续请求会基于其引用内容分类。设为 0 则只发送当前消息。
             </span>
           </div>
           <div>
             <Label htmlFor={CLASSIFIER_CONTEXT_BUDGET_CHARS_ID} className="block mb-1 font-semibold">
-              Context Character Budget
+              上下文字符预算
             </Label>
             <Input
               id={CLASSIFIER_CONTEXT_BUDGET_CHARS_ID}
@@ -708,14 +699,11 @@ const ClassificationMethodConfig: React.FC<ClassificationMethodConfigProps> = ({
               className="w-full"
             />
             <span className="text-xs text-muted-foreground">
-              Total characters of prior conversation sent to the classifier. Turns are taken newest first and quoted
-              whole while they fit, so a short conversation is never cut.
+              发送给分类器的历史对话总字符数。轮次会从最新开始取，并在可容纳时整段引用，因此短对话不会被截断。
             </span>
             {contextBudgetQuotesNothing && (
               <span className="block text-xs text-destructive">
-                Under {MIN_QUOTED_CONTEXT_TURN_CHARS} characters there is no room to quote a turn that does not already
-                fit, so a long conversation reaches the classifier with no context at all. Set Context Window Size to 0
-                to turn context off deliberately.
+                低于 {MIN_QUOTED_CONTEXT_TURN_CHARS} 个字符时，没有空间引用一段无法完整容纳的轮次，因此长对话到达分类器时可能完全没有上下文。将上下文窗口大小设为 0 可明确关闭上下文。
               </span>
             )}
           </div>
@@ -725,18 +713,16 @@ const ClassificationMethodConfig: React.FC<ClassificationMethodConfigProps> = ({
                 checked={value.classifier_context_include_assistant_turns ?? false}
                 onCheckedChange={handleClassifierContextIncludeAssistantTurnsChange}
                 size="sm"
-                aria-label="Include Assistant Turns"
+                aria-label="包含 Assistant 轮次"
               />
-              <strong className="font-semibold">Include Assistant Turns</strong>
-              <SimpleTooltip content="Off by default. Enabling it changes tier decisions, and therefore spend, for an existing router, and sends assistant text to the classifier model, which may be a different provider than the routed model.">
+              <strong className="font-semibold">包含 Assistant 轮次</strong>
+              <SimpleTooltip content="默认关闭。为现有 router 启用它会改变 tier 决策以及花费，并会把 assistant 文本发送给分类器模型；分类器模型的 provider 可能不同于被路由模型。">
                 <Info className="size-4 text-muted-foreground" />
               </SimpleTooltip>
             </div>
             <span className="text-xs text-muted-foreground">
-              Let the classifier read the assistant&apos;s replies, so difficulty the model stated rather than the user
-              stays visible: a plan the assistant calls complex, approved with &quot;yes&quot;, is classified on the
-              work being approved. Context Window Size then counts the last N turns across both roles rather than the
-              last N user turns.
+              允许分类器读取 assistant 回复，让模型自己陈述的难度也可见，而不仅是用户内容。例如 assistant 称某个 plan 很复杂，用户用 &quot;yes&quot; 批准后，
+              会按被批准的工作分类。此时上下文窗口大小会统计两个角色的最近 N 轮，而不是最近 N 个用户轮次。
             </span>
           </div>
         </div>
@@ -745,13 +731,13 @@ const ClassificationMethodConfig: React.FC<ClassificationMethodConfigProps> = ({
       {heuristicScoringRole(value) !== "never" && (
         <div className="mt-4">
           <div className="flex items-center gap-2 mb-1">
-            <strong className="font-semibold">Custom Technical Keywords</strong>
-            <SimpleTooltip content="Domain-specific terms appended to the built-in technical keyword list. Prompts containing these terms score higher on the technical dimension and route to more capable models.">
+            <strong className="font-semibold">自定义技术关键词</strong>
+            <SimpleTooltip content="追加到内置技术关键词列表中的领域术语。包含这些术语的 prompts 会在技术维度上获得更高分，并路由到能力更强的模型。">
               <Info className="size-4 text-muted-foreground" />
             </SimpleTooltip>
           </div>
           <span className="block mb-2 text-xs text-muted-foreground">
-            Optional: Add terms to the built-in list to improve classification accuracy on the technical dimension.
+            可选：向内置列表添加术语，以提升技术维度上的分类准确性。
             (e.g., udp, kafka, terraform).
           </span>
           <MultiSelect
@@ -764,8 +750,8 @@ const ClassificationMethodConfig: React.FC<ClassificationMethodConfigProps> = ({
                 ),
               )
             }
-            placeholder="Type a keyword and press Enter"
-            emptyText="Type to add a keyword"
+            placeholder="输入关键词并按 Enter"
+            emptyText="输入以添加关键词"
             allowCustomValues
             className="w-full"
           />

@@ -74,7 +74,7 @@ function AutoRouterRowActions({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        aria-label={`Open actions for ${row.name}`}
+        aria-label={`打开 ${row.name} 的操作`}
         data-testid={`auto-router-actions-${row.id}`}
         className={cn(buttonVariants({ variant: "ghost", size: "icon-sm" }), "text-muted-foreground")}
       >
@@ -87,7 +87,7 @@ function AutoRouterRowActions({
           onClick={() => onDeleteClick(row)}
         >
           <Trash2 />
-          Delete auto router
+          删除 auto router
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -108,8 +108,8 @@ export const getAutoRoutersTableColumns = ({
   {
     id: "name",
     accessorKey: "name",
-    meta: { title: "Name" },
-    header: ({ column }) => <DataTableSortHeader column={column} title="Name" />,
+    meta: { title: "名称" },
+    header: ({ column }) => <DataTableSortHeader column={column} title="名称" />,
     size: 260,
     enableSorting: true,
     cell: ({ row }) => <IdentityCell title={row.original.name || "-"} onClick={() => onRouterClick(row.original)} />,
@@ -117,16 +117,16 @@ export const getAutoRoutersTableColumns = ({
   {
     id: "kind",
     accessorKey: "kind",
-    meta: { title: "Type" },
-    header: "Type",
+    meta: { title: "类型" },
+    header: "类型",
     size: 180,
     enableSorting: false,
     cell: ({ row }) => <TypeCell row={row.original} />,
   },
   {
     id: "targets",
-    meta: { title: "Routes to" },
-    header: "Routes to",
+    meta: { title: "路由到" },
+    header: "路由到",
     size: 320,
     enableSorting: false,
     cell: ({ row }) => <TargetsCell targets={row.original.targets} />,
@@ -134,8 +134,8 @@ export const getAutoRoutersTableColumns = ({
   {
     id: "defaultModel",
     accessorKey: "defaultModel",
-    meta: { title: "Default model" },
-    header: "Default model",
+    meta: { title: "默认模型" },
+    header: "默认模型",
     size: 200,
     enableSorting: false,
     cell: ({ row }) =>
@@ -150,8 +150,8 @@ export const getAutoRoutersTableColumns = ({
   {
     id: "createdAt",
     accessorKey: "createdAt",
-    meta: { title: "Created" },
-    header: ({ column }) => <DataTableSortHeader column={column} title="Created" />,
+    meta: { title: "创建时间" },
+    header: ({ column }) => <DataTableSortHeader column={column} title="创建时间" />,
     size: 150,
     enableSorting: true,
     sortingFn: "datetime",

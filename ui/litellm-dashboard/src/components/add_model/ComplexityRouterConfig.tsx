@@ -97,31 +97,27 @@ export const NEW_CLASSIFIER_CLASSIFICATION_RUBRIC: ClassificationRubric = "agent
 export const CLASSIFICATION_RUBRIC_DESCRIPTIONS: Record<ClassificationRubric, { label: string; description: string }> =
   {
     legacy: {
-      label: "Legacy (uncalibrated)",
+      label: "Legacy（未校准）",
       description:
-        "The rubric as it shipped before calibration examples, with no worked examples at all. Routers created " +
-        "before this setting existed use it, so their tier decisions and spend are unchanged. It over-routes " +
-        "ordinary engineering to the most expensive tier.",
+        "校准示例上线前使用的 rubric，没有任何完整示例。此设置出现前创建的 router 会继续使用它，因此 tier 决策和花费保持不变。" +
+        "它会把普通工程任务过度路由到最贵的 tier。",
     },
     agentic: {
       label: "Agentic",
       description:
-        "Anchors routine installs, builds, multi-file edits, and standard debugging at " +
-        "Medium, so ordinary engineering does not route to your most expensive tier. Suits agent, terminal, and " +
-        "coding-assistant traffic, and mixed traffic.",
+        "将常规安装、构建、多文件编辑和标准调试锚定在 Medium，避免普通工程任务路由到最贵的 tier。适合 agent、terminal、" +
+        "coding-assistant 流量以及混合流量。",
     },
     chat: {
       label: "Chat",
       description:
-        "Drops the engineering examples, for a router serving only conversational traffic that never sees those " +
-        "requests.",
+        "移除工程示例，适用于只服务对话流量、不会遇到这些请求的 router。",
     },
     business: {
       label: "Business",
       description:
-        "Business and sales examples plus business-oriented tier definitions: routine drafting and summarizing " +
-        "stay at Medium, data-determined analysis is Complex, and only decisions under conflicting tradeoffs " +
-        "reach Reasoning. Suits sales, support, and go-to-market traffic.",
+        "包含 business 和 sales 示例，以及面向业务的 tier 定义：常规起草和总结保持在 Medium，数据驱动分析为 Complex，" +
+        "只有存在冲突权衡的决策才进入 Reasoning。适合 sales、support 和 go-to-market 流量。",
     },
   };
 
@@ -190,8 +186,8 @@ const rowOrigin = (row: TierRow, editing: boolean): string => {
 };
 
 const defaultModelPlaceholderFor = (derivedDefaultModel: string | undefined, isCustomSet: boolean): string => {
-  if (derivedDefaultModel) return `Derived from tiers: ${derivedDefaultModel}`;
-  return isCustomSet ? "Add a model to your fallback tier" : "Add a model to the Simple or Medium tier";
+  if (derivedDefaultModel) return `由 tiers 派生：${derivedDefaultModel}`;
+  return isCustomSet ? "为 fallback tier 添加模型" : "为 Simple 或 Medium tier 添加模型";
 };
 
 const builtInTierInfo = (rowId: string): { label: string; description: string; examples: string } | undefined => {
@@ -201,12 +197,12 @@ const builtInTierInfo = (rowId: string): { label: string; description: string; e
 
 const tierConfigIntroText = (value: ComplexityRouterConfigValue): string => {
   if (value.classifier_type === "heuristic_v2") {
-    return "The complexity router classifies each request with a calibrated local four-tier model (no API calls). Configure which model(s) handle each tier.";
+    return "复杂度 router 使用已校准的本地四 tier 模型对每个请求分类（无 API 调用）。配置每个 tier 由哪些模型处理。";
   }
   if (heuristicScoringRole(value) === "never") {
-    return "The complexity router classifies each request with your classifier model and routes it to that tier. Configure which model(s) handle each tier.";
+    return "复杂度 router 使用你的分类器模型对每个请求分类，并路由到对应 tier。配置每个 tier 由哪些模型处理。";
   }
-  return "The complexity router automatically classifies requests by complexity using rule-based scoring (no API calls, <1ms latency). Configure which model(s) handle each tier.";
+  return "复杂度 router 使用基于规则的评分自动按复杂度分类请求（无 API 调用，延迟 <1ms）。配置每个 tier 由哪些模型处理。";
 };
 
 const TierConfigIntro: React.FC<{ value: ComplexityRouterConfigValue }> = ({ value }) => (
@@ -215,10 +211,10 @@ const TierConfigIntro: React.FC<{ value: ComplexityRouterConfigValue }> = ({ val
 
     <span className="block mb-4 text-xs text-muted-foreground">
       {restrictedBy(value, "displayNames")?.reason ??
-        "Rename a tier to use your own vocabulary in the dashboard and your spend logs. Renaming doesn't change how requests are classified, and callers never see these names."}
+        "重命名 tier 可在 dashboard 和 spend logs 中使用你自己的术语。重命名不会改变请求分类方式，调用方也不会看到这些名称。"}
       {!value.custom_tier_set &&
         usesLlmClassifier(value.classifier_type) &&
-        " Your classifier model reads these names, so clearer ones can sharpen its choices."}
+        " 你的分类器模型会读取这些名称，因此更清晰的名称能提升选择效果。"}
     </span>
   </>
 );
@@ -239,36 +235,35 @@ const TierSetToolbar: React.FC<{
         <>
           <Button variant="outline" onClick={onAdd} disabled={rowCount >= MAX_TIER_COUNT}>
             <Plus />
-            Add tier
+            添加 tier
           </Button>
           <SimpleTooltip content={rowsError || undefined}>
             <Button variant="outline" disabled={Boolean(rowsError)} onClick={() => onEditingChange?.(false)}>
-              Done
+              完成
             </Button>
           </SimpleTooltip>
           {isCustomSet && (
             <Button variant="outline" size="sm" onClick={onRestore}>
-              Restore defaults
+              恢复默认值
             </Button>
           )}
         </>
       ) : (
         onEditingChange && (
           <Button variant="outline" onClick={() => onEditingChange(true)}>
-            Edit tiers
+            编辑 tiers
           </Button>
         )
       )}
     </div>
     {editing && (
       <span className="block mt-1 text-xs text-muted-foreground">
-        Add or remove tiers to define your own set. Every custom tier needs a definition the LLM classifier routes on,
-        and an edited set requires the LLM classification method
+        添加或移除 tiers 以定义自己的集合。每个自定义 tier 都需要供 LLM 分类器路由使用的定义，编辑后的集合需要使用 LLM 分类方法
       </span>
     )}
     {editing && keywordRulesError && (
       <span className="block mt-1 text-xs text-destructive">
-        {keywordRulesError}. Edit the rules under Advanced: Keyword/Semantic Matching, or bring the tier back
+        {keywordRulesError}。请在高级：关键词/Semantic 匹配下编辑规则，或恢复该 tier
       </span>
     )}
   </>
@@ -282,7 +277,7 @@ const FallbackTierField: React.FC<{
   <div className="mt-4">
     <div className="flex items-center gap-2 mb-2">
       <strong className="text-base font-semibold">Fallback Tier</strong>
-      <SimpleTooltip content="Where requests route when the LLM classifier errors, times out, or returns an unparseable reply. Required for an edited tier set: the heuristic scorer cannot produce your tiers.">
+      <SimpleTooltip content="当 LLM 分类器报错、超时或返回无法解析的回复时，请求会路由到这里。编辑 tier 集合时必填：heuristic scorer 无法生成你的自定义 tiers。">
         <Info className="size-4 text-muted-foreground" />
       </SimpleTooltip>
     </div>
@@ -291,7 +286,7 @@ const FallbackTierField: React.FC<{
       options={rows.filter((row) => activeTierName(row)).map((row) => ({ value: row.id, label: activeTierName(row) }))}
       value={fallbackTierId || null}
       onValueChange={onValueChange}
-      placeholder="Pick the tier classifier failures route to"
+      placeholder="选择分类器失败时路由到的 tier"
     />
   </div>
 );
@@ -312,25 +307,25 @@ const TierRowHeader: React.FC<{
       content={
         row.definition.trim() ||
         description ||
-        "A tier you defined. The classifier routes requests matching its definition here."
+        "你定义的 tier。分类器会将匹配其定义的请求路由到这里。"
       }
     >
       <Info className="size-4 text-muted-foreground" />
     </SimpleTooltip>
     <span className="text-xs text-muted-foreground">
-      Tier {index + 1} of {rowCount} &middot; {rowOrigin(row, isCustomSet)}
+      第 {index + 1} 个 tier，共 {rowCount} 个 &middot; {rowOrigin(row, isCustomSet)}
     </span>
     {editing && (
       <Button
         variant="ghost"
         size="sm"
         className="text-destructive hover:text-destructive/80"
-        aria-label={`Remove the ${activeTierName(row) || `tier ${index + 1}`} tier`}
+        aria-label={`移除 ${activeTierName(row) || `tier ${index + 1}`} tier`}
         disabled={rowCount <= MIN_TIER_COUNT}
         onClick={onRemove}
       >
         <Trash2 />
-        Remove
+        移除
       </Button>
     )}
   </div>
@@ -346,8 +341,8 @@ const TierRowEditFields: React.FC<{
     <Input
       value={row.name}
       onChange={(event) => onPatch({ name: event.target.value })}
-      placeholder="Tier name, e.g. SECURITY_REVIEW"
-      aria-label={`Name for tier ${index + 1}`}
+      placeholder="Tier 名称，例如 SECURITY_REVIEW"
+      aria-label={`第 ${index + 1} 个 tier 的名称`}
       maxLength={MAX_TIER_NAME_CHARS}
       className="mb-2"
     />
@@ -356,17 +351,17 @@ const TierRowEditFields: React.FC<{
       onChange={(event) => onPatch({ definition: event.target.value.replace(/[\r\n]+/g, " ") })}
       placeholder={
         isBuiltInTierName(row.name)
-          ? "Leave blank to keep the built-in definition"
-          : "What belongs in this tier, e.g. requests asking for a security audit"
+          ? "留空以保留内置定义"
+          : "哪些内容属于此 tier，例如请求安全审计"
       }
-      aria-label={`Definition for tier ${index + 1}`}
+      aria-label={`第 ${index + 1} 个 tier 的定义`}
       maxLength={MAX_TIER_DEFINITION_CHARS}
       rows={2}
       className={definitionMissing ? "mb-2 border-destructive" : "mb-2"}
     />
     {definitionMissing && (
       <span className="mb-2 block text-xs text-destructive">
-        A definition is required: it is the rubric the classifier routes on for this tier
+        定义必填：分类器会根据它将请求路由到此 tier
       </span>
     )}
   </>
@@ -496,22 +491,22 @@ export const TIER_DESCRIPTIONS: Record<
 > = {
   SIMPLE: {
     label: "Simple",
-    description: "Basic questions, greetings, simple factual queries",
+    description: "基础问题、问候语、简单事实查询",
     examples: '"Hello!", "What is Python?", "Thanks!"',
   },
   MEDIUM: {
     label: "Medium",
-    description: "Standard queries requiring some reasoning or explanation",
+    description: "需要一些推理或解释的标准查询",
     examples: '"Explain how REST APIs work", "Debug this error"',
   },
   COMPLEX: {
     label: "Complex",
-    description: "Technical, multi-part requests requiring deep knowledge",
+    description: "需要深入知识的技术性、多部分请求",
     examples: '"Design a microservices architecture", "Implement a rate limiter"',
   },
   REASONING: {
     label: "Reasoning",
-    description: "Chain-of-thought, analysis, explicit reasoning requests",
+    description: "链式思考、分析、明确要求推理的请求",
     examples: '"Think step by step...", "Analyze the pros and cons..."',
   },
 };
@@ -548,19 +543,18 @@ const PlanModeOverrideControls: React.FC<{
             plan_mode_min_tier: enabled ? planModeTierOptions.at(-1)?.value : undefined,
           })
         }
-        aria-label="Route plan-mode requests to a minimum tier"
+        aria-label="将 plan-mode 请求路由到最低 tier"
       />
-      <strong className="font-semibold">Route plan-mode requests to a minimum tier</strong>
+      <strong className="font-semibold">将 plan-mode 请求路由到最低 tier</strong>
     </div>
     <span className="block text-xs mb-3 text-muted-foreground">
-      Requests from coding agents in plan mode (Claude Code, GitHub Copilot) route to at least this tier. The classifier
-      still wins when it picks higher, and the override only lasts while plan mode is active.
-      {planModeTierOptions.length === 0 && " Add models to a tier to enable this."}
+      来自 plan mode 中 coding agents（Claude Code、GitHub Copilot）的请求至少路由到此 tier。当分类器选择更高 tier 时仍以分类器为准，且该覆盖仅在 plan mode 激活期间生效。
+      {planModeTierOptions.length === 0 && " 向某个 tier 添加模型后即可启用。"}
     </span>
     {value.plan_mode_min_tier !== undefined && (
       <div style={{ maxWidth: 320 }}>
         <TierRowSelect
-          label="Plan-mode minimum tier"
+          label="Plan-mode 最低 tier"
           options={planModeTierOptions}
           value={value.plan_mode_min_tier ?? null}
           onValueChange={(tier) => onChange({ ...value, plan_mode_min_tier: tier })}
@@ -652,8 +646,8 @@ const ComplexityRouterConfig: React.FC<ComplexityRouterConfigProps> = ({
   return (
     <div className="w-full max-w-none">
       <div className="inline-flex items-center gap-2 mb-4">
-        <h4 className="m-0 text-xl font-semibold text-foreground">Complexity Tier Configuration</h4>
-        <SimpleTooltip content="Map each complexity tier to one or more models. Simple queries use cheaper/faster models, complex queries use more capable models.">
+        <h4 className="m-0 text-xl font-semibold text-foreground">复杂度 Tier 配置</h4>
+        <SimpleTooltip content="将每个复杂度 tier 映射到一个或多个模型。简单查询使用更便宜/更快的模型，复杂查询使用能力更强的模型。">
           <Info className="size-4 text-muted-foreground" />
         </SimpleTooltip>
       </div>
@@ -684,7 +678,7 @@ const ComplexityRouterConfig: React.FC<ComplexityRouterConfigProps> = ({
                     onRemove={() => removeTierRow(row.id)}
                   />
                   {tierInfo && !customTierSet && (
-                    <span className="block mb-2 text-xs text-muted-foreground">Examples: {tierInfo.examples}</span>
+                    <span className="block mb-2 text-xs text-muted-foreground">示例：{tierInfo.examples}</span>
                   )}
                   {editingTiers && (
                     <TierRowEditFields
@@ -699,14 +693,14 @@ const ComplexityRouterConfig: React.FC<ComplexityRouterConfigProps> = ({
                       <InputGroupInput
                         value={value.tier_labels?.[row.id as keyof ComplexityTiers] ?? ""}
                         onChange={(event) => handleTierLabelChange(row.id as keyof ComplexityTiers, event.target.value)}
-                        placeholder={`Display name (default: ${tierInfo.label})`}
-                        aria-label={`Display name for the ${tierInfo.label} tier`}
+                        placeholder={`显示名称（默认：${tierInfo.label}）`}
+                        aria-label={`${tierInfo.label} tier 的显示名称`}
                       />
                       {value.tier_labels?.[row.id as keyof ComplexityTiers] && (
                         <InputGroupAddon align="inline-end">
                           <InputGroupButton
                             size="icon-xs"
-                            aria-label={`Clear display name for the ${tierInfo.label} tier`}
+                            aria-label={`清除 ${tierInfo.label} tier 的显示名称`}
                             onClick={() => handleTierLabelChange(row.id as keyof ComplexityTiers, "")}
                           >
                             <X />
@@ -719,8 +713,8 @@ const ComplexityRouterConfig: React.FC<ComplexityRouterConfigProps> = ({
                     options={modelOptions}
                     value={row.models}
                     onValueChange={(models: string[]) => setRowModels(row, models)}
-                    placeholder={`Select model(s) for ${label.toLowerCase()} queries`}
-                    emptyText="No models found"
+                    placeholder={`为 ${label.toLowerCase()} 查询选择模型`}
+                    emptyText="未找到模型"
                     className={tierMissing ? "w-full border-destructive" : "w-full"}
                   />
                   <TierModelEffortRows
@@ -732,11 +726,10 @@ const ComplexityRouterConfig: React.FC<ComplexityRouterConfigProps> = ({
                   />
                   {row.models.length > 1 && (
                     <span className="text-xs text-muted-foreground">
-                      Multiple models selected: the router randomly picks among them per request (or Thompson-samples
-                      within the pool when adaptive routing is on).
+                      已选择多个模型：router 会为每个请求从中随机选择（启用自适应路由时，会在池内进行 Thompson sampling）。
                     </span>
                   )}
-                  {tierMissing && <span className="text-xs text-destructive">The {label} tier is required</span>}
+                  {tierMissing && <span className="text-xs text-destructive">{label} tier 必填</span>}
                 </div>
               </div>
             );
@@ -765,8 +758,8 @@ const ComplexityRouterConfig: React.FC<ComplexityRouterConfigProps> = ({
 
           <div className="mb-2">
             <div className="flex items-center gap-2 mb-2">
-              <strong className="text-base font-semibold">Default Model</strong>
-              <SimpleTooltip content="Leave empty to follow the tiers. A model chosen here is pinned: it stays the default however the tiers change.">
+              <strong className="text-base font-semibold">默认模型</strong>
+              <SimpleTooltip content="留空表示跟随 tiers。这里选择的模型会被 pin：无论 tiers 如何变化，它都会保持为默认值。">
                 <Info className="size-4 text-muted-foreground" />
               </SimpleTooltip>
             </div>
@@ -775,12 +768,11 @@ const ComplexityRouterConfig: React.FC<ComplexityRouterConfigProps> = ({
               value={value.default_model ?? ""}
               onValueChange={handleDefaultModelChange}
               placeholder={defaultModelPlaceholder}
-              emptyText="No models found"
-              aria-label="Default model"
+              emptyText="未找到模型"
+              aria-label="默认模型"
             />
             <span className="block mt-1 text-xs text-muted-foreground">
-              Used when the tier the request lands in has no model, and when the classifier fails with &quot;Route to
-              the default model&quot; selected.
+              当请求落到的 tier 没有模型时使用；也会在分类器失败且选择了“路由到默认模型”时使用。
             </span>
           </div>
         </CardContent>
@@ -792,7 +784,7 @@ const ComplexityRouterConfig: React.FC<ComplexityRouterConfigProps> = ({
         {[
           {
             key: "classifier",
-            label: <strong className="text-foreground font-semibold">Advanced: Classification Method</strong>,
+            label: <strong className="text-foreground font-semibold">高级：分类方法</strong>,
             children: (
               <ClassificationMethodConfig
                 value={value}
@@ -808,7 +800,7 @@ const ComplexityRouterConfig: React.FC<ComplexityRouterConfigProps> = ({
           },
           {
             key: "adaptive",
-            label: <strong className="text-foreground font-semibold">Advanced: Adaptive Routing</strong>,
+            label: <strong className="text-foreground font-semibold">高级：自适应路由</strong>,
             children: (
               <Restricted by={restrictedBy(value, "adaptive")}>
                 <AdaptiveRoutingConfig value={value} onChange={onChange} />
@@ -817,29 +809,29 @@ const ComplexityRouterConfig: React.FC<ComplexityRouterConfigProps> = ({
           },
           {
             key: "affinity",
-            label: <strong className="text-foreground font-semibold">Advanced: Affinity</strong>,
+            label: <strong className="text-foreground font-semibold">高级：Affinity</strong>,
             children: <AffinityControls value={value} onChange={onChange} />,
           },
           {
             key: "modality",
-            label: <strong className="text-foreground font-semibold">Advanced: Modality Routing</strong>,
+            label: <strong className="text-foreground font-semibold">高级：模态路由</strong>,
             children: <ModalityRoutingControls value={value} onChange={onChange} />,
           },
           {
             key: "plan-mode",
-            label: <strong className="text-foreground font-semibold">Advanced: Plan-Mode Override</strong>,
+            label: <strong className="text-foreground font-semibold">高级：Plan-Mode 覆盖</strong>,
             children: (
               <PlanModeOverrideControls value={value} onChange={onChange} planModeTierOptions={planModeTierOptions} />
             ),
           },
           {
             key: "context-window",
-            label: <strong className="text-foreground font-semibold">Advanced: Context Window Escalation</strong>,
+            label: <strong className="text-foreground font-semibold">高级：上下文窗口升级</strong>,
             children: <ContextWindowEscalationConfig value={value} onChange={onChange} />,
           },
           {
             key: "stall-escalation",
-            label: <strong className="text-foreground font-semibold">Advanced: Stalled Task Escalation</strong>,
+            label: <strong className="text-foreground font-semibold">高级：停滞任务升级</strong>,
             children: (
               <Restricted by={restrictedBy(value, "stallEscalation")}>
                 <StallEscalationConfig value={value} onChange={onChange} />
@@ -848,14 +840,14 @@ const ComplexityRouterConfig: React.FC<ComplexityRouterConfigProps> = ({
           },
           {
             key: "response",
-            label: <strong className="text-foreground font-semibold">Advanced: Response Format</strong>,
+            label: <strong className="text-foreground font-semibold">高级：响应格式</strong>,
             children: <ResponseFormatControls value={value} onChange={onChange} />,
           },
           ...(onEscalationKeywordsChange
             ? [
                 {
                   key: "escalation",
-                  label: <strong className="text-foreground font-semibold">Advanced: Escalation Keywords</strong>,
+                  label: <strong className="text-foreground font-semibold">高级：升级关键词</strong>,
                   children: (
                     <Restricted by={restrictedBy(value, "escalation")}>
                       <EscalationKeywords keywords={escalationKeywords} onChange={onEscalationKeywordsChange} />
@@ -868,7 +860,7 @@ const ComplexityRouterConfig: React.FC<ComplexityRouterConfigProps> = ({
             ? [
                 {
                   key: "compression",
-                  label: <strong className="text-foreground font-semibold">Advanced: Compression</strong>,
+                  label: <strong className="text-foreground font-semibold">高级：压缩</strong>,
                   children: (
                     <CompressionControls value={autoRouterCompression} onChange={onAutoRouterCompressionChange} />
                   ),
@@ -879,7 +871,7 @@ const ComplexityRouterConfig: React.FC<ComplexityRouterConfigProps> = ({
             ? [
                 {
                   key: "keyword-semantic",
-                  label: <strong className="text-foreground font-semibold">Advanced: Keyword/Semantic Matching</strong>,
+                  label: <strong className="text-foreground font-semibold">高级：关键词/Semantic 匹配</strong>,
                   children: (
                     <>
                       {onKeywordTierRulesChange && (

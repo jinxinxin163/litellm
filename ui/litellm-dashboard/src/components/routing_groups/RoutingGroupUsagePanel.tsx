@@ -66,11 +66,11 @@ export function RoutingGroupUsagePanel({ group, baseUrl }: RoutingGroupUsagePane
     <div className="border-y bg-muted/40 px-4 py-4">
       <div className="mb-2 flex items-center gap-2">
         <Code2 className="size-4 text-primary" />
-        <span className="text-sm font-medium text-foreground">How routing works for this group</span>
+        <span className="text-sm font-medium text-foreground">此 group 的路由方式</span>
       </div>
       <p className="mb-3 text-sm text-muted-foreground">
-        Callers request any model in the group by name; LiteLLM picks a deployment behind the scenes using the{" "}
-        <span className="font-medium text-foreground">{formatStrategyLabel(group.routing_strategy)}</span> strategy.
+        调用方按名称请求 group 中的任意模型；LiteLLM 会在后台使用{" "}
+        <span className="font-medium text-foreground">{formatStrategyLabel(group.routing_strategy)}</span> 策略选择部署。
       </p>
       <Tabs defaultValue="curl">
         <TabsList variant="line" className="h-auto w-full justify-start rounded-none border-b p-0">

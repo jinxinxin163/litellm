@@ -90,7 +90,7 @@ export default function CredentialModal({
     <Dialog open={open} onOpenChange={(open) => !open && closeAndReset()}>
       <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-y-auto sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle>{isEdit ? "Edit Credential" : "Add New Credential"}</DialogTitle>
+          <DialogTitle>{isEdit ? "编辑凭据" : "添加新凭据"}</DialogTitle>
         </DialogHeader>
         <FormProvider {...form}>
           <MountedFormProvider value={{ control: form.control, registry }}>
@@ -101,10 +101,10 @@ export default function CredentialModal({
               }}
             >
               <MountedFormField
-                label="Credential Name:"
+                label="凭据名称："
                 name="credential_name"
                 required
-                rules={{ validate: { required: requiredRule("Credential name is required") } }}
+                rules={{ validate: { required: requiredRule("凭据名称必填") } }}
                 className="mb-4"
               >
                 {(control) => (
@@ -113,23 +113,23 @@ export default function CredentialModal({
                     value={(control.value as string | undefined) ?? ""}
                     onChange={control.onChange}
                     onBlur={control.onBlur}
-                    placeholder="Enter a friendly name for these credentials"
+                    placeholder="为这些凭据输入一个易识别的名称"
                     disabled={isEdit}
                   />
                 )}
               </MountedFormField>
 
               <MountedFormField
-                label={labelWithHint("Provider:", "Helper to auto-populate provider specific fields")}
+                label={labelWithHint("Provider：", "用于自动填充 provider 特定字段")}
                 name="custom_llm_provider"
                 required
-                rules={{ validate: { required: requiredRule("Required") } }}
+                rules={{ validate: { required: requiredRule("必填") } }}
                 className="mb-4"
               >
                 {(control) => (
                   <SearchSelect
                     inputId={control.id}
-                    placeholder="Select a provider"
+                    placeholder="选择 provider"
                     options={providerOptions}
                     value={(control.value as string | undefined) ?? ""}
                     onValueChange={(value) => {
@@ -143,17 +143,17 @@ export default function CredentialModal({
               <ProviderSpecificFields selectedProvider={selectedProvider} />
 
               <div className="flex justify-between items-center">
-                <SimpleTooltip content="Get help on our github">
+                <SimpleTooltip content="在 GitHub 上获取帮助">
                   <a href="https://github.com/BerriAI/litellm/issues" className="text-sm text-primary hover:underline">
-                    Need Help?
+                    需要帮助？
                   </a>
                 </SimpleTooltip>
 
                 <div>
                   <Button variant="outline" className="mr-2.5" onClick={closeAndReset}>
-                    Cancel
+                    取消
                   </Button>
-                  <Button type="submit">{isEdit ? "Update Credential" : "Add Credential"}</Button>
+                  <Button type="submit">{isEdit ? "更新凭据" : "添加凭据"}</Button>
                 </div>
               </div>
             </form>

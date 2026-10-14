@@ -97,10 +97,10 @@ const SettingValueEditor: React.FC<{
         onValueChange={(newValue) => onChange(setting.field_name, newValue ?? "")}
       >
         <SelectTrigger className="min-w-32">
-          <SelectValue placeholder="Default" />
+          <SelectValue placeholder="默认" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value={null}>Default</SelectItem>
+          <SelectItem value={null}>默认</SelectItem>
           {(setting.field_options ?? []).map((option) => (
             <SelectItem key={option} value={option}>
               {option}
@@ -147,7 +147,7 @@ export const PromptCachingPanel: React.FC<{
 
         <div className="mt-6 flex items-start justify-between gap-8">
           <div className="min-w-0 max-w-2xl">
-            <p className="font-medium">Automatic Anthropic prompt caching</p>
+            <p className="font-medium">自动 Anthropic prompt caching</p>
             <p className="mt-1 break-words text-xs text-muted-foreground">{enableSetting.field_description}</p>
           </div>
           <Switch checked={enabled} onCheckedChange={(checked) => persist(ENABLE_ANTHROPIC_PROMPT_CACHING, checked)} />
@@ -156,7 +156,7 @@ export const PromptCachingPanel: React.FC<{
         {ttlSetting && (
           <div className="mt-6 flex items-start justify-between gap-8">
             <div className="min-w-0 max-w-2xl">
-              <p className={`font-medium ${enabled ? "" : "text-muted-foreground"}`}>Cache lifetime (TTL)</p>
+              <p className={`font-medium ${enabled ? "" : "text-muted-foreground"}`}>Cache 生命周期 (TTL)</p>
               <p className="mt-1 break-words text-xs text-muted-foreground">{ttlSetting.field_description}</p>
             </div>
             <Select
@@ -168,7 +168,7 @@ export const PromptCachingPanel: React.FC<{
                 <SelectValue placeholder="5m (default)" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value={null}>5m (default)</SelectItem>
+                <SelectItem value={null}>5m（默认）</SelectItem>
                 {(ttlSetting.field_options ?? []).map((option) => (
                   <SelectItem key={option} value={option}>
                     {option}
@@ -278,10 +278,10 @@ const GeneralSettings: React.FC<GeneralSettingsPageProps> = ({ accessToken, user
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Setting</TableHead>
-                    <TableHead>Value</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Action</TableHead>
+                    <TableHead>设置</TableHead>
+                    <TableHead>值</TableHead>
+                    <TableHead>状态</TableHead>
+                    <TableHead>操作</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -307,15 +307,15 @@ const GeneralSettings: React.FC<GeneralSettingsPageProps> = ({ accessToken, user
                         </TableCell>
                         <TableCell>
                           {value.stored_in_db == true ? (
-                            <StatusBadge tone="success" label="In DB" />
+                            <StatusBadge tone="success" label="在 DB 中" />
                           ) : value.stored_in_db == false ? (
-                            <StatusBadge tone="neutral" label="In Config" />
+                            <StatusBadge tone="neutral" label="在 Config 中" />
                           ) : (
-                            <StatusBadge tone="neutral" label="Not Set" />
+                            <StatusBadge tone="neutral" label="未设置" />
                           )}
                         </TableCell>
                         <TableCell>
-                          <Button onClick={() => handleUpdateField(value.field_name)}>Update</Button>
+                          <Button onClick={() => handleUpdateField(value.field_name)}>更新</Button>
                           <span
                             onClick={() => handleResetField(value.field_name)}
                             className="inline-flex shrink-0 cursor-pointer items-center justify-center px-1.5 py-1.5 text-destructive"

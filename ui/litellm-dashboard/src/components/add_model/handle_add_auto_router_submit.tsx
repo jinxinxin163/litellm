@@ -36,7 +36,7 @@ export const handleAddAutoRouterSubmit = async (
 
     await modelCreateCall(accessToken, autoRouterConfig);
 
-    toast.success(`Successfully created Auto Router: ${values.auto_router_name}`);
+    toast.success(`已创建 Auto Router：${values.auto_router_name}`);
 
     resetForm();
 
@@ -45,6 +45,6 @@ export const handleAddAutoRouterSubmit = async (
     }
   } catch (error) {
     console.error("Failed to add auto router:", error);
-    toast.fromError("Failed to add auto router: " + error);
+    toast.fromError("添加 auto router 失败：" + error);
   }
 };

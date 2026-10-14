@@ -50,7 +50,7 @@ const AutoRouterConnectionTest: React.FC<AutoRouterConnectionTestProps> = ({
   if (targets.length === 0) {
     return (
       <p className="text-sm text-muted-foreground">
-        No complexity tiers are configured yet, so there is nothing to test.
+        尚未配置复杂度 tier，因此没有可测试的内容。
       </p>
     );
   }
@@ -58,8 +58,7 @@ const AutoRouterConnectionTest: React.FC<AutoRouterConnectionTestProps> = ({
   return (
     <div className="space-y-3">
       <p className="mb-2 text-sm text-muted-foreground">
-        Test Connection sends a minimal request to every configured tier, classifier, default, and embedding model. The
-        classifier probe includes its reasoning effort override.
+        测试连接会向每个已配置的 tier、分类器、默认模型和 embedding 模型发送一个最小请求。分类器探测会包含它的 reasoning effort 覆盖值。
       </p>
       {targets.map((target, index) => {
         const result = results[index] ?? { status: "pending" };

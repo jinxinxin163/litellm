@@ -30,9 +30,9 @@ function EmptyState() {
       <div className="mb-1 flex size-10 items-center justify-center rounded-lg bg-muted">
         <Inbox className="size-5 text-muted-foreground" />
       </div>
-      <div className="text-sm font-medium text-foreground">No routing groups yet</div>
+      <div className="text-sm font-medium text-foreground">还没有 routing groups</div>
       <div className="text-sm text-muted-foreground">
-        Create a group to load-balance a set of models behind one name.
+        创建一个 group，将一组模型负载均衡到同一个名称后面。
       </div>
     </div>
   );
@@ -75,7 +75,7 @@ const RoutingGroupsTable: React.FC<RoutingGroupsTableProps> = ({
       getRowCanExpand={() => true}
       renderSubComponent={({ row }) => <RoutingGroupUsagePanel group={row.original} baseUrl={baseUrl} />}
       isLoading={isLoading}
-      loadingMessage="Loading routing groups…"
+      loadingMessage="正在加载 routing groups..."
       noDataMessage={<EmptyState />}
       size="compact"
     />

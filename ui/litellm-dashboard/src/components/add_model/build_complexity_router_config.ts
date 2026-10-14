@@ -249,12 +249,12 @@ export const getTierLabelsError = (tierLabels: ComplexityTierLabels | undefined)
     return label !== "" && label !== tier && (TIER_KEYS as string[]).includes(label);
   });
   if (shadowing.length > 0) {
-    return `A tier's display name can't be another tier's name: ${shadowing.join(", ")}`;
+    return `tier 的显示名称不能与另一个 tier 名称相同：${shadowing.join(", ")}`;
   }
   const labels = TIER_KEYS.map((tier) => effectiveTierLabel(tier, tierLabels).toLowerCase());
   const duplicates = Array.from(new Set(labels.filter((label, index) => labels.indexOf(label) !== index)));
   if (duplicates.length > 0) {
-    return `Tier display names must be unique. Repeated: ${duplicates.join(", ")}`;
+    return `Tier 显示名称必须唯一。重复项：${duplicates.join(", ")}`;
   }
   return null;
 };
@@ -265,14 +265,14 @@ export const getTierLabelsError = (tierLabels: ComplexityTierLabels | undefined)
 export const getMissingTiersError = (rows: readonly TierRow[]): string | null => {
   const missing = rows.filter((row) => row.models.length === 0).map(activeTierName);
   if (missing.length === 0) return null;
-  return `Select a model for the following tier(s): ${missing.join(", ")}`;
+  return `请为以下 tier 选择模型：${missing.join(", ")}`;
 };
 
 export const getPlanModeTierError = (planModeMinTier: string | undefined, rows: readonly TierRow[]): string | null => {
   if (!planModeMinTier) return null;
   const floor = tierRowById(rows, planModeMinTier);
   if (floor && floor.models.length > 0) return null;
-  return `The plan-mode minimum tier (${floor ? activeTierName(floor) : planModeMinTier}) has no models. Add one or turn the override off.`;
+  return `plan-mode 最低 tier（${floor ? activeTierName(floor) : planModeMinTier}）没有模型。请添加模型或关闭覆盖。`;
 };
 
 // The orphan check compares exactly, not casefold: _validate_keyword_rule_tiers is exact
@@ -284,11 +284,11 @@ export const getKeywordTierRulesError = (
 ): string | null => {
   const emptyRows = emptyKeywordTierRuleIndexes(keywordTierRules);
   if (emptyRows.length > 0)
-    return `Add at least one keyword to keyword rule(s): ${emptyRows.map((index) => index + 1).join(", ")}`;
+    return `请为关键词规则添加至少一个关键词：${emptyRows.map((index) => index + 1).join(", ")}`;
   const names = rows.map(activeTierName);
   const orphaned = keywordTierRules.flatMap((rule, index) => (names.includes(rule.tier) ? [] : [index + 1]));
   if (orphaned.length === 0) return null;
-  return `Keyword rule(s) ${orphaned.join(", ")} route to a tier this router no longer has`;
+  return `关键词规则 ${orphaned.join(", ")} 路由到此 router 已不存在的 tier`;
 };
 
 // An edited tier set forces the LLM classifier, so the model requirement follows the EFFECTIVE type.
@@ -299,7 +299,7 @@ export const getClassifierModelError = (
   if (!usesLlmClassifier(effectiveClassifierType(config)) || config.classifier_llm_config?.model) return null;
   return config.custom_tier_set
     ? "Please select a classifier model: an edited tier set routes with the LLM classifier"
-    : "Please select a classifier model, or switch back to Heuristic";
+    : "请选择分类器模型，或切回 Heuristic";
 };
 
 export const getClassifierReasoningEffortError = (
@@ -313,7 +313,7 @@ export const getClassifierReasoningEffortError = (
     (model) => model.model_group === classifierConfig.model,
   )?.supported_reasoning_efforts;
   if (!Array.isArray(supported) || supported.includes(classifierConfig.reasoning_effort)) return null;
-  return `${classifierConfig.reasoning_effort} reasoning effort is not supported by every deployment in ${classifierConfig.model}. Choose Default or a supported value.`;
+  return `${classifierConfig.model} 中并非每个 deployment 都支持 ${classifierConfig.reasoning_effort} reasoning effort。请选择默认值或受支持的值。`;
 };
 
 export const getSemanticConfigError = ({
@@ -324,8 +324,8 @@ export const getSemanticConfigError = ({
   | string
   | null => {
   if (!semanticMatchingEnabled) return null;
-  if (!embeddingModel) return "Select an embedding model to use semantic keyword matching";
-  if (keywordTierRules.length === 0) return "Add at least one keyword tier rule to use semantic keyword matching";
+  if (!embeddingModel) return "请选择 embedding 模型以使用 semantic 关键词匹配";
+  if (keywordTierRules.length === 0) return "请至少添加一条关键词 tier 规则以使用 semantic 关键词匹配";
   return null;
 };
 

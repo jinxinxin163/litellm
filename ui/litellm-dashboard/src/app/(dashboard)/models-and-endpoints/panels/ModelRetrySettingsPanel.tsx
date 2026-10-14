@@ -69,7 +69,7 @@ export default function ModelRetrySettingsPanel() {
       { retry_policy: globalRetryPolicy, model_group_retry_policy: modelGroupRetryPolicy },
       {
         onSuccess: () => {
-          toast.success("Retry settings saved successfully");
+          toast.success("重试设置保存成功");
           void fetchRetrySettings().then((routerSettings) => {
             if (routerSettings) {
               applyRetrySettings(routerSettings);
@@ -77,7 +77,7 @@ export default function ModelRetrySettingsPanel() {
           });
         },
         onError: () => {
-          toast.fromError("Failed to save retry settings");
+          toast.fromError("保存重试设置失败");
         },
       },
     );

@@ -45,10 +45,10 @@ const HEALTH_STATUS_TONES: Record<string, StatusTone> = {
 // healthy > checking > unknown > unhealthy, matching the legacy health table ordering.
 const HEALTH_STATUS_ORDER: Record<string, number> = { healthy: 0, checking: 1, unknown: 2, unhealthy: 3 };
 
-const NEVER_CHECKED = "Never checked";
-const CHECK_IN_PROGRESS = "Check in progress...";
-const NEVER_SUCCEEDED = "Never succeeded";
-const NONE = "None";
+const NEVER_CHECKED = "从未检查";
+const CHECK_IN_PROGRESS = "检查中...";
+const NEVER_SUCCEEDED = "从未成功";
+const NONE = "无";
 
 function HealthStatusBadge({ status }: { status: string }) {
   const tone = HEALTH_STATUS_TONES[status];
@@ -95,12 +95,12 @@ function DetailButton({
 
 function runButtonLabel(isLoading: boolean, hasExistingStatus: boolean): string {
   if (isLoading) {
-    return "Checking...";
+    return "检查中...";
   }
   if (hasExistingStatus) {
-    return "Re-run Health Check";
+    return "重新运行健康检查";
   }
-  return "Run Health Check";
+  return "运行健康检查";
 }
 
 function RunButtonIcon({ isLoading, hasExistingStatus }: { isLoading: boolean; hasExistingStatus: boolean }) {
@@ -217,12 +217,12 @@ export const getHealthChecksTableColumns = ({
   teams,
 }: HealthChecksTableColumnsDeps): ColumnDef<HealthCheckData>[] => [
   createSelectionColumn<HealthCheckData>({
-    rowAriaLabel: (row) => `Select ${row.original.model_info?.id ?? row.original.model_name}`,
+    rowAriaLabel: (row) => `选择 ${row.original.model_info?.id ?? row.original.model_name}`,
   }),
   {
     id: "model_id",
     accessorFn: (row) => row.model_info?.id ?? "",
-    meta: { title: "Model ID" },
+    meta: { title: "模型 ID" },
     header: ({ column }) => <DataTableSortHeader column={column} title="Model ID" variant="header-cycle" />,
     size: 220,
     enableSorting: true,
@@ -241,8 +241,8 @@ export const getHealthChecksTableColumns = ({
   {
     id: "model_name",
     accessorKey: "model_name",
-    meta: { title: "Model Name" },
-    header: ({ column }) => <DataTableSortHeader column={column} title="Model Name" variant="header-cycle" />,
+    meta: { title: "模型名称" },
+    header: ({ column }) => <DataTableSortHeader column={column} title="模型名称" variant="header-cycle" />,
     size: 200,
     enableSorting: true,
     sortingFn: "alphanumeric",
@@ -258,8 +258,8 @@ export const getHealthChecksTableColumns = ({
   {
     id: "team_id",
     accessorFn: (row) => row.model_info?.team_id ?? "",
-    meta: { title: "Team Alias" },
-    header: ({ column }) => <DataTableSortHeader column={column} title="Team Alias" variant="header-cycle" />,
+    meta: { title: "团队别名" },
+    header: ({ column }) => <DataTableSortHeader column={column} title="团队别名" variant="header-cycle" />,
     size: 160,
     enableSorting: true,
     sortingFn: "alphanumeric",
@@ -279,8 +279,8 @@ export const getHealthChecksTableColumns = ({
   {
     id: "health_status",
     accessorKey: "health_status",
-    meta: { title: "Health Status", skeleton: "badge" },
-    header: ({ column }) => <DataTableSortHeader column={column} title="Health Status" variant="header-cycle" />,
+    meta: { title: "健康状态", skeleton: "badge" },
+    header: ({ column }) => <DataTableSortHeader column={column} title="健康状态" variant="header-cycle" />,
     size: 170,
     enableSorting: true,
     sortingFn: (rowA, rowB) => {
@@ -297,7 +297,7 @@ export const getHealthChecksTableColumns = ({
         return (
           <div className="flex items-center space-x-2">
             <DotPulse className="size-2 bg-indigo-500" />
-            <span className="text-sm text-muted-foreground">Checking...</span>
+            <span className="text-sm text-muted-foreground">检查中...</span>
           </div>
         );
       }
@@ -312,7 +312,7 @@ export const getHealthChecksTableColumns = ({
           <HealthStatusBadge status={model.health_status} />
           {hasSuccessResponse && (
             <DetailButton
-              label="View response details"
+              label="查看响应详情"
               testId="view-health-success-btn"
               className="text-success hover:bg-success/10 "
               onClick={() => onShowSuccess(displayName, successResponse)}
@@ -325,8 +325,8 @@ export const getHealthChecksTableColumns = ({
   {
     id: "health_error",
     accessorKey: "health_error",
-    meta: { title: "Error Details" },
-    header: "Error Details",
+    meta: { title: "错误详情" },
+    header: "错误详情",
     size: 240,
     enableSorting: false,
     cell: ({ row }) => {
@@ -335,7 +335,7 @@ export const getHealthChecksTableColumns = ({
       const healthStatus = modelHealthStatuses[modelId];
 
       if (!healthStatus?.error) {
-        return <span className="text-sm text-muted-foreground">No errors</span>;
+        return <span className="text-sm text-muted-foreground">无错误</span>;
       }
 
       const cleanedError = healthStatus.error;
@@ -349,7 +349,7 @@ export const getHealthChecksTableColumns = ({
           </span>
           {fullError !== cleanedError && (
             <DetailButton
-              label="View full error details"
+              label="查看完整错误详情"
               testId="view-health-error-btn"
               className="text-destructive hover:bg-destructive/10 "
               onClick={() => onShowError(displayName, cleanedError, fullError)}
@@ -362,8 +362,8 @@ export const getHealthChecksTableColumns = ({
   {
     id: "last_check",
     accessorKey: "last_check",
-    meta: { title: "Last Check" },
-    header: ({ column }) => <DataTableSortHeader column={column} title="Last Check" variant="header-cycle" />,
+    meta: { title: "上次检查" },
+    header: ({ column }) => <DataTableSortHeader column={column} title="上次检查" variant="header-cycle" />,
     size: 170,
     enableSorting: true,
     sortingFn: (rowA, rowB) => {
@@ -381,8 +381,8 @@ export const getHealthChecksTableColumns = ({
   {
     id: "last_success",
     accessorKey: "last_success",
-    meta: { title: "Last Success" },
-    header: ({ column }) => <DataTableSortHeader column={column} title="Last Success" variant="header-cycle" />,
+    meta: { title: "上次成功" },
+    header: ({ column }) => <DataTableSortHeader column={column} title="上次成功" variant="header-cycle" />,
     size: 170,
     enableSorting: true,
     sortingFn: (rowA, rowB) => {
@@ -399,8 +399,8 @@ export const getHealthChecksTableColumns = ({
   },
   {
     id: "actions",
-    meta: { title: "Actions", className: "text-right", headerClassName: "text-right" },
-    header: () => <span className="sr-only">Actions</span>,
+    meta: { title: "操作", className: "text-right", headerClassName: "text-right" },
+    header: () => <span className="sr-only">操作</span>,
     size: 80,
     enableSorting: false,
     enableHiding: false,

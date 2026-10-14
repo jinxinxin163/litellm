@@ -35,18 +35,17 @@ const ClassifierCircuitBreakerConfig: React.FC<ClassifierCircuitBreakerConfigPro
         <Switch
           checked={enabled}
           onCheckedChange={(circuit_breaker_enabled) => onChange({ ...value, circuit_breaker_enabled })}
-          aria-label="Classifier circuit breaker"
+          aria-label="分类器 circuit breaker"
         />
-        <strong className="font-semibold">Classifier circuit breaker</strong>
+        <strong className="font-semibold">分类器 circuit breaker</strong>
       </div>
       <span className="block text-xs text-muted-foreground">
-        After one classifier timeout, use the fallback immediately for every session until a recovery probe succeeds.
-        Enabled by default.
+        分类器超时一次后，所有 session 会立即使用 fallback，直到恢复探测成功。默认开启。
       </span>
       {enabled && (
         <div>
           <Label htmlFor={COOLDOWN_ID} className="block mb-1 font-semibold">
-            Circuit breaker cooldown (seconds)
+            Circuit breaker 冷却时间（秒）
           </Label>
           <Input
             id={COOLDOWN_ID}

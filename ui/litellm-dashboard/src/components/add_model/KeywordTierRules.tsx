@@ -51,19 +51,18 @@ const KeywordTierRules: React.FC<KeywordTierRulesProps> = ({ rules, onChange, ti
     <div className="w-full max-w-none">
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
-          <h4 className="m-0 text-xl font-semibold text-foreground">Keyword Tier Overrides</h4>
-          <SimpleTooltip content="Match known terms and force the request straight to a chosen complexity tier, bypassing rule-based scoring.">
+          <h4 className="m-0 text-xl font-semibold text-foreground">关键词 Tier 覆盖</h4>
+          <SimpleTooltip content="匹配已知术语，并强制将请求直接送到指定复杂度 tier，跳过基于规则的评分。">
             <Info className="size-4 text-muted-foreground" />
           </SimpleTooltip>
         </div>
         <Button variant="outline" onClick={addRule}>
           <Plus />
-          Add keyword rule
+          添加关键词规则
         </Button>
       </div>
       <span className="mb-4 block text-muted-foreground">
-        Optional: route requests containing specific keywords directly to a tier, e.g. route &quot;invoice, refund,
-        billing&quot; to the medium tier.
+        可选：将包含特定关键词的请求直接路由到某个 tier，例如将 &quot;invoice, refund, billing&quot; 路由到 medium tier。
       </span>
 
       {rules.length === 0 ? (
@@ -71,7 +70,7 @@ const KeywordTierRules: React.FC<KeywordTierRulesProps> = ({ rules, onChange, ti
           <CardContent>
             <div className="py-2 text-center">
               <Inbox className="mx-auto mb-2 size-6 text-muted-foreground" aria-hidden="true" />
-              <p className="text-sm text-muted-foreground">No keyword tier overrides configured</p>
+              <p className="text-sm text-muted-foreground">未配置关键词 tier 覆盖</p>
             </div>
           </CardContent>
         </Card>
@@ -82,28 +81,28 @@ const KeywordTierRules: React.FC<KeywordTierRulesProps> = ({ rules, onChange, ti
               <CardContent>
                 <div className="flex items-end gap-3">
                   <div className="flex-1">
-                    <strong className="mb-2 block font-semibold">Keywords {index + 1}</strong>
+                    <strong className="mb-2 block font-semibold">关键词 {index + 1}</strong>
                     <MultiSelect
                       options={rule.keywords.map((keyword) => ({ label: keyword, value: keyword }))}
                       value={rule.keywords}
                       onValueChange={replaceKeywords(rule)}
-                      placeholder="e.g., invoice, refund, billing"
-                      emptyText="Type to add a keyword"
+                      placeholder="例如 invoice, refund, billing"
+                      emptyText="输入以添加关键词"
                       allowCustomValues
                       className={emptyRuleIndexes.has(index) ? "w-full border-destructive" : "w-full"}
                     />
                     {emptyRuleIndexes.has(index) && (
-                      <span className="text-xs text-destructive">At least one keyword is required</span>
+                      <span className="text-xs text-destructive">至少需要一个关键词</span>
                     )}
                   </div>
                   <div style={{ width: 220 }}>
-                    <strong className="mb-2 block font-semibold">Route to tier</strong>
+                    <strong className="mb-2 block font-semibold">路由到 tier</strong>
                     <Select
                       items={tierOptions(tierLabels, tierNames)}
                       value={rule.tier}
                       onValueChange={(tier: string | null) => tier && updateRule(rule.id, { tier })}
                     >
-                      <SelectTrigger aria-label={`Route keyword rule ${index + 1} to tier`} className="w-full">
+                      <SelectTrigger aria-label={`将关键词规则 ${index + 1} 路由到 tier`} className="w-full">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -119,7 +118,7 @@ const KeywordTierRules: React.FC<KeywordTierRulesProps> = ({ rules, onChange, ti
                     variant="ghost"
                     size="icon"
                     className="text-destructive hover:text-destructive/80"
-                    aria-label={`Remove keyword rule ${index + 1}`}
+                    aria-label={`移除关键词规则 ${index + 1}`}
                     onClick={() => removeRule(rule.id)}
                   >
                     <Trash2 />

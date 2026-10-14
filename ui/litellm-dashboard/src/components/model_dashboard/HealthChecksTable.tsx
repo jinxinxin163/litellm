@@ -32,8 +32,8 @@ function EmptyState() {
       <div className="mb-1 flex size-10 items-center justify-center rounded-lg bg-muted">
         <HeartPulse className="size-5 text-muted-foreground" />
       </div>
-      <div className="text-sm font-medium text-foreground">No models found</div>
-      <div className="text-sm text-muted-foreground">Models added to this proxy will show their health here.</div>
+      <div className="text-sm font-medium text-foreground">未找到模型</div>
+      <div className="text-sm text-muted-foreground">添加到此 proxy 的模型会在这里显示健康状态。</div>
     </div>
   );
 }
@@ -84,7 +84,7 @@ export function HealthChecksTable({
       rowSelection={rowSelection}
       onRowSelectionChange={onRowSelectionChange}
       isLoading={isLoading}
-      loadingMessage="Loading models…"
+      loadingMessage="正在加载模型..."
       noDataMessage={<EmptyState />}
       size="compact"
     />
