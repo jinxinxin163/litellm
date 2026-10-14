@@ -327,7 +327,7 @@ export default function UISettings() {
               label="转发客户端 headers 到 LLM API"
               description={
                 forwardClientHeadersProperty?.description ??
-                "Forwards client headers (Authorization, anthropic-beta, and x-* custom headers) to the upstream LLM. Enable for Claude Code with a Max subscription (forwards the OAuth token) or to pass custom/tracing headers through to the provider. Independent of the BYOK toggle — enable only the one(s) you need."
+                "将客户端 headers（Authorization、anthropic-beta 和 x-* 自定义 headers）转发到上游 LLM。Claude Code Max 订阅场景可开启它来转发 OAuth token，也可用于把自定义/追踪 headers 传给 provider。它独立于 BYOK 开关，请只开启需要的项。"
               }
             />
             <SettingRow
@@ -338,7 +338,7 @@ export default function UISettings() {
               label="转发 LLM provider 认证 headers"
               description={
                 forwardLLMProviderAuthHeadersProperty?.description ??
-                "Forwards provider auth headers (x-api-key, x-goog-api-key, api-key, ocp-apim-subscription-key) to the upstream LLM, overriding any deployment-configured key for that request. Enable for Claude Code BYOK (clients bring their own API key). Independent of the client-headers toggle — enable only the one(s) you need."
+                "将 provider 认证 headers（x-api-key、x-goog-api-key、api-key、ocp-apim-subscription-key）转发到上游 LLM，并覆盖该请求中 deployment 配置的 key。Claude Code BYOK 场景可开启它（客户端自带 API key）。它独立于客户端 headers 开关，请只开启需要的项。"
               }
             />
             {enableProjectsUIProperty && (
@@ -350,7 +350,7 @@ export default function UISettings() {
                 label="[BETA] 启用项目（页面将刷新）"
                 description={
                   enableProjectsUIProperty.description ??
-                  "If enabled, shows the Projects feature in the UI sidebar and the project field in key management."
+                  "启用后，会在 UI 侧边栏显示 Projects 功能，并在密钥管理中显示项目字段。"
                 }
               />
             )}
@@ -362,7 +362,7 @@ export default function UISettings() {
               label="[BETA] 启用聊天页面（页面将刷新）"
               description={
                 enableChatUIProperty?.description ??
-                "If enabled, shows the Chat page in the UI sidebar, letting users chat with an LLM and connect their own MCP server credentials via OAuth."
+                "启用后，会在 UI 侧边栏显示 Chat 页面，用户可与 LLM 对话，并通过 OAuth 连接自己的 MCP server 凭据。"
               }
             />
 
@@ -415,7 +415,7 @@ export default function UISettings() {
               label="将用户搜索限制在组织内"
               description={
                 scopeUserSearchProperty?.description ??
-                "If enabled, the user search endpoint restricts results by organization. When off, any authenticated user can search all users."
+                "启用后，用户搜索 endpoint 会按组织限制结果。关闭时，任何已认证用户都可以搜索所有用户。"
               }
             />
 
@@ -428,7 +428,7 @@ export default function UISettings() {
               label="禁用自定义虚拟密钥值"
               description={
                 disableCustomApiKeysProperty?.description ??
-                "If true, users cannot specify custom key values. All keys must be auto-generated."
+                "启用后，用户不能指定自定义密钥值。所有密钥都必须自动生成。"
               }
             />
 

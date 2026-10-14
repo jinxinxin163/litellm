@@ -5,7 +5,7 @@ type FormValues = Record<string, unknown>;
 const ESTIMATE_FIELD = "default_estimated_output_tokens";
 const PER_MODEL_FIELD = "default_estimated_output_tokens_per_model";
 
-const INVALID_PER_MODEL_MESSAGE = 'Enter a JSON object of positive integers, e.g. {"gpt-4": 4096}';
+const INVALID_PER_MODEL_MESSAGE = '请输入正整数 JSON 对象，例如 {"gpt-4": 4096}';
 
 const perModelEstimateToText = (value: unknown): string =>
   value != null && typeof value === "object" ? JSON.stringify(value) : "";
@@ -32,15 +32,14 @@ export const estimateFields = (metadata: Metadata) => ({
 });
 
 const ADMIN_ONLY_TOOLTIP =
-  "Only a proxy admin can change this. It sets how many output tokens the rate limiter reserves for a request " +
-  "that omits max_tokens, which is charged against the team and organization TPM windows.";
+  "只有 proxy admin 可以修改此项。它设置当请求省略 max_tokens 时，rate limiter 为该请求预留多少输出 tokens，并计入团队和组织的 TPM 窗口。";
 
 export const estimateTooltips = (canEdit: boolean, entity: "key" | "team" = "key") => ({
   estimate: canEdit
-    ? `Expected output tokens reserved for TPM limiting when a request omits max_tokens. Overrides the built-in estimate for this ${entity}.`
+    ? `当请求省略 max_tokens 时，为 TPM 限制预留的预期输出 tokens。会覆盖此 ${entity === "key" ? "密钥" : "团队"} 的内置预估值。`
     : ADMIN_ONLY_TOOLTIP,
   perModel: canEdit
-    ? `Per-model expected output tokens reserved for TPM limiting when a request omits max_tokens. Takes precedence over the ${entity}-wide estimate.`
+    ? `当请求省略 max_tokens 时，按模型预留的预期输出 tokens。优先级高于此 ${entity === "key" ? "密钥" : "团队"} 的全局预估值。`
     : ADMIN_ONLY_TOOLTIP,
 });
 
@@ -53,7 +52,7 @@ export const estimateChecks = {
   positive: {
     isValid: (value: unknown): boolean =>
       value === "" || value === null || value === undefined ? true : isPositiveInteger(Number(value)),
-    message: "Enter a positive integer",
+    message: "请输入正整数",
   },
 };
 

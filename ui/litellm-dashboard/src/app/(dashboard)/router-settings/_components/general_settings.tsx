@@ -143,11 +143,11 @@ export const PromptCachingPanel: React.FC<{
   return (
     <Card>
       <CardContent>
-        <CardTitle>Prompt Caching</CardTitle>
+        <CardTitle>Prompt 缓存</CardTitle>
 
         <div className="mt-6 flex items-start justify-between gap-8">
           <div className="min-w-0 max-w-2xl">
-            <p className="font-medium">自动 Anthropic prompt caching</p>
+            <p className="font-medium">自动 Anthropic prompt 缓存</p>
             <p className="mt-1 break-words text-xs text-muted-foreground">{enableSetting.field_description}</p>
           </div>
           <Switch checked={enabled} onCheckedChange={(checked) => persist(ENABLE_ANTHROPIC_PROMPT_CACHING, checked)} />
@@ -156,7 +156,7 @@ export const PromptCachingPanel: React.FC<{
         {ttlSetting && (
           <div className="mt-6 flex items-start justify-between gap-8">
             <div className="min-w-0 max-w-2xl">
-              <p className={`font-medium ${enabled ? "" : "text-muted-foreground"}`}>Cache 生命周期 (TTL)</p>
+              <p className={`font-medium ${enabled ? "" : "text-muted-foreground"}`}>缓存生命周期 (TTL)</p>
               <p className="mt-1 break-words text-xs text-muted-foreground">{ttlSetting.field_description}</p>
             </div>
             <Select
@@ -165,7 +165,7 @@ export const PromptCachingPanel: React.FC<{
               onValueChange={(newValue) => persist(ANTHROPIC_PROMPT_CACHING_TTL, newValue ?? "")}
             >
               <SelectTrigger className="min-w-40">
-                <SelectValue placeholder="5m (default)" />
+                <SelectValue placeholder="5m（默认）" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value={null}>5m（默认）</SelectItem>
@@ -257,7 +257,7 @@ const GeneralSettings: React.FC<GeneralSettingsPageProps> = ({ accessToken, user
         <TabsList variant="line" className="mx-8 mt-4">
           <TabsTrigger value="loadbalancing">负载均衡</TabsTrigger>
           <TabsTrigger value="routing-groups">路由组</TabsTrigger>
-          <TabsTrigger value="fallbacks">Fallbacks</TabsTrigger>
+          <TabsTrigger value="fallbacks">故障回退</TabsTrigger>
           <TabsTrigger value="general">通用</TabsTrigger>
         </TabsList>
         <TabsContent value="loadbalancing" className="px-8 py-6" keepMounted>

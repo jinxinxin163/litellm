@@ -78,7 +78,7 @@ export default function KeyInfoView({
   teams,
   onKeyDataUpdate,
   onDelete,
-  backButtonText = "Back to Keys",
+  backButtonText = "返回密钥列表",
 }: KeyInfoViewProps) {
   const { accessToken, userId: userID, userRole, premiumUser } = useAuthorized();
   const queryClient = useQueryClient();
@@ -167,7 +167,7 @@ export default function KeyInfoView({
           <ArrowLeft className="size-4" />
           {backButtonText}
         </Button>
-        <p className="text-sm">Key not found</p>
+        <p className="text-sm">未找到密钥</p>
       </div>
     );
   }
@@ -230,7 +230,7 @@ export default function KeyInfoView({
             (toolsetId) => !(allMcpToolsets ?? []).some((toolset) => toolset.toolset_id === toolsetId),
           );
         if (unresolvableSelection && Object.keys(mcpEntitlement.mcp_tool_permissions).length > 0) {
-          toast.error("MCP server or toolset list is unavailable, so MCP permissions cannot be saved yet. Retry.");
+          toast.error("MCP server 或 toolset 列表不可用，因此暂时无法保存 MCP 权限。请重试。");
           return;
         }
         formValues.object_permission = {
@@ -280,7 +280,7 @@ export default function KeyInfoView({
           };
         } catch (error) {
           console.error("Error parsing metadata JSON:", error);
-          toast.error("Invalid metadata JSON");
+          toast.error("metadata JSON 无效");
           return;
         }
       } else {
@@ -326,7 +326,7 @@ export default function KeyInfoView({
       if (onKeyDataUpdate) {
         onKeyDataUpdate(newKeyValues);
       }
-      toast.success("Key updated successfully");
+      toast.success("密钥更新成功");
       setIsEditing(false);
       // Refresh key data here if needed
     } catch (error) {
@@ -340,7 +340,7 @@ export default function KeyInfoView({
       setDeleteLoading(true);
       if (!accessToken) return;
       await keyDeleteCall(accessToken as string, currentKeyData.token || currentKeyData.token_id);
-      toast.success("Key deleted successfully");
+      toast.success("密钥删除成功");
       await queryClient.invalidateQueries({ queryKey: keyKeys.lists() });
       if (onDelete) {
         onDelete();
@@ -390,17 +390,16 @@ export default function KeyInfoView({
   // Update the formatTimestamp function to use the desired date format
   const formatTimestamp = (timestamp: string | Date) => {
     const date = new Date(timestamp);
-    const dateStr = date.toLocaleDateString("en-US", {
+    const dateStr = date.toLocaleDateString("zh-CN", {
       year: "numeric",
       month: "short",
       day: "numeric",
     });
-    const timeStr = date.toLocaleTimeString("en-US", {
+    const timeStr = date.toLocaleTimeString("zh-CN", {
       hour: "numeric",
       minute: "2-digit",
-      hour12: true,
     });
-    return `${dateStr} at ${timeStr}`;
+    return `${dateStr} ${timeStr}`;
   };
 
   const canModifyKey =
@@ -432,7 +431,7 @@ export default function KeyInfoView({
         if (onKeyDataUpdate) {
           onKeyDataUpdate({ spend: 0 });
         }
-        toast.success("Key spend reset to $0");
+        toast.success("密钥花费已重置为 $0");
         setIsResetSpendModalOpen(false);
       },
       onError: (error) => {
@@ -454,7 +453,7 @@ export default function KeyInfoView({
           if (onKeyDataUpdate) {
             onKeyDataUpdate({ blocked });
           }
-          toast.success(blocked ? "Key blocked" : "Key unblocked");
+          toast.success(blocked ? "密钥已阻止" : "密钥已解除阻止");
           setIsBlockModalOpen(false);
         },
         onError: (error) => {
@@ -472,14 +471,14 @@ export default function KeyInfoView({
   const parentOrg = orgId ? organizations?.find((org) => org.organization_id === orgId) : null;
 
   const hasOwnBudget = currentKeyData.max_budget !== null;
-  const budgetDisplay = hasOwnBudget ? `$${formatNumberWithCommas(currentKeyData.max_budget, 2)}` : "Unlimited";
+  const budgetDisplay = hasOwnBudget ? `$${formatNumberWithCommas(currentKeyData.max_budget, 2)}` : "无限制";
   const inheritedGates = hasOwnBudget ? [] : inheritedBudgetGates(parentTeam, parentOrg);
 
   return (
     <div className="w-full h-full overflow-y-auto p-4">
       <KeyInfoHeader
         data={{
-          keyName: currentKeyData.key_alias || "Virtual Key",
+          keyName: currentKeyData.key_alias || "虚拟密钥",
           keyId: currentKeyData.token_id || currentKeyData.token,
           userId: currentKeyData.user_id || "",
           userEmail: currentKeyData.user_email || "",
@@ -496,8 +495,8 @@ export default function KeyInfoView({
           createdById: currentKeyData.created_by_user?.user_id || currentKeyData.created_by || "",
           createdAt: currentKeyData.created_at ? formatTimestamp(currentKeyData.created_at) : "",
           lastUpdated: lastConfiguredAt ? formatTimestamp(lastConfiguredAt) : "",
-          lastActive: currentKeyData.last_active ? formatTimestamp(currentKeyData.last_active) : "Never",
-          expires: currentKeyData.expires ? formatTimestamp(currentKeyData.expires) : "Never",
+          lastActive: currentKeyData.last_active ? formatTimestamp(currentKeyData.last_active) : "从不",
+          expires: currentKeyData.expires ? formatTimestamp(currentKeyData.expires) : "从不",
         }}
         onBack={onClose}
         onRegenerate={() => setIsRegenerateModalOpen(true)}
@@ -509,7 +508,7 @@ export default function KeyInfoView({
         backButtonText={backButtonText}
         regenerateDisabled={!premiumUser}
         regenerateTooltip={
-          !premiumUser ? "This is a LiteLLM Enterprise feature, and requires a valid key to use." : undefined
+          !premiumUser ? "这是 LiteLLM Enterprise 功能，需要有效 license 才能使用。" : undefined
         }
       />
 
@@ -524,27 +523,27 @@ export default function KeyInfoView({
       {/* Delete Confirmation Modal */}
       <DeleteResourceModal
         isOpen={isDeleteModalOpen}
-        title="Delete Key"
-        alertMessage="This action is irreversible and will immediately revoke access for any applications using this key."
-        message="Are you sure you want to delete this Virtual Key?"
-        resourceInformationTitle="Key Information"
+        title="删除密钥"
+        alertMessage="此操作不可逆，并会立即撤销所有使用此密钥的应用访问权限。"
+        message="确定要删除此虚拟密钥吗？"
+        resourceInformationTitle="密钥信息"
         resourceInformation={[
           {
-            label: "Key Alias",
+            label: "密钥别名",
             value: currentKeyData?.key_alias || "-",
           },
           {
-            label: "Key ID",
+            label: "密钥 ID",
             value: currentKeyData?.token_id || currentKeyData?.token || "-",
             code: true,
           },
           {
-            label: "Team ID",
+            label: "团队 ID",
             value: currentKeyData?.team_id || "-",
             code: true,
           },
           {
-            label: "Spend",
+            label: "花费",
             value: currentKeyData?.spend ? `$${formatNumberWithCommas(currentKeyData.spend, 4)}` : "$0.0000",
           },
         ]}
@@ -560,22 +559,21 @@ export default function KeyInfoView({
       <Dialog open={isResetSpendModalOpen} onOpenChange={(open) => setIsResetSpendModalOpen(open)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Reset Key Spend</DialogTitle>
+            <DialogTitle>重置密钥花费</DialogTitle>
           </DialogHeader>
           <p>
-            Reset spend for <strong>{currentKeyData?.key_alias || currentKeyData?.token_id || "this key"}</strong> to{" "}
+            将 <strong>{currentKeyData?.key_alias || currentKeyData?.token_id || "此密钥"}</strong> 的花费重置为{" "}
             <strong>$0</strong>?
           </p>
           <p style={{ color: "#666", fontSize: "0.875rem", marginTop: 8 }}>
-            Current spend: <strong>${formatNumberWithCommas(currentKeyData.spend, 4)}</strong>. Spend history is
-            preserved in logs. This resets the current period spend counter, the same as an automatic budget reset.
+            当前花费：<strong>${formatNumberWithCommas(currentKeyData.spend, 4)}</strong>。花费历史会保留在日志中。此操作会重置当前周期花费计数器，效果与自动预算重置相同。
           </p>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsResetSpendModalOpen(false)}>
-              Cancel
+              取消
             </Button>
             <Button variant="destructive" onClick={handleResetSpend} disabled={resetSpendLoading}>
-              Reset
+              重置
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -584,27 +582,27 @@ export default function KeyInfoView({
       <Dialog open={isBlockModalOpen} onOpenChange={(open) => setIsBlockModalOpen(open)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{isBlocked ? "Unblock Key" : "Block Key"}</DialogTitle>
+            <DialogTitle>{isBlocked ? "解除阻止密钥" : "阻止密钥"}</DialogTitle>
           </DialogHeader>
           <p>
-            {isBlocked ? "Unblock" : "Block"}{" "}
-            <strong>{currentKeyData?.key_alias || currentKeyData?.token_id || "this key"}</strong>?
+            {isBlocked ? "解除阻止" : "阻止"}{" "}
+            <strong>{currentKeyData?.key_alias || currentKeyData?.token_id || "此密钥"}</strong>？
           </p>
           <p style={{ color: "#666", fontSize: "0.875rem", marginTop: 8 }}>
             {isBlocked
-              ? "Requests using this key will be accepted again."
-              : "Requests using this key will be rejected with a 401 error until it is unblocked. The key is not deleted and can be unblocked at any time."}
+              ? "使用此密钥的请求将重新被接受。"
+              : "在解除阻止前，使用此密钥的请求将被 401 拒绝。密钥不会被删除，可随时解除阻止。"}
           </p>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsBlockModalOpen(false)}>
-              Cancel
+              取消
             </Button>
             <Button
               variant={isBlocked ? "default" : "destructive"}
               onClick={handleToggleBlocked}
               disabled={blockLoading}
             >
-              {isBlocked ? "Unblock" : "Block"}
+              {isBlocked ? "解除阻止" : "阻止"}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -613,13 +611,13 @@ export default function KeyInfoView({
       <Tabs defaultValue="overview">
         <TabsList variant="line" className="mb-4 h-auto w-full justify-start rounded-none border-b p-0">
           <TabsTrigger value="overview" className="flex-none rounded-none px-4 py-2">
-            Overview
+            概览
           </TabsTrigger>
           <TabsTrigger value="savings" className="flex-none rounded-none px-4 py-2">
-            Savings
+            节省
           </TabsTrigger>
           <TabsTrigger value="settings" className="flex-none rounded-none px-4 py-2">
-            Settings
+            设置
           </TabsTrigger>
         </TabsList>
 
@@ -628,36 +626,36 @@ export default function KeyInfoView({
           <TabsContent value="overview" keepMounted>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               <Card className="block p-6">
-                <p className="text-sm">Spend</p>
+                <p className="text-sm">花费</p>
                 <div className="mt-2">
                   <h3 className="text-lg font-medium">${formatNumberWithCommas(currentKeyData.spend, 4)}</h3>
                   <p className="text-sm">
-                    of {budgetDisplay}
+                    / {budgetDisplay}
                     <InheritedBudgetHint gates={inheritedGates} />
                   </p>
                   {currentKeyData.budget_reset_at && (
-                    <p className="text-sm">Resets {formatTimestamp(currentKeyData.budget_reset_at)}</p>
+                    <p className="text-sm">重置时间 {formatTimestamp(currentKeyData.budget_reset_at)}</p>
                   )}
                 </div>
               </Card>
 
               <Card className="block p-6">
-                <p className="text-sm">Rate Limits</p>
+                <p className="text-sm">速率限制</p>
                 <div className="mt-2">
                   <p className="text-sm">
-                    TPM: {currentKeyData.tpm_limit !== null ? currentKeyData.tpm_limit : "Unlimited"}
+                    TPM: {currentKeyData.tpm_limit !== null ? currentKeyData.tpm_limit : "无限制"}
                   </p>
                   <p className="text-sm">
-                    RPM: {currentKeyData.rpm_limit !== null ? currentKeyData.rpm_limit : "Unlimited"}
+                    RPM: {currentKeyData.rpm_limit !== null ? currentKeyData.rpm_limit : "无限制"}
                   </p>
                   {Boolean(currentKeyData.metadata?.throttle_on_budget_exceeded) && (
-                    <p className="text-sm">Throttle on budget exceeded: Yes</p>
+                    <p className="text-sm">预算超限时限流：是</p>
                   )}
                 </div>
               </Card>
 
               <Card className="block p-6">
-                <p className="text-sm">Models</p>
+                <p className="text-sm">模型</p>
                 <div className="mt-2 flex flex-wrap gap-2">
                   {currentKeyData.models && currentKeyData.models.length > 0 ? (
                     currentKeyData.models.map((model, index) => (
@@ -666,7 +664,7 @@ export default function KeyInfoView({
                       </BadgeLink>
                     ))
                   ) : (
-                    <p className="text-sm">No models specified</p>
+                    <p className="text-sm">未指定模型</p>
                   )}
                 </div>
               </Card>
@@ -680,7 +678,7 @@ export default function KeyInfoView({
               </Card>
 
               <Card className="block p-6">
-                <p className="text-sm font-medium mb-3">Guardrails</p>
+                <p className="text-sm font-medium mb-3">Guardrails 配置</p>
                 {Array.isArray(currentKeyData.metadata?.guardrails) && currentKeyData.metadata.guardrails.length > 0 ? (
                   <div className="flex flex-wrap gap-2">
                     {currentKeyData.metadata.guardrails.map((guardrail: string, index: number) => (
@@ -690,18 +688,18 @@ export default function KeyInfoView({
                     ))}
                   </div>
                 ) : (
-                  <p className="text-sm text-muted-foreground">No guardrails configured</p>
+                  <p className="text-sm text-muted-foreground">未配置 guardrails</p>
                 )}
                 {typeof currentKeyData.metadata?.disable_global_guardrails === "boolean" &&
                   currentKeyData.metadata.disable_global_guardrails === true && (
                     <div className="mt-3 pt-3 border-t border-border">
-                      <Badge variant="destructive">Global Guardrails Disabled</Badge>
+                      <Badge variant="destructive">全局 Guardrails 已禁用</Badge>
                     </div>
                   )}
               </Card>
 
               <Card className="block p-6">
-                <p className="text-sm font-medium mb-3">Policies</p>
+                <p className="text-sm font-medium mb-3">Policies 策略</p>
                 {Array.isArray(currentKeyData.metadata?.policies) && currentKeyData.metadata.policies.length > 0 ? (
                   <div className="space-y-4">
                     {currentKeyData.metadata.policies.map((policy: string, index: number) => (
@@ -710,11 +708,11 @@ export default function KeyInfoView({
                           <Badge variant="secondary" className="min-w-0 break-words">
                             {policy}
                           </Badge>
-                          {loadingPolicies && <p className="text-xs text-muted-foreground">Loading guardrails...</p>}
+                          {loadingPolicies && <p className="text-xs text-muted-foreground">正在加载 guardrails...</p>}
                         </div>
                         {!loadingPolicies && policyGuardrails[policy] && policyGuardrails[policy].length > 0 && (
                           <div className="ml-4 pl-3 border-l-2 border-border">
-                            <p className="text-xs text-muted-foreground mb-1">Resolved Guardrails:</p>
+                            <p className="text-xs text-muted-foreground mb-1">解析后的 Guardrails：</p>
                             <div className="flex flex-wrap gap-1">
                               {policyGuardrails[policy].map((guardrail: string, gIndex: number) => (
                                 <Badge key={gIndex} variant="secondary" className="min-w-0 break-words">
@@ -728,7 +726,7 @@ export default function KeyInfoView({
                     ))}
                   </div>
                 ) : (
-                  <p className="text-sm text-muted-foreground">No policies configured</p>
+                  <p className="text-sm text-muted-foreground">未配置 policies</p>
                 )}
               </Card>
 
@@ -768,10 +766,10 @@ export default function KeyInfoView({
           <TabsContent value="settings" keepMounted>
             <Card className="block p-6">
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-medium">Key Settings</h3>
+                <h3 className="text-lg font-medium">密钥设置</h3>
                 {!isEditing && canModifyKey && (
                   <Button variant="outline" onClick={() => setIsEditing(true)}>
-                    Edit Settings
+                    编辑设置
                   </Button>
                 )}
               </div>
@@ -790,36 +788,36 @@ export default function KeyInfoView({
               ) : (
                 <div className="space-y-4">
                   <div>
-                    <p className="text-sm font-medium">Key ID</p>
+                    <p className="text-sm font-medium">密钥 ID</p>
                     <p className="text-sm font-mono">{currentKeyData.token_id || currentKeyData.token}</p>
                   </div>
 
                   <div>
-                    <p className="text-sm font-medium">Key Alias</p>
-                    <p className="text-sm">{currentKeyData.key_alias || "Not Set"}</p>
+                    <p className="text-sm font-medium">密钥别名</p>
+                    <p className="text-sm">{currentKeyData.key_alias || "未设置"}</p>
                   </div>
 
                   <div>
-                    <p className="text-sm font-medium">Secret Key</p>
+                      <p className="text-sm font-medium">Secret Key 密钥</p>
                     <p className="text-sm font-mono">{currentKeyData.key_name}</p>
                   </div>
 
                   <div>
-                    <p className="text-sm font-medium">Team ID</p>
+                      <p className="text-sm font-medium">团队 ID</p>
                     <p className="text-sm">
                       {currentKeyData.team_id ? (
                         <EntityLink href={teamDetailHref(currentKeyData.team_id)} className="font-normal">
                           {currentKeyData.team_id}
                         </EntityLink>
                       ) : (
-                        "Not Set"
+                        "未设置"
                       )}
                     </p>
                   </div>
 
                   {enableProjectsUI && (
                     <div>
-                      <p className="text-sm font-medium">Project</p>
+                      <p className="text-sm font-medium">项目</p>
                       <p className="text-sm">
                         {currentKeyData.project_id
                           ? (() => {
@@ -828,43 +826,43 @@ export default function KeyInfoView({
                                 ? `${project.project_alias} (${currentKeyData.project_id})`
                                 : currentKeyData.project_id;
                             })()
-                          : "Not Set"}
+                          : "未设置"}
                       </p>
                     </div>
                   )}
 
                   <div>
-                    <p className="text-sm font-medium">Organization</p>
-                    <p className="text-sm">{(currentKeyData.organization_id ?? currentKeyData.org_id) || "Not Set"}</p>
+                    <p className="text-sm font-medium">组织</p>
+                    <p className="text-sm">{(currentKeyData.organization_id ?? currentKeyData.org_id) || "未设置"}</p>
                   </div>
 
                   <div>
-                    <p className="text-sm font-medium">Created</p>
+                    <p className="text-sm font-medium">创建时间</p>
                     <p className="text-sm">{formatTimestamp(currentKeyData.created_at)}</p>
                   </div>
 
                   {lastRegeneratedAt && (
                     <div>
-                      <p className="text-sm font-medium">Last Regenerated</p>
+                      <p className="text-sm font-medium">上次重新生成</p>
                       <div className="flex items-center gap-2">
                         <p className="text-sm">{formatTimestamp(lastRegeneratedAt)}</p>
-                        <Badge variant="secondary">Recent</Badge>
+                        <Badge variant="secondary">最近</Badge>
                       </div>
                     </div>
                   )}
 
                   <div>
-                    <p className="text-sm font-medium">Expires</p>
+                    <p className="text-sm font-medium">过期时间</p>
                     <p className="text-sm">
-                      {currentKeyData.expires ? formatTimestamp(currentKeyData.expires) : "Never"}
+                      {currentKeyData.expires ? formatTimestamp(currentKeyData.expires) : "从不"}
                     </p>
                   </div>
 
                   {Boolean(currentKeyData.metadata?.enable_prompt_caching) && (
                     <div>
-                      <p className="text-sm font-medium">Prompt Caching</p>
+                      <p className="text-sm font-medium">Prompt 缓存</p>
                       <p className="text-sm">
-                        Enabled (auto-injects cache_control markers on Anthropic and Bedrock Claude requests)
+                        已启用（会在 Anthropic 和 Bedrock Claude 请求中自动注入 cache_control 标记）
                       </p>
                     </div>
                   )}
@@ -880,31 +878,31 @@ export default function KeyInfoView({
                   />
 
                   <div>
-                    <p className="text-sm font-medium">Spend</p>
+                    <p className="text-sm font-medium">花费</p>
                     <p className="text-sm">${formatNumberWithCommas(currentKeyData.spend, 4)} USD</p>
                   </div>
 
                   <div>
-                    <p className="text-sm font-medium">Budget</p>
+                    <p className="text-sm font-medium">预算</p>
                     <p className="text-sm">
                       {currentKeyData.max_budget !== null
                         ? `$${formatNumberWithCommas(currentKeyData.max_budget, 2)}`
-                        : "Unlimited"}
+                        : "无限制"}
                     </p>
                   </div>
 
                   <div>
-                    <p className="text-sm font-medium">Budget Reset</p>
+                    <p className="text-sm font-medium">预算重置</p>
                     <p data-testid="budget-reset-value" className="text-sm">
                       {currentKeyData.budget_reset_at
-                        ? `${currentKeyData.budget_duration ? `Every ${currentKeyData.budget_duration}, next ` : ""}${formatTimestamp(currentKeyData.budget_reset_at)}`
-                        : "Never"}
+                        ? `${currentKeyData.budget_duration ? `每 ${currentKeyData.budget_duration}，下次 ` : ""}${formatTimestamp(currentKeyData.budget_reset_at)}`
+                        : "从不"}
                     </p>
                   </div>
 
                   {currentKeyData.budget_fallbacks && Object.keys(currentKeyData.budget_fallbacks).length > 0 && (
                     <div>
-                      <p className="text-sm font-medium">Budget Fallbacks</p>
+                      <p className="text-sm font-medium">预算故障回退</p>
                       <div className="mt-1 space-y-1">
                         {Object.entries(currentKeyData.budget_fallbacks).map(([model, fallbacks]) => (
                           <div key={model} className="text-xs text-muted-foreground">
@@ -919,7 +917,7 @@ export default function KeyInfoView({
 
                   {hasRouterSettings(currentKeyData.router_settings) && (
                     <div>
-                      <p className="text-sm font-medium">Router Settings</p>
+                      <p className="text-sm font-medium">Router Settings 路由设置</p>
                       <div className="mt-1">
                         <RouterSettingsSummary routerSettings={currentKeyData.router_settings} />
                       </div>
@@ -927,7 +925,7 @@ export default function KeyInfoView({
                   )}
 
                   <div>
-                    <p className="text-sm font-medium">Tags</p>
+                    <p className="text-sm font-medium">Tags 标签</p>
                     <div className="flex flex-wrap gap-2 mt-1">
                       {Array.isArray(currentKeyData.metadata?.tags) && currentKeyData.metadata.tags.length > 0
                         ? currentKeyData.metadata.tags.map((tag, index) => (
@@ -935,12 +933,12 @@ export default function KeyInfoView({
                               {tag}
                             </span>
                           ))
-                        : "No tags specified"}
+                        : "未指定 tags"}
                     </div>
                   </div>
 
                   <div>
-                    <p className="text-sm font-medium">Prompts</p>
+                    <p className="text-sm font-medium">Prompts 提示词</p>
                     <p className="text-sm">
                       {Array.isArray(currentKeyData.metadata?.prompts) && currentKeyData.metadata.prompts.length > 0
                         ? currentKeyData.metadata.prompts.map((prompt, index) => (
@@ -948,12 +946,12 @@ export default function KeyInfoView({
                               {prompt}
                             </span>
                           ))
-                        : "No prompts specified"}
+                        : "未指定 prompts"}
                     </p>
                   </div>
 
                   <div>
-                    <p className="text-sm font-medium">Allowed Routes</p>
+                    <p className="text-sm font-medium">允许的 Routes</p>
                     <div className="flex flex-wrap gap-2 mt-1">
                       {Array.isArray(currentKeyData.allowed_routes) && currentKeyData.allowed_routes.length > 0 ? (
                         currentKeyData.allowed_routes.map((route, index) => (
@@ -962,13 +960,13 @@ export default function KeyInfoView({
                           </span>
                         ))
                       ) : (
-                        <Badge variant="secondary">All routes allowed</Badge>
+                        <Badge variant="secondary">允许所有 routes</Badge>
                       )}
                     </div>
                   </div>
 
                   <div>
-                    <p className="text-sm font-medium">Allowed Pass Through Routes</p>
+                    <p className="text-sm font-medium">允许的 Pass Through Routes</p>
                     <p className="text-sm">
                       {Array.isArray(currentKeyData.metadata?.allowed_passthrough_routes) &&
                       currentKeyData.metadata.allowed_passthrough_routes.length > 0
@@ -977,23 +975,23 @@ export default function KeyInfoView({
                               {route}
                             </span>
                           ))
-                        : "No pass through routes specified"}
+                        : "未指定 pass through routes"}
                     </p>
                   </div>
 
                   <div>
-                    <p className="text-sm font-medium">Disable Global Guardrails</p>
+                    <p className="text-sm font-medium">禁用全局 Guardrails</p>
                     <p className="text-sm">
                       {currentKeyData.metadata?.disable_global_guardrails === true ? (
-                        <Badge variant="destructive">Enabled - Global guardrails bypassed</Badge>
+                        <Badge variant="destructive">已启用 - 绕过全局 guardrails</Badge>
                       ) : (
-                        <Badge variant="secondary">Disabled - Global guardrails active</Badge>
+                        <Badge variant="secondary">已禁用 - 全局 guardrails 生效</Badge>
                       )}
                     </p>
                   </div>
 
                   <div>
-                    <p className="text-sm font-medium">Models</p>
+                    <p className="text-sm font-medium">模型</p>
                     <div className="flex flex-wrap gap-2 mt-1">
                       {currentKeyData.models && currentKeyData.models.length > 0 ? (
                         currentKeyData.models.map((model, index) => (
@@ -1002,60 +1000,60 @@ export default function KeyInfoView({
                           </BadgeLink>
                         ))
                       ) : (
-                        <p className="text-sm">No models specified</p>
+                        <p className="text-sm">未指定模型</p>
                       )}
                     </div>
                   </div>
 
                   <div>
-                    <p className="text-sm font-medium">Rate Limits</p>
+                    <p className="text-sm font-medium">速率限制</p>
                     <p className="text-sm">
-                      TPM: {currentKeyData.tpm_limit !== null ? currentKeyData.tpm_limit : "Unlimited"}
+                      TPM: {currentKeyData.tpm_limit !== null ? currentKeyData.tpm_limit : "无限制"}
                     </p>
                     <p className="text-sm">
-                      RPM: {currentKeyData.rpm_limit !== null ? currentKeyData.rpm_limit : "Unlimited"}
+                      RPM: {currentKeyData.rpm_limit !== null ? currentKeyData.rpm_limit : "无限制"}
                     </p>
                     <p className="text-sm">
-                      Max Parallel Requests:{" "}
+                      最大并发请求数：{" "}
                       {currentKeyData.max_parallel_requests !== null
                         ? currentKeyData.max_parallel_requests
-                        : "Unlimited"}
+                        : "无限制"}
                     </p>
                     <p className="text-sm">
-                      Model TPM Limits:{" "}
+                      模型 TPM 限制：{" "}
                       {currentKeyData.metadata?.model_tpm_limit
                         ? JSON.stringify(currentKeyData.metadata.model_tpm_limit)
-                        : "Unlimited"}
+                        : "无限制"}
                     </p>
                     <p className="text-sm">
-                      Model RPM Limits:{" "}
+                      模型 RPM 限制：{" "}
                       {currentKeyData.metadata?.model_rpm_limit
                         ? JSON.stringify(currentKeyData.metadata.model_rpm_limit)
-                        : "Unlimited"}
+                        : "无限制"}
                     </p>
                     <p className="text-sm">
-                      Tag RPM Limits:{" "}
+                      Tag RPM 限制：{" "}
                       {currentKeyData.metadata?.tag_rpm_limit &&
                       Object.keys(currentKeyData.metadata.tag_rpm_limit).length > 0
                         ? JSON.stringify(currentKeyData.metadata.tag_rpm_limit)
-                        : "Unlimited"}
+                        : "无限制"}
                     </p>
                     <p className="text-sm">
-                      Estimated Output Tokens:{" "}
+                      预估输出 Tokens：{" "}
                       {currentKeyData.metadata?.default_estimated_output_tokens != null
                         ? String(currentKeyData.metadata.default_estimated_output_tokens)
-                        : "Default"}
+                        : "默认"}
                     </p>
                     <p className="text-sm">
-                      Estimated Output Tokens Per Model:{" "}
+                      每个模型的预估输出 Tokens：{" "}
                       {currentKeyData.metadata?.default_estimated_output_tokens_per_model
                         ? JSON.stringify(currentKeyData.metadata.default_estimated_output_tokens_per_model)
-                        : "Default"}
+                        : "默认"}
                     </p>
                   </div>
 
                   <div>
-                    <p className="text-sm font-medium">Metadata</p>
+                    <p className="text-sm font-medium">Metadata 元数据</p>
                     <pre className="bg-muted p-2 rounded-sm text-xs overflow-auto mt-1">
                       {formatMetadataForDisplay(stripTagsFromMetadata(currentKeyData.metadata))}
                     </pre>

@@ -14,9 +14,9 @@ export const labelWithHint = (label: React.ReactNode, hint: string): React.React
 );
 
 const KEY_TYPE_OPTIONS = [
-  { value: "default", label: "Full Access", hint: "Can call all routes (AI APIs, Management, and read-only)" },
-  { value: "llm_api", label: "AI APIs", hint: "Can call only AI API routes (chat/completions, embeddings, etc.)" },
-  { value: "management", label: "Management", hint: "Can call only management routes (user/team/key management)" },
+  { value: "default", label: "完全访问", hint: "可调用所有 routes（AI APIs、管理和只读）" },
+  { value: "llm_api", label: "AI APIs", hint: "仅可调用 AI API routes（chat/completions、embeddings 等）" },
+  { value: "management", label: "管理", hint: "仅可调用管理 routes（用户/团队/密钥管理）" },
 ];
 
 export const KeyTypeSelect = ({
@@ -34,7 +34,7 @@ export const KeyTypeSelect = ({
     onValueChange={(next: string | null) => next != null && onChange(next)}
   >
     <SelectTrigger id={id} className="w-full">
-      <SelectValue placeholder="Select key type" />
+      <SelectValue placeholder="选择密钥类型" />
     </SelectTrigger>
     <SelectContent>
       {KEY_TYPE_OPTIONS.map((option) => (
