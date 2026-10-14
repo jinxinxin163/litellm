@@ -691,10 +691,6 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                         其他用户
                       </label>
                     )}
-                    <label className={KEY_OWNER_LABEL_CLASS}>
-                      <RadioGroupItem value="agent" />
-                      Agent <Badge>新</Badge>
-                    </label>
                   </RadioGroup>
                 </Field>
 
@@ -765,29 +761,7 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                     </div>
                   </div>
                 )}
-                <MountedFormField
-                  label={
-                    <span>
-                      组织{" "}
-                      <SimpleTooltip content="此密钥所属的组织。选择组织会过滤可用团队。">
-                        <Info className="ml-1 inline size-3.5 align-text-bottom" />
-                      </SimpleTooltip>
-                    </span>
-                  }
-                  name="organization_id"
-                  className="mt-4"
-                >
-                  {(control) => (
-                    <OrganizationDropdown
-                      id={control.id}
-                      value={control.value as string | undefined}
-                      organizations={organizations}
-                      loading={isOrganizationsLoading}
-                      disabled={userRole !== "Admin"}
-                      onChange={changeOrganization(control.onChange)}
-                    />
-                  )}
-                </MountedFormField>
+                
                 <MountedFormField
                   label={
                     <span>
@@ -1021,49 +995,7 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                           />
                         )}
                       </MountedFormField>
-                      <Field className="mt-4">
-                        <FieldLabel>
-                          <span>
-                            预算窗口{" "}
-                            <SimpleTooltip content="设置多个独立预算窗口（例如每小时 $10 且每月 $200）。每个窗口会单独跟踪花费，并按自己的周期重置。">
-                              <Info className="ml-1 inline size-3.5 align-text-bottom" />
-                            </SimpleTooltip>
-                          </span>
-                        </FieldLabel>
-                        <BudgetWindowsEditor value={budgetLimits} onChange={setBudgetLimits} />
-                      </Field>
-                      <Field className="mt-4">
-                        <FieldLabel>
-                          <span>
-                            按模型预算{" "}
-                            <SimpleTooltip content="Cap spend on individual models, each with its own reset window. Enforced across every request this key makes; usage is reported on the key's info page.">
-                              <Info className="ml-1 inline size-3.5 align-text-bottom" />
-                            </SimpleTooltip>
-                          </span>
-                        </FieldLabel>
-                        <ModelMaxBudgetEditor
-                          value={modelMaxBudget}
-                          onChange={setModelMaxBudget}
-                          availableModels={modelsToPick}
-                          premiumUser={premiumUser === true}
-                        />
-                      </Field>
-                      <Field className="mt-4">
-                        <FieldLabel>
-                          <span>
-                            预算回退{" "}
-                            <SimpleTooltip content="当某个模型超过其按模型预算（model_max_budget）时，请求会自动路由到回退模型，而不是直接失败。按模型预算可在高级设置中配置。">
-                              <Info className="ml-1 inline size-3.5 align-text-bottom" />
-                            </SimpleTooltip>
-                          </span>
-                        </FieldLabel>
-                        <BudgetFallbacksEditor
-                          key={budgetFallbacksKey}
-                          value={budgetFallbacks}
-                          onChange={setBudgetFallbacks}
-                          availableModels={modelsToPick}
-                        />
-                      </Field>
+              
                       <MountedFormField
                         className="mt-4"
                         label={
@@ -1272,170 +1204,9 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                           />
                         )}
                       </MountedFormField>
-                      {canViewPolicies && (
-                        <MountedFormField
-                          label={
-                            <span>
-                              Policies{" "}
-                              <SimpleTooltip content="将 policies 应用于此密钥，以控制 guardrails 和其他设置">
-                                <a
-                                  href="https://docs.litellm.ai/docs/proxy/guardrails/guardrail_policies"
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  onClick={(e) => e.stopPropagation()} // Prevent accordion from collapsing when clicking link
-                                >
-                                  <Info className="ml-1 inline size-3.5 align-text-bottom" />
-                                </a>
-                              </SimpleTooltip>
-                            </span>
-                          }
-                          name="policies"
-                          className="mt-4"
-                          help={
-                            premiumUser
-                              ? "选择已有 policies 或输入新的 policies"
-                              : "高级功能：升级后可按密钥设置 policies"
-                          }
-                        >
-                          {(control) => (
-                            <TagsInput
-                              id={control.id}
-                              value={(control.value as string[] | undefined) ?? []}
-                              onValueChange={control.onChange}
-                              disabled={!premiumUser}
-                              placeholder={
-                                !premiumUser
-                                  ? "高级功能：升级后可按密钥设置 policies"
-                                  : "选择或输入 policies"
-                              }
-                              options={policiesList.map((name) => ({ value: name, label: name }))}
-                            />
-                          )}
-                        </MountedFormField>
-                      )}
-                      {canViewPrompts && (
-                        <MountedFormField
-                          label={
-                            <span>
-                              Prompts{" "}
-                              <SimpleTooltip content="允许此密钥使用指定 prompt templates">
-                                <a
-                                  href="https://docs.litellm.ai/docs/proxy/prompt_management"
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  onClick={(e) => e.stopPropagation()} // Prevent accordion from collapsing when clicking link
-                                >
-                                  <Info className="ml-1 inline size-3.5 align-text-bottom" />
-                                </a>
-                              </SimpleTooltip>
-                            </span>
-                          }
-                          name="prompts"
-                          className="mt-4"
-                          help={
-                            premiumUser
-                              ? "选择已有 prompts 或输入新的 prompts"
-                              : "高级功能：升级后可按密钥设置 prompts"
-                          }
-                        >
-                          {(control) => (
-                            <TagsInput
-                              id={control.id}
-                              value={(control.value as string[] | undefined) ?? []}
-                              onValueChange={control.onChange}
-                              disabled={!premiumUser}
-                              placeholder={
-                                !premiumUser
-                                  ? "高级功能：升级后可按密钥设置 prompts"
-                                  : "选择或输入 prompts"
-                              }
-                              options={promptsList.map((name) => ({ value: name, label: name }))}
-                            />
-                          )}
-                        </MountedFormField>
-                      )}
-                      <MountedFormField
-                        label={
-                          <span>
-                            访问组{" "}
-                            <SimpleTooltip content="为此密钥分配访问组。访问组控制此密钥可使用哪些模型、MCP servers 和 agents">
-                              <Info className="ml-1 inline size-3.5 align-text-bottom" />
-                            </SimpleTooltip>
-                          </span>
-                        }
-                        name="access_group_ids"
-                        className="mt-4"
-                        help="选择要分配给此密钥的访问组"
-                      >
-                        {(control) => (
-                          <AccessGroupSelector
-                            value={control.value as string[] | undefined}
-                            onChange={control.onChange}
-                            placeholder="选择访问组（可选）"
-                          />
-                        )}
-                      </MountedFormField>
-                      <MountedFormField
-                        label={
-                          <span>
-                            允许的透传路由{" "}
-                            <SimpleTooltip content="允许此密钥使用指定透传路由">
-                              <a
-                                href="https://docs.litellm.ai/docs/proxy/pass_through"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                onClick={(e) => e.stopPropagation()} // Prevent accordion from collapsing when clicking link
-                              >
-                                <Info className="ml-1 inline size-3.5 align-text-bottom" />
-                              </a>
-                            </SimpleTooltip>
-                          </span>
-                        }
-                        name="allowed_passthrough_routes"
-                        className="mt-4"
-                        help={
-                          premiumUser
-                            ? "选择已有透传路由或输入新的透传路由"
-                            : "高级功能：升级后可按密钥设置透传路由"
-                        }
-                      >
-                        {(control) => (
-                          <PassThroughRoutesSelector
-                            value={control.value as string[] | undefined}
-                            onChange={control.onChange}
-                            accessToken={accessToken}
-                            placeholder={
-                              !premiumUser
-                                ? "高级功能：升级后可按密钥设置透传路由"
-                                : "选择或输入透传路由"
-                            }
-                            disabled={!premiumUser}
-                            teamId={selectedCreateKeyTeam ? selectedCreateKeyTeam.team_id : null}
-                          />
-                        )}
-                      </MountedFormField>
-                      <MountedFormField
-                        label={
-                          <span>
-                            允许的 Vector Stores{" "}
-                            <SimpleTooltip content="选择此密钥可访问的 vector stores。若不选择，则密钥可访问全部可用 vector stores">
-                              <Info className="ml-1 inline size-3.5 align-text-bottom" />
-                            </SimpleTooltip>
-                          </span>
-                        }
-                        name="allowed_vector_store_ids"
-                        className="mt-4"
-                        help="选择此密钥可访问的 vector stores。留空表示允许访问全部 vector stores"
-                      >
-                        {(control) => (
-                          <VectorStoreSelector
-                            onChange={control.onChange}
-                            value={control.value as string[] | undefined}
-                            accessToken={accessToken}
-                            placeholder="选择 vector stores（可选）"
-                          />
-                        )}
-                      </MountedFormField>
+                      
+                    
+                      
                       <MountedFormField
                         label={
                           <span>
@@ -1481,78 +1252,7 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                           />
                         )}
                       </MountedFormField>
-                      <Collapsible className="mt-4 mb-4 overflow-hidden rounded-lg border">
-                        <CollapsibleTrigger className={SECTION_HEADER_CLASS}>
-                          <b>MCP 设置</b>
-                          <ChevronDown className={SECTION_CHEVRON_CLASS} />
-                        </CollapsibleTrigger>
-                        <CollapsibleContent className="px-4 pb-3">
-                          <MountedFormField
-                            label={
-                              <span>
-                                允许的 MCP Servers{" "}
-                                <SimpleTooltip content="选择此密钥可访问的 MCP servers 或访问组">
-                                  <Info className="ml-1 inline size-3.5 align-text-bottom" />
-                                </SimpleTooltip>
-                              </span>
-                            }
-                            name="allowed_mcp_servers_and_groups"
-                            help="选择此密钥可访问的 MCP servers 或访问组"
-                          >
-                            {(control) => (
-                              <MCPServerSelector
-                                onChange={control.onChange}
-                                value={control.value as McpSelectorValue | undefined}
-                                accessToken={accessToken}
-                                teamId={selectedCreateKeyTeam?.team_id ?? null}
-                                placeholder="选择 MCP servers 或访问组（可选）"
-                                allowNoMcpServers
-                              />
-                            )}
-                          </MountedFormField>
-
-                          {/* Hidden field to register mcp_tool_permissions with the form */}
-                          <MountedFormField name="mcp_tool_permissions" bare>
-                            {(control) => <input type="hidden" id={control.id} name={control.name} />}
-                          </MountedFormField>
-
-                          <McpToolPermissionsField
-                            accessToken={accessToken}
-                            control={form.control}
-                            setValue={form.setValue}
-                          />
-                        </CollapsibleContent>
-                      </Collapsible>
-
-                      <Collapsible className="mt-4 mb-4 overflow-hidden rounded-lg border">
-                        <CollapsibleTrigger className={SECTION_HEADER_CLASS}>
-                          <b>Agent 设置</b>
-                          <ChevronDown className={SECTION_CHEVRON_CLASS} />
-                        </CollapsibleTrigger>
-                        <CollapsibleContent className="px-4 pb-3">
-                          <MountedFormField
-                            label={
-                              <span>
-                                允许的 Agents{" "}
-                                <SimpleTooltip content="选择此密钥可访问的 agents 或访问组">
-                                  <Info className="ml-1 inline size-3.5 align-text-bottom" />
-                                </SimpleTooltip>
-                              </span>
-                            }
-                            name="allowed_agents_and_groups"
-                            help="选择此密钥可访问的 agents 或访问组"
-                          >
-                            {(control) => (
-                              <AgentSelector
-                                onChange={control.onChange}
-                                value={control.value as AgentSelectorValue | undefined}
-                                accessToken={accessToken}
-                                placeholder="选择 agents 或访问组（可选）"
-                              />
-                            )}
-                          </MountedFormField>
-                        </CollapsibleContent>
-                      </Collapsible>
+                  
 
                       {premiumUser ? (
                         <Collapsible className="mt-4 mb-4 overflow-hidden rounded-lg border">

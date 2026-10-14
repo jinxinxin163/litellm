@@ -90,7 +90,7 @@ const menuGroups: MenuGroup[] = [
       {
         key: "models",
         page: "models",
-        label: "模型和端点",
+        label: "模型",
         icon: <Network {...ICON} />,
         roles: rolesAllowedToViewWriteScopedPages,
       },
