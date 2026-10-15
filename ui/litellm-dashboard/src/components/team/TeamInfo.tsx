@@ -1659,74 +1659,7 @@ const TeamInfoView: React.FC<TeamInfoProps> = ({
                     />
                   </Field>
 
-                  <FormField
-                    control={form.control}
-                    name="guardrails"
-                    label={labelWithDocsHint(
-                      "Guardrails",
-                      "Select which guardrails apply to this team. Global guardrails are enabled by default, uncheck to opt out. Other guardrails are opt-in.",
-                      "https://docs.litellm.ai/docs/proxy/guardrails/quick_start",
-                    )}
-                  >
-                    {({ id, value, onChange }) => (
-                      <GuardrailsSelect
-                        id={id}
-                        value={value ?? []}
-                        onValueChange={onChange}
-                        globalGuardrails={globalGuardrails.map((g) => ({
-                          name: g.guardrail_name,
-                          disabled: Boolean(killSwitchOn),
-                        }))}
-                        otherGuardrails={otherGuardrails.map((g) => ({
-                          name: g.guardrail_name,
-                          disabled: false,
-                        }))}
-                        globalGuardrailNames={globalGuardrailNames}
-                      />
-                    )}
-                  </FormField>
-
-                  <FormField
-                    control={form.control}
-                    name="disable_global_guardrails"
-                    label={labelWithHint(
-                      "Disable all global guardrails",
-                      "Kill switch: bypass every global guardrail for this team, including any added in the future. For per-guardrail opt-out instead, use the Guardrails dropdown above.",
-                    )}
-                  >
-                    {({ id, value, onChange }) => (
-                      <Switch
-                        id={id}
-                        checked={value === true}
-                        onCheckedChange={(checked) => {
-                          onChange(checked);
-                          applyKillSwitchToGuardrails(checked);
-                        }}
-                      />
-                    )}
-                  </FormField>
-
-                  {canViewPolicies && (
-                    <FormField
-                      control={form.control}
-                      name="policies"
-                      label={labelWithDocsHint(
-                        "Policies",
-                        "Apply policies to this team to control guardrails and other settings",
-                        "https://docs.litellm.ai/docs/proxy/guardrails/guardrail_policies",
-                      )}
-                    >
-                      {({ id, value, onChange }) => (
-                        <TagsInput
-                          id={id}
-                          value={value ?? []}
-                          onValueChange={onChange}
-                          options={policiesList.map((name) => ({ value: name, label: name }))}
-                          placeholder="Select or enter policies"
-                        />
-                      )}
-                    </FormField>
-                  )}
+                
 
                   <FormField
                     control={form.control}
@@ -1745,124 +1678,6 @@ const TeamInfoView: React.FC<TeamInfoProps> = ({
                     )}
                   </FormField>
 
-                  <FormField control={form.control} name="vector_stores" label="Vector Stores">
-                    {({ value, onChange }) => (
-                      <VectorStoreSelector
-                        onChange={onChange}
-                        value={value}
-                        accessToken={accessToken || ""}
-                        placeholder="Select vector stores"
-                      />
-                    )}
-                  </FormField>
-
-                  <FormField
-                    control={form.control}
-                    name="allowed_passthrough_routes"
-                    label={
-                      !premiumUser
-                        ? labelWithHint(
-                            "Allowed Pass Through Routes",
-                            "Premium feature - Upgrade to set allowed pass through routes",
-                          )
-                        : !is_proxy_admin
-                          ? labelWithHint(
-                              "Allowed Pass Through Routes",
-                              "Only proxy admins can set allowed pass through routes",
-                            )
-                          : "Allowed Pass Through Routes"
-                    }
-                  >
-                    {({ value, onChange }) => (
-                      <PassThroughRoutesSelector
-                        value={value}
-                        onChange={onChange}
-                        accessToken={accessToken || ""}
-                        placeholder="Select pass through routes"
-                        disabled={!premiumUser || !is_proxy_admin}
-                      />
-                    )}
-                  </FormField>
-
-                  <FormField control={form.control} name="mcp_servers_and_groups" label="MCP Servers / Access Groups">
-                    {({ value, onChange }) => (
-                      <MCPServerSelector
-                        onChange={onChange}
-                        value={value}
-                        accessToken={accessToken || ""}
-                        placeholder="Select MCP servers or access groups (optional)"
-                        allowAllProxyMcpServers={is_proxy_admin}
-                      />
-                    )}
-                  </FormField>
-
-                  <div className="mb-6">
-                    <MCPToolPermissions
-                      accessToken={accessToken || ""}
-                      selectedServers={watchedMcpSelection?.servers || []}
-                      selectedAccessGroups={watchedMcpSelection?.accessGroups || []}
-                      selectedToolsets={watchedMcpSelection?.toolsets || []}
-                      toolPermissions={watchedToolPermissions || {}}
-                      onChange={(toolPerms) => form.setValue("mcp_tool_permissions", toolPerms)}
-                    />
-                  </div>
-
-                  <FormField control={form.control} name="agents_and_groups" label="Agents / Access Groups">
-                    {({ value, onChange }) => (
-                      <AgentSelector
-                        onChange={onChange}
-                        value={value}
-                        accessToken={accessToken || ""}
-                        placeholder="Select agents or access groups (optional)"
-                      />
-                    )}
-                  </FormField>
-
-                  <Collapsible
-                    open={searchToolSettingsOpen}
-                    onOpenChange={setSearchToolSettingsOpen}
-                    className="mt-4 mb-4 overflow-hidden rounded-lg border"
-                  >
-                    <CollapsibleTrigger className="group/section flex w-full items-center justify-between px-4 py-3 text-left">
-                      <b>Search Tool Settings</b>
-                      <ChevronDown className="size-5 shrink-0 text-muted-foreground transition-transform group-data-[panel-open]/section:rotate-180" />
-                    </CollapsibleTrigger>
-                    <CollapsibleContent className="px-4 pb-3">
-                      <FormField
-                        control={form.control}
-                        name="object_permission_search_tools"
-                        label={labelWithHint(
-                          "Allowed Search Tools",
-                          "Select which search tools this team can access. Leave empty to allow all search tools.",
-                        )}
-                      >
-                        {({ value, onChange }) => (
-                          <SearchToolSelector
-                            onChange={onChange}
-                            value={value}
-                            accessToken={accessToken || ""}
-                            placeholder="Select search tools (optional, empty = all allowed)"
-                          />
-                        )}
-                      </FormField>
-                    </CollapsibleContent>
-                  </Collapsible>
-
-                  <FormField control={form.control} name="organization_id" label="Organization">
-                    {({ id, value, onChange }) => (
-                      <SearchSelect
-                        inputId={id}
-                        value={value ?? ""}
-                        onValueChange={(next) => onChange(next === "" ? null : next)}
-                        options={userOrganizations.map((org) => ({
-                          value: org.organization_id ?? "",
-                          label: org.organization_alias || org.organization_id || "",
-                        }))}
-                        placeholder="Select an organization"
-                        emptyText="No matching organizations"
-                      />
-                    )}
-                  </FormField>
 
                   <FormField control={form.control} name="logging_settings" label="Logging Settings">
                     {({ value, onChange }) => (
@@ -1870,27 +1685,7 @@ const TeamInfoView: React.FC<TeamInfoProps> = ({
                     )}
                   </FormField>
 
-                  <FormField
-                    control={form.control}
-                    name="secret_manager_settings"
-                    label="Secret Manager Settings"
-                    description={
-                      premiumUser
-                        ? "Enter secret manager configuration as a JSON object."
-                        : "Premium feature - Upgrade to manage secret manager settings."
-                    }
-                  >
-                    {({ ref, value, ...field }) => (
-                      <Textarea
-                        {...field}
-                        ref={ref}
-                        value={value ?? ""}
-                        rows={6}
-                        placeholder='{"namespace": "admin", "mount": "secret", "path_prefix": "litellm"}'
-                        disabled={!premiumUser}
-                      />
-                    )}
-                  </FormField>
+                  
                 </FieldGroup>
 
                 <div className="sticky z-chrome -inset-x-6 -bottom-6 border-t border-border bg-card p-4 pr-0">
