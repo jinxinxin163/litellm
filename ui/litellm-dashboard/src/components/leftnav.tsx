@@ -90,7 +90,7 @@ const menuGroups: MenuGroup[] = [
       {
         key: "models",
         page: "models",
-        label: "Models + Endpoints",
+        label: "Models",
         icon: <Network {...ICON} />,
         roles: rolesAllowedToViewWriteScopedPages,
       },
