@@ -867,7 +867,7 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                     help={
                       keyType === "management" || keyType === "read_only"
                         ? t("keys.modelsFieldIsDisabledForThisKeyType")
-                        : "optional - leave empty to allow access to all models"
+                        : t("keys.optionalLeaveEmptyToAllowAccessToAllModels")
                     }
                     className="mt-4"
                   >

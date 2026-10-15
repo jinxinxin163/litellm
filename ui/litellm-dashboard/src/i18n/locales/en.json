@@ -326,6 +326,7 @@
     "maximumAmountInUsdThisKeyCanSpendWhenReachedThe": "Maximum amount in USD this key can spend. When reached, the key will be blocked from making further requests",
     "selectTheTypeOfKeyToDetermineWhatRoutesAndOperations": "Select the type of key to determine what routes and operations this key can access",
     "modelsFieldIsDisabledForThisKeyType": "Models field is disabled for this key type",
+    "optionalLeaveEmptyToAllowAccessToAllModels": "Optional - leave empty to allow access to all models",
     "selectWhichModelsThisKeyCanAccessChooseAllTeamModels": "Select which models this key can access. Choose 'All Team Models' to grant access to all models available to the team. Leave empty to allow access to all models.",
     "uniqueIdentifierForThisServiceAccount": "Unique identifier for this service account",
     "aDescriptiveNameToIdentifyThisKey": "A descriptive name to identify this key",

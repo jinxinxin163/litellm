@@ -326,6 +326,7 @@
     "maximumAmountInUsdThisKeyCanSpendWhenReachedThe": "此密钥允许的最大美元支出。达到上限后，将阻止此密钥继续请求",
     "selectTheTypeOfKeyToDetermineWhatRoutesAndOperations": "选择密钥类型，决定此密钥可访问的路由和操作",
     "modelsFieldIsDisabledForThisKeyType": "此密钥类型无法设置模型字段",
+    "optionalLeaveEmptyToAllowAccessToAllModels": "可选 - 留空允许访问所有模型",
     "selectWhichModelsThisKeyCanAccessChooseAllTeamModels": "选择此密钥可访问的模型。选择“All Team Models”以访问团队的全部可用模型。留空允许访问所有模型。",
     "uniqueIdentifierForThisServiceAccount": "此服务账户的唯一标识符",
     "aDescriptiveNameToIdentifyThisKey": "用于识别此密钥的描述性名称",
