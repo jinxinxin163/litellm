@@ -2508,6 +2508,8 @@
       "teamBudgetReset": "Team Reset Budget: {{duration}}",
       "tpmCeiling": "TPM cannot exceed team TPM limit: {{limit}}",
       "rpmCeiling": "RPM cannot exceed team RPM limit: {{limit}}",
+      "tpmCeilingValidation": "TPM limit cannot exceed team TPM limit: {{limit}}",
+      "rpmCeilingValidation": "RPM limit cannot exceed team RPM limit: {{limit}}",
       "tagsHelp": "Tags for tracking spend and/or doing tag-based routing.",
       "jsonHelp": "{{help}}\nMust be valid JSON format",
       "enumHelp": "Select from available options\nAllowed values: {{values}}",

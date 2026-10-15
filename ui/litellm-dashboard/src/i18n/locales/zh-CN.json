@@ -2508,6 +2508,8 @@
       "teamBudgetReset": "团队预算重置周期：{{duration}}",
       "tpmCeiling": "TPM 不能超过团队 TPM 上限：{{limit}}",
       "rpmCeiling": "RPM 不能超过团队 RPM 上限：{{limit}}",
+      "tpmCeilingValidation": "TPM 上限不能超过团队 TPM 上限：{{limit}}",
+      "rpmCeilingValidation": "RPM 上限不能超过团队 RPM 上限：{{limit}}",
       "tagsHelp": "标签用于跟踪花费和/或按标签进行路由。",
       "jsonHelp": "{{help}}\n必须是有效的 JSON 格式",
       "enumHelp": "从可用选项中选择\n允许的值：{{values}}",

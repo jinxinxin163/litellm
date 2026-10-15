@@ -959,7 +959,7 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                         help={t("formHints.shared.budgetCeiling", { limit: team?.max_budget ?? t("formHints.shared.unlimitedLower") })}
                         rules={ceilingRule(
                           team?.max_budget,
-                          (limit) => `Budget cannot exceed team max budget: $${formatNumberWithCommas(limit, 4)}`,
+                          (limit) => t("formHints.shared.budgetCeiling", { limit: formatNumberWithCommas(limit, 4) }),
                         )}
                       >
                         {(control) => (
@@ -1021,7 +1021,7 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                         help={t("formHints.shared.tpmCeiling", { limit: team?.tpm_limit ?? t("formHints.shared.unlimitedLower") })}
                         rules={ceilingRule(
                           team?.tpm_limit,
-                          (limit) => `TPM limit cannot exceed team TPM limit: ${limit}`,
+                          (limit) => t("formHints.shared.tpmCeilingValidation", { limit }),
                         )}
                       >
                         {(control) => (
@@ -1062,7 +1062,7 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                         help={t("formHints.shared.rpmCeiling", { limit: team?.rpm_limit ?? t("formHints.shared.unlimitedLower") })}
                         rules={ceilingRule(
                           team?.rpm_limit,
-                          (limit) => `RPM limit cannot exceed team RPM limit: ${limit}`,
+                          (limit) => t("formHints.shared.rpmCeilingValidation", { limit }),
                         )}
                       >
                         {(control) => (
