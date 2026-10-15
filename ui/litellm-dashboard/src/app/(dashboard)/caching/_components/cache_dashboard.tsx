@@ -174,25 +174,8 @@ const CacheDashboard: React.FC<CachePageProps> = ({ accessToken, token, userRole
         <Card>
           <CardContent>
             <p className="text-sm text-muted-foreground">
-              {t("cache.analyticsForLitellmS")}{" "}
-              <a
-                href="https://docs.litellm.ai/docs/proxy/caching"
-                target="_blank"
-                rel="noreferrer"
-                className="underline"
-              >
-                {t("cache.responseCache")}
-              </a>{" "}
-              {t("cache.eGRedisInMemoryRequestsAnsweredFromCache")}{" "}
-              <a
-                href="https://docs.litellm.ai/docs/completion/prompt_caching"
-                target="_blank"
-                rel="noreferrer"
-                className="underline"
-              >
-                {t("cache.promptCaching")}
-              </a>{" "}
-              {t("cache.cachedInputTokensFromAnthropicOpenaiEtcIsNot")}
+              {t("cache.responceCacheDescription")}{" "}
+
             </p>
 
             <div className="mt-4 grid grid-cols-1 items-center gap-4 md:grid-cols-[1fr_1fr_auto]">

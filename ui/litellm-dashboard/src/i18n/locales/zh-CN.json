@@ -1822,6 +1822,7 @@
     "refresh": "刷新",
     "analyticsForLitellmS": "LiteLLM 的",
     "responseCache": "响应缓存",
+    "responceCacheDescription": "直接从缓存返回响应而不调用 LLM provider 的请求",
     "eGRedisInMemoryRequestsAnsweredFromCache": "（例如 Redis / 内存缓存）分析：直接从缓存返回响应而不调用 LLM provider 的请求。provider 端的",
     "promptCaching": "提示词缓存",
     "cachedInputTokensFromAnthropicOpenaiEtcIsNot": "（Anthropic、OpenAI 等的缓存输入 token）不在此展示；请查看用量页的“提示词缓存指标”或日志页中的单次请求",

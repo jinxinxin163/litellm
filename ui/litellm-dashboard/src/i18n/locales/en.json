@@ -1822,6 +1822,7 @@
     "refresh": "Refresh",
     "analyticsForLitellmS": "Analytics for LiteLLM's",
     "responseCache": "response cache",
+    "responceCacheDescription": "requests answered from cache without calling the LLM provider.",
     "eGRedisInMemoryRequestsAnsweredFromCache": "(e.g. Redis / in-memory): requests answered from cache without calling the LLM provider. Provider-side",
     "promptCaching": "prompt caching",
     "cachedInputTokensFromAnthropicOpenaiEtcIsNot": "(cached input tokens from Anthropic, OpenAI, etc.) is not shown here; see \"Prompt Caching Metrics\" on the Usage page or individual requests in the Logs page.",
