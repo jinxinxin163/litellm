@@ -721,7 +721,7 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                             isLoading={userSearchLoading}
                             placeholder={t("keys.typeEmailToSearchForUsers")}
                             emptyText={t("keys.noUsersFound")}
-                            loadingText="Searching..."
+                            loadingText={t("formHints.shared.searching")}
                             inputId={control.id}
                             aria-required={control["aria-required"] === "true" ? true : undefined}
                             aria-invalid={control["aria-invalid"] === "true" ? true : undefined}
@@ -773,7 +773,7 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                   className="mt-4"
                   required={keyOwner === "service_account"}
                   rules={requiredRule(keyOwner === "service_account", t("keys.pleaseSelectATeamForTheServiceAccount"))}
-                  help={keyOwner === "service_account" ? "required" : ""}
+                  help={keyOwner === "service_account" ? t("formHints.shared.required") : ""}
                 >
                   {(control) => (
                     <TeamDropdown
@@ -849,7 +849,7 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                       true,
                       `Please input a ${keyOwner === "you" ? "key name" : "service account ID"}`,
                     )}
-                    help="required"
+                    help={t("formHints.shared.required")}
                   >
                     {(control) => <Input {...control} value={(control.value as string | undefined) ?? ""} />}
                   </MountedFormField>
@@ -956,7 +956,7 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                           </span>
                         }
                         name="max_budget"
-                        help={`Budget cannot exceed team max budget: $${team?.max_budget !== null && team?.max_budget !== undefined ? team?.max_budget : "unlimited"}`}
+                        help={t("formHints.shared.budgetCeiling", { limit: team?.max_budget ?? t("formHints.shared.unlimitedLower") })}
                         rules={ceilingRule(
                           team?.max_budget,
                           (limit) => `Budget cannot exceed team max budget: $${formatNumberWithCommas(limit, 4)}`,
@@ -983,7 +983,7 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                           </span>
                         }
                         name="budget_duration"
-                        help={`Team Reset Budget: ${team?.budget_duration !== null && team?.budget_duration !== undefined ? team?.budget_duration : t("keys.none")}`}
+                        help={t("formHints.shared.teamBudgetReset", { duration: team?.budget_duration ?? t("keys.none") })}
                       >
                         {(control) => (
                           <BudgetDurationDropdown
@@ -1018,7 +1018,7 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                           </span>
                         }
                         name="tpm_limit"
-                        help={`TPM cannot exceed team TPM limit: ${team?.tpm_limit !== null && team?.tpm_limit !== undefined ? team?.tpm_limit : "unlimited"}`}
+                        help={t("formHints.shared.tpmCeiling", { limit: team?.tpm_limit ?? t("formHints.shared.unlimitedLower") })}
                         rules={ceilingRule(
                           team?.tpm_limit,
                           (limit) => `TPM limit cannot exceed team TPM limit: ${limit}`,
@@ -1059,7 +1059,7 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                           </span>
                         }
                         name="rpm_limit"
-                        help={`RPM cannot exceed team RPM limit: ${team?.rpm_limit !== null && team?.rpm_limit !== undefined ? team?.rpm_limit : "unlimited"}`}
+                        help={t("formHints.shared.rpmCeiling", { limit: team?.rpm_limit ?? t("formHints.shared.unlimitedLower") })}
                         rules={ceilingRule(
                           team?.rpm_limit,
                           (limit) => `RPM limit cannot exceed team RPM limit: ${limit}`,
@@ -1205,7 +1205,7 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                         }
                         name="tags"
                         className="mt-4"
-                        help={`Tags for tracking spend and/or doing tag-based routing.`}
+                        help={t("formHints.shared.tagsHelp")}
                       >
                         {(control) => (
                           <TagsInput

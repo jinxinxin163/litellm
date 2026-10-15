@@ -82,7 +82,7 @@ export function FallbackGroupConfig({
           value={group.primaryModel ?? ""}
           onValueChange={handlePrimaryChange}
           placeholder={t("router.selectPrimaryModel")}
-          emptyText="No models found"
+          emptyText={t("keyControls.noModelsFound")}
           disabled={disablePrimaryModel}
           className="h-12"
         />
@@ -127,7 +127,7 @@ export function FallbackGroupConfig({
                   ? t("router.selectFallbackModelsToAdd")
                   : t("router.maxFallbacksReached", { count: maxFallbacks })
               }
-              emptyText="No models found"
+              emptyText={t("keyControls.noModelsFound")}
               disabled={!group.primaryModel}
               className="w-full"
             />

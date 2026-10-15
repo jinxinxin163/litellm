@@ -52,21 +52,9 @@ Judge the intellectual difficulty of answering correctly, not how short, long, o
 
 const COPY = {
   custom: {
-    overridden:
-      "This router opens with your own instructions and calibration examples. Your tier definitions and the injection guard are still appended below them.",
-    default:
-      "Write the opening instructions and your own calibration examples. Your tier definitions and the injection guard are always appended below them.",
-    explainer:
-      "Your text is the opening of the classifier prompt, so it is where calibration examples of your own belong. The router appends your tier definitions and its injection guard underneath, and neither can be edited or removed from here. Edit the definitions themselves with Edit tiers above.",
     placeholder: CUSTOM_PLACEHOLDER,
   },
   builtIn: {
-    overridden:
-      "This router opens with your own instructions and calibration examples in place of the base rubric's. Its tier criteria and the injection guard are still appended below them.",
-    default:
-      "The base rubric supplies the opening instructions and calibration examples. Customize them to write your own; the tier criteria and the injection guard are always appended below them.",
-    explainer:
-      "The base rubric decides the tier criteria and, until you write your own, the opening instructions and calibration examples. Your text replaces that opening and those examples. The router appends the four tier criteria and its injection guard underneath, and neither can be edited or removed from here. Rename the tiers with the display names above.",
     placeholder: BUILT_IN_PLACEHOLDER,
   },
 } as const;
@@ -180,7 +168,7 @@ const OpeningPromptEditor: React.FC<OpeningPromptEditorProps> = ({
           </Button>
         )}
       </div>
-      <p className="mt-1 text-xs text-muted-foreground">{isOverridden ? copy.overridden : copy.default}</p>
+      <p className="mt-1 text-xs text-muted-foreground">{t(`formHints.models.openingPrompt.${tierSource.kind}.${isOverridden ? "overridden" : "default"}`)}</p>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-4xl">
@@ -227,7 +215,7 @@ const OpeningPromptEditor: React.FC<OpeningPromptEditorProps> = ({
             </div>
           )}
 
-          <p className="text-sm text-muted-foreground">{copy.explainer}</p>
+          <p className="text-sm text-muted-foreground">{t(`formHints.models.openingPrompt.${tierSource.kind}.explainer`)}</p>
 
           <div className="mt-3 space-y-4">
             <div>

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "@/i18n/useTranslation";
 import { VectorStore } from "./types";
 import { vectorStoreListCall } from "../networking";
 import { MultiSelect } from "@/components/shared/MultiSelect";
@@ -16,9 +17,10 @@ const VectorStoreSelector: React.FC<VectorStoreSelectorProps> = ({
   value,
   className,
   accessToken,
-  placeholder = "Select vector stores",
+  placeholder,
   disabled = false,
 }) => {
+  const { t } = useTranslation();
   const [vectorStores, setVectorStores] = useState<VectorStore[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -45,7 +47,7 @@ const VectorStoreSelector: React.FC<VectorStoreSelectorProps> = ({
   return (
     <div className="min-w-0">
       <MultiSelect
-        placeholder={placeholder}
+        placeholder={placeholder ?? t("formHints.shared.selectVectorStores")}
         onValueChange={onChange}
         value={value}
         loading={loading}

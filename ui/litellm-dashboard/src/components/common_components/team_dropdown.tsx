@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+import { useTranslation } from "@/i18n/useTranslation";
 import { PaginatedSearchSelect } from "@/components/shared/PaginatedSearchSelect";
 import { useInfiniteTeams } from "@/app/(dashboard)/hooks/teams/useTeams";
 import { Team } from "../key_team_helpers/key_list";
@@ -24,6 +25,7 @@ const TeamDropdown: React.FC<TeamDropdownProps> = ({
   pageSize = 20,
   id,
 }) => {
+  const { t } = useTranslation();
   const [search, setSearch] = useState("");
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteTeams(
@@ -68,9 +70,9 @@ const TeamDropdown: React.FC<TeamDropdownProps> = ({
         hasNextPage={hasNextPage}
         isLoading={isLoading}
         isFetchingNextPage={isFetchingNextPage}
-        placeholder="Search or select a team"
-        emptyText="No teams found"
-        loadingText="Loading teams…"
+        placeholder={t("formHints.shared.selectTeam")}
+        emptyText={t("formHints.shared.noTeams")}
+        loadingText={t("formHints.shared.loadingTeams")}
         disabled={disabled}
         inputId={id}
       />

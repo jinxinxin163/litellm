@@ -1,4 +1,5 @@
 import { CircleMinus, Plus } from "lucide-react";
+import { useTranslation } from "@/i18n/useTranslation";
 import React, { useEffect, useRef } from "react";
 import {
   useFieldArray,
@@ -85,6 +86,7 @@ const MetadataKeyValueFields = <TFieldValues extends FieldValues>({
   schemaFields = [],
   schemaLoading = false,
 }: MetadataKeyValueFieldsProps<TFieldValues>) => {
+  const { t } = useTranslation();
   const { fields, append, remove } = useFieldArray({ control, name });
   const seededRef = useRef(false);
 
@@ -118,18 +120,18 @@ const MetadataKeyValueFields = <TFieldValues extends FieldValues>({
         <div key={field.id} className="mb-2 flex items-start gap-2">
           <FormField control={control} name={`${name}.${index}.key` as FieldPath<TFieldValues>}>
             {({ ref, value, ...rest }) => (
-              <Input {...rest} ref={ref} value={(value as string) ?? ""} placeholder="Key" />
+              <Input {...rest} ref={ref} value={(value as string) ?? ""} placeholder={t("formHints.shared.metadataKey")} />
             )}
           </FormField>
           <FormField control={control} name={`${name}.${index}.value` as FieldPath<TFieldValues>}>
             {({ ref, value, ...rest }) => (
-              <Input {...rest} ref={ref} value={(value as string) ?? ""} placeholder="Value" />
+              <Input {...rest} ref={ref} value={(value as string) ?? ""} placeholder={t("router.value")} />
             )}
           </FormField>
           <Button
             variant="ghost"
             size="icon"
-            aria-label="Remove key-value pair"
+            aria-label={t("formHints.shared.removeMetadataPair")}
             className="mt-1 text-destructive"
             onClick={() => remove(index)}
           >

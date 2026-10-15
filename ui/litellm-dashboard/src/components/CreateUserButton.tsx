@@ -135,15 +135,16 @@ const labelWithHint = (label: string, hint: string): React.ReactNode => (
   </>
 );
 
-const EmailInvitationsNotice: React.FC = () => (
-  <Alert variant="info" className="mb-4">
-    <Info />
-    <AlertTitle>Email invitations</AlertTitle>
-    <AlertDescription>
-      New users receive an email invite only when an email integration (SMTP, Resend, or SendGrid) is configured.{" "}
-    </AlertDescription>
-  </Alert>
-);
+const EmailInvitationsNotice: React.FC = () => {
+  const { t } = useTranslation();
+  return (
+    <Alert variant="info" className="mb-4">
+      <Info />
+      <AlertTitle>{t("formHints.users.emailInvitations")}</AlertTitle>
+      <AlertDescription>{t("formHints.users.emailInvitationsHelp")}</AlertDescription>
+    </Alert>
+  );
+};
 
 export const CreateUserButton: React.FC<CreateuserProps> = ({
   userID,

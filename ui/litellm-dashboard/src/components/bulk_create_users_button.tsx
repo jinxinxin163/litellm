@@ -676,7 +676,7 @@ const BulkCreateUsersButton: React.FC<BulkCreateUsersProps> = ({
                         />
                         <Upload className="size-[30px] text-muted-foreground mb-2" />
                         <p className="mb-1">{t("people.dragAndDropYourCsvFileHere")}</p>
-                        <p className="text-sm text-muted-foreground mb-3">or</p>
+                        <p className="text-sm text-muted-foreground mb-3">{t("formHints.users.or")}</p>
                         <span className={buttonVariants({ variant: "outline", size: "sm" })}>
                           {t("people.browseFiles")}
                         </span>

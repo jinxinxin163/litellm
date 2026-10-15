@@ -3,6 +3,7 @@ import { useMCPServers } from "@/app/(dashboard)/hooks/mcpServers/useMCPServers"
 import { useMCPToolsets } from "@/app/(dashboard)/hooks/mcpServers/useMCPToolsets";
 import { MultiSelect, type MultiSelectOption } from "@/components/shared/MultiSelect";
 import React from "react";
+import { useTranslation } from "@/i18n/useTranslation";
 import { ALL_PROXY_MCP_SERVERS_SENTINEL, NO_MCP_SERVERS_SENTINEL } from "@/components/mcp_tools/constants";
 
 interface MCPServerSelectorProps {
@@ -28,12 +29,13 @@ const MCPServerSelector: React.FC<MCPServerSelectorProps> = ({
   value,
   className,
   accessToken,
-  placeholder = "Select MCP servers",
+  placeholder,
   disabled = false,
   teamId,
   allowNoMcpServers = false,
   allowAllProxyMcpServers = false,
 }) => {
+  const { t } = useTranslation();
   const { data: mcpServers = [], isLoading: serversLoading } = useMCPServers(teamId);
   const { data: accessGroups = [], isLoading: groupsLoading } = useMCPAccessGroups();
   const { data: toolsets = [], isLoading: toolsetsLoading } = useMCPToolsets();
@@ -47,17 +49,17 @@ const MCPServerSelector: React.FC<MCPServerSelectorProps> = ({
     ...accessGroups.map((group) => ({
       label: group,
       value: group,
-      description: "Access Group",
+      description: t("formHints.shared.accessGroup"),
     })),
     ...mcpServers.map((server) => ({
       label: `${server.server_name || server.server_id} (${server.server_id})`,
       value: server.server_id,
-      description: "MCP Server",
+      description: t("formHints.shared.mcpServer"),
     })),
     ...toolsets.map((toolset) => ({
       label: toolset.toolset_name,
       value: `${TOOLSET_PREFIX}${toolset.toolset_id}`,
-      description: "Toolset",
+      description: t("formHints.shared.toolset"),
     })),
   ];
 
@@ -110,8 +112,8 @@ const MCPServerSelector: React.FC<MCPServerSelectorProps> = ({
         options={selectOptions}
         value={selectedValues}
         onValueChange={handleChange}
-        placeholder={placeholder}
-        emptyText="No MCP servers found"
+        placeholder={placeholder ?? t("formHints.shared.selectServers")}
+        emptyText={t("formHints.shared.noServers")}
         loading={loading}
         disabled={disabled}
         className={`w-full ${className ?? ""}`}

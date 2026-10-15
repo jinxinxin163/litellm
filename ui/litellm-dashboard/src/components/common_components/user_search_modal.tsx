@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n/useTranslation";
 import { useRef, useState } from "react";
 import { Info, UserPlus } from "lucide-react";
 import { Alert, AlertTitle } from "@/components/shared/Alert";
@@ -53,17 +54,15 @@ const UserSearchModal: React.FC<UserSearchModalProps> = ({
   onSubmit,
   accessToken,
   title = "Add Team Member",
-  roles = [
-    {
-      label: "admin",
-      value: "admin",
-      description: "Admin role. Can create team keys, add members, and manage settings.",
-    },
-    { label: "user", value: "user", description: "User role. Can view team info, but not manage it." },
-  ],
+  roles: customRoles,
   defaultRole = "user",
   teamId,
 }) => {
+  const { t } = useTranslation();
+  const roles = customRoles ?? [
+    { label: "admin", value: "admin", description: t("formHints.shared.adminRoleHint") },
+    { label: "user", value: "user", description: t("formHints.shared.userRoleHint") },
+  ];
   const emptyValues: FormValues = { user_email: undefined, user_id: undefined, role: defaultRole };
   const form = useForm<FormValues>({ defaultValues: emptyValues });
   const [userOptions, setUserOptions] = useState<UserOption[]>([]);
@@ -160,8 +159,8 @@ const UserSearchModal: React.FC<UserSearchModalProps> = ({
           autoHighlight="always"
           isLoading={loading}
           placeholder={placeholder}
-          emptyText="No results"
-          loadingText="Loading..."
+          emptyText={t("formHints.shared.noResults")}
+          loadingText={t("formHints.shared.loading")}
           inputId={controlProps.id}
         />
       </div>
@@ -178,23 +177,27 @@ const UserSearchModal: React.FC<UserSearchModalProps> = ({
           <form onSubmit={form.handleSubmit(handleSubmit)} noValidate>
             <Alert variant="info" className="mb-4" data-testid="member-existing-users-notice">
               <Info />
-              <AlertTitle>
-                Search selects from users that already exist. To add someone new, ask a proxy admin to create their
-                account first.
-              </AlertTitle>
+              <AlertTitle>{t("formHints.shared.existingUsersOnly")}</AlertTitle>
             </Alert>
 
             <FieldGroup>
               <FormField control={form.control} name="user_email" label="Email">
                 {({ id, value, onChange }) =>
-                  renderUserSearch("user_email", "Search by email", { id, value, onChange }, "member-email-search")
+                  renderUserSearch(
+                    "user_email",
+                    t("formHints.shared.searchByEmail"),
+                    { id, value, onChange },
+                    "member-email-search",
+                  )
                 }
               </FormField>
 
-              <div className="text-center">OR</div>
+              <div className="text-center">{t("formHints.shared.orUpper")}</div>
 
               <FormField control={form.control} name="user_id" label="User ID">
-                {({ id, value, onChange }) => renderUserSearch("user_id", "Search by user ID", { id, value, onChange })}
+                {({ id, value, onChange }) =>
+                  renderUserSearch("user_id", t("formHints.shared.searchByUserId"), { id, value, onChange })
+                }
               </FormField>
 
               <FormField control={form.control} name="role" label="Member Role">

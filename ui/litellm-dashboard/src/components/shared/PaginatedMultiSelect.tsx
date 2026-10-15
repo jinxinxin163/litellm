@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "@/i18n/useTranslation";
 import { Loader2 } from "lucide-react";
 import { useMemo, useState } from "react";
 
@@ -50,10 +51,10 @@ export function PaginatedMultiSelect({
   hasNextPage = false,
   isLoading = false,
   isFetchingNextPage = false,
-  placeholder = "Search…",
-  emptyText = "No results",
+  placeholder,
+  emptyText,
   errorText,
-  loadingText = "Loading…",
+  loadingText,
   clearAllLabel,
   disabled = false,
   className,
@@ -61,6 +62,8 @@ export function PaginatedMultiSelect({
   "aria-invalid": ariaInvalid,
   "aria-describedby": ariaDescribedBy,
 }: PaginatedMultiSelectProps) {
+  const { t } = useTranslation();
+  const resolvedPlaceholder = placeholder ?? t("formHints.shared.search");
   const anchor = useComboboxAnchor();
   const [query, setQuery] = useState("");
   const [pickedOptions, setPickedOptions] = useState<ReadonlyMap<string, SearchSelectOption>>(new Map());
@@ -118,15 +121,18 @@ export function PaginatedMultiSelect({
           id={inputId}
           aria-invalid={ariaInvalid}
           aria-describedby={ariaDescribedBy}
-          placeholder={placeholder}
+          placeholder={resolvedPlaceholder}
           className="h-5 min-w-24 flex-1 border-0 bg-transparent py-0 text-sm"
-          aria-label={placeholder}
+          aria-label={resolvedPlaceholder}
         />
         {clearAllLabel != null && value.length > 0 && <ComboboxClear aria-label={clearAllLabel} disabled={disabled} />}
       </ComboboxChips>
       <ComboboxContent anchor={anchor}>
         <ComboboxEmpty className={errorText == null ? undefined : "text-destructive"}>
-          {errorText ?? (isLoading ? loadingText : emptyText)}
+          {errorText ??
+            (isLoading
+              ? loadingText ?? t("formHints.shared.loadingEllipsis")
+              : emptyText ?? t("formHints.shared.noResults"))}
         </ComboboxEmpty>
         <ComboboxList onScroll={handleScroll} data-testid="paginated-multi-select-list">
           {(item: SearchSelectOption) => (

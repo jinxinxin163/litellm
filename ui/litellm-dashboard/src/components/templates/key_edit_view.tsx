@@ -93,7 +93,7 @@ export function KeyEditView({
   const canViewPolicies = hasCapability(userRole, "viewPolicies");
   const canViewPrompts = hasCapability(userRole, "viewPrompts");
   const canEditEstimates = userRole != null && isProxyAdminRole(userRole);
-  const estimateTooltip = estimateTooltips(canEditEstimates);
+  const estimateTooltip = estimateTooltips(canEditEstimates, "key", t);
   const form = useZodForm<KeyEditFormValues, KeyEditFormValues>(keyEditFormSchema, {
     defaultValues: toKeyEditFormValues(keyData),
   });
@@ -659,7 +659,7 @@ export function KeyEditView({
                     premiumUser,
                     keyData.metadata?.prompts,
                     t("keys.premiumFeatureUpgradeToSetPromptsByKey"),
-                    t("keys.selectOrEnterPrompts"),
+                    { text: t("keys.selectOrEnterPrompts"), t },
                   )}
                 />
               )}
@@ -698,7 +698,7 @@ export function KeyEditView({
                   premiumUser,
                   keyData.metadata?.allowed_passthrough_routes,
                   t("keys.premiumFeatureUpgradeToSetAllowedPassThroughRoutesByKey"),
-                  t("keys.selectOrEnterAllowedPassThroughRoutes"),
+                  { text: t("keys.selectOrEnterAllowedPassThroughRoutes"), t },
                 )}
                 disabled={!premiumUser}
               />

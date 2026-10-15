@@ -1,5 +1,6 @@
 import { CircleHelp, Minus, Plus } from "lucide-react";
 import React from "react";
+import { useTranslation } from "@/i18n/useTranslation";
 
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -71,6 +72,7 @@ interface CacheControlInjectionPointsProps {
  * independently; both hand a child exactly `value` and `onChange`.
  */
 const CacheControlInjectionPoints: React.FC<CacheControlInjectionPointsProps> = ({ value, onChange }) => {
+  const { t } = useTranslation();
   const points = value ?? [];
 
   const replaceAt = (index: number, point: CacheControlInjectionPoint) =>
@@ -78,7 +80,7 @@ const CacheControlInjectionPoints: React.FC<CacheControlInjectionPointsProps> = 
 
   return (
     <div className="ml-6 border-l-2 border-border pl-4">
-      <p className="mb-4 block text-sm text-muted-foreground">{CACHE_CONTROL_DESCRIPTION}</p>
+      <p className="mb-4 block text-sm text-muted-foreground">{t("formHints.models.cacheControlDescription")}</p>
 
       {points.map((point, index) => (
         <div key={index} className="mb-4 flex items-end gap-4">
@@ -99,7 +101,7 @@ const CacheControlInjectionPoints: React.FC<CacheControlInjectionPointsProps> = 
           </div>
 
           <div className="w-[180px] space-y-1">
-            <LabelWithHint label="Role" hint={CACHE_CONTROL_ROLE_HINT} />
+            <LabelWithHint label="Role" hint={t("formHints.models.cacheControlRoleHint")} />
             <Select
               items={ROLE_ITEMS}
               value={point.role ?? null}
@@ -108,7 +110,7 @@ const CacheControlInjectionPoints: React.FC<CacheControlInjectionPointsProps> = 
               }
             >
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select a role" />
+                <SelectValue placeholder={t("formHints.models.selectRole")} />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value={null}>None</SelectItem>
@@ -122,10 +124,10 @@ const CacheControlInjectionPoints: React.FC<CacheControlInjectionPointsProps> = 
           </div>
 
           <div className="w-[180px] space-y-1">
-            <LabelWithHint label="Index" hint={CACHE_CONTROL_INDEX_HINT} />
+            <LabelWithHint label="Index" hint={t("formHints.models.cacheControlIndexHint")} />
             <NumericalInput
               type="number"
-              placeholder="Optional"
+              placeholder={t("models.optional")}
               step={1}
               value={point.index ?? ""}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) =>

@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "@/i18n/useTranslation";
 import { SearchSelect } from "@/components/shared/SearchSelect";
 import { Organization } from "../networking";
 
@@ -20,9 +21,10 @@ const OrganizationDropdown: React.FC<OrganizationDropdownProps> = ({
   disabled,
   loading,
   style,
-  placeholder = "All Organizations",
+  placeholder,
   id,
 }) => {
+  const { t } = useTranslation();
   return (
     <div style={{ minWidth: 280, ...style }}>
       <SearchSelect
@@ -33,8 +35,8 @@ const OrganizationDropdown: React.FC<OrganizationDropdownProps> = ({
         }))}
         value={value}
         onValueChange={(organizationId) => onChange?.(organizationId || null)}
-        placeholder={placeholder}
-        emptyText={loading ? "Loading organizations…" : "No organizations found"}
+        placeholder={placeholder ?? t("formHints.shared.allOrganizations")}
+        emptyText={loading ? t("formHints.shared.loadingOrganizations") : t("formHints.shared.noOrganizations")}
         disabled={disabled}
         inputId={id}
       />

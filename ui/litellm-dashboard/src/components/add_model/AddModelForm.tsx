@@ -150,7 +150,7 @@ const AddModelForm: React.FC<AddModelFormProps> = ({
   const providerMetadataErrorText = providerMetadataError
     ? providerMetadataError instanceof Error
       ? providerMetadataError.message
-      : "Failed to load providers"
+      : t("formHints.models.failedToLoadProviders")
     : null;
 
   const isAdmin = all_admin_roles.includes(userRole);
@@ -226,7 +226,7 @@ const AddModelForm: React.FC<AddModelFormProps> = ({
                           <SearchSelect
                             inputId={control.id}
                             options={providerOptions}
-                            emptyText={providerMetadataErrorText ?? "No providers found"}
+                            emptyText={providerMetadataErrorText ?? t("formHints.models.noProvidersFound")}
                             placeholder={
                               isProviderMetadataLoading ? t("models.loadingProviders") : t("models.selectAProvider")
                             }

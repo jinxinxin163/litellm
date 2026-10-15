@@ -22,7 +22,6 @@ import { UiLoadingSpinner } from "@/components/ui/ui-loading-spinner";
 
 import CacheControlInjectionPoints, {
   CACHE_CONTROL_LABEL,
-  CACHE_CONTROL_TOOLTIP,
   type CacheControlInjectionPoint,
 } from "./add_model/cache_control_settings";
 import type { CredentialItem } from "./networking";
@@ -477,7 +476,7 @@ const ModelInfoEditForm: React.FC<ModelInfoEditFormProps> = ({
                             id={ptuField.name}
                             onChange={onChange}
                             value={value ?? ""}
-                            placeholder={ptuField.placeholder}
+                            placeholder={t(ptuField.isCount ? "models.eG15" : "models.eG200")}
                             step={ptuField.isCount ? 1 : undefined}
                             min={ptuField.isCount ? 1 : 0}
                           />
@@ -676,7 +675,7 @@ const ModelInfoEditForm: React.FC<ModelInfoEditFormProps> = ({
                   label={
                     <>
                       {CACHE_CONTROL_LABEL}
-                      <Hint text={CACHE_CONTROL_TOOLTIP} />
+                      <Hint text={t("formHints.models.cacheControlTooltip")} />
                     </>
                   }
                   orientation="horizontal"

@@ -279,8 +279,11 @@ const Teams: React.FC<TeamProps> = ({ accessToken, userID, userRole, premiumUser
   });
   const defaultBudgetDuration: string | undefined = defaultTeamSettings?.values?.budget_duration ?? undefined;
   const budgetDurationPlaceholder = defaultBudgetDuration
-    ? `Default: ${getBudgetDurationLabel(defaultBudgetDuration)} (${defaultBudgetDuration})`
-    : "n/a";
+    ? t("formHints.teams.defaultBudgetDuration", {
+        label: getBudgetDurationLabel(defaultBudgetDuration, t),
+        duration: defaultBudgetDuration,
+      })
+    : t("formHints.teams.noDefaultBudgetDuration");
 
   // Add this useEffect to fetch guardrails
   useEffect(() => {

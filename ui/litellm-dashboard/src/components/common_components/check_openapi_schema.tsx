@@ -1,3 +1,4 @@
+import { translate, useTranslation } from "@/i18n/useTranslation";
 import React, { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -67,32 +68,32 @@ const toSchemaNumber = (raw: string, isInteger: boolean): number | null => {
 
 const messageOf = (error: unknown): string => (error instanceof Error ? error.message : String(error));
 
-const getFieldHelp = (key: string, property: SchemaProperty, type: string): string => {
+const getFieldHelp = (key: string, property: SchemaProperty, type: string, t = translate): string => {
   // Default help text based on type
   const defaultHelp =
     {
-      string: "Text input",
-      number: "Numeric input",
-      integer: "Whole number input",
-      boolean: "True/False value",
-    }[type] || "Text input";
+      string: t("formHints.shared.schema_string"),
+      number: t("formHints.shared.schema_number"),
+      integer: t("formHints.shared.schema_integer"),
+      boolean: t("formHints.shared.schema_boolean"),
+    }[type] || t("formHints.shared.schema_string");
 
   // Specific field help text
   const specificHelp: { [key: string]: string } = {
-    max_budget: "Enter maximum budget in USD (e.g., 100.50)",
-    budget_duration: "Select a time period for budget reset",
-    tpm_limit: "Enter maximum tokens per minute (whole number)",
-    rpm_limit: "Enter maximum requests per minute (whole number)",
-    duration: "Enter duration (e.g., 30s, 24h, 7d)",
-    metadata: 'Enter JSON object with key-value pairs\nExample: {"team": "research", "project": "nlp"}',
-    config: 'Enter configuration as JSON object\nExample: {"setting": "value"}',
-    permissions: "Enter comma-separated permission strings",
-    enforced_params: 'Enter parameters as JSON object\nExample: {"param": "value"}',
-    blocked: "Enter true/false or specific block conditions",
-    aliases: 'Enter aliases as JSON object\nExample: {"alias1": "value1", "alias2": "value2"}',
-    models: "Select one or more model names",
-    key_alias: "Enter a unique identifier for this key",
-    tags: "Enter comma-separated tag strings",
+    max_budget: t("formHints.shared.schema_max_budget"),
+    budget_duration: t("formHints.shared.schema_budget_duration"),
+    tpm_limit: t("formHints.shared.schema_tpm_limit"),
+    rpm_limit: t("formHints.shared.schema_rpm_limit"),
+    duration: t("formHints.shared.schema_duration"),
+    metadata: t("formHints.shared.schema_metadata"),
+    config: t("formHints.shared.schema_config"),
+    permissions: t("formHints.shared.schema_permissions"),
+    enforced_params: t("formHints.shared.schema_enforced_params"),
+    blocked: t("formHints.shared.schema_blocked"),
+    aliases: t("formHints.shared.schema_aliases"),
+    models: t("formHints.shared.schema_models"),
+    key_alias: t("formHints.shared.schema_key_alias"),
+    tags: t("formHints.shared.schema_tags"),
   };
 
   // Get specific help text or use default based on type
@@ -100,11 +101,11 @@ const getFieldHelp = (key: string, property: SchemaProperty, type: string): stri
 
   // Add format requirements for special cases
   if (isJSONField(key, property)) {
-    return `${helpText}\nMust be valid JSON format`;
+    return t("formHints.shared.jsonHelp", { help: helpText });
   }
 
   if (property.enum) {
-    return `Select from available options\nAllowed values: ${property.enum.join(", ")}`;
+    return t("formHints.shared.enumHelp", { values: property.enum.join(", ") });
   }
 
   return helpText;
@@ -119,6 +120,7 @@ const SchemaFormFields: React.FC<SchemaFormFieldsProps> = ({
   customValidation = {},
   defaultValues = {},
 }) => {
+  const { t } = useTranslation();
   const [schemaProperties, setSchemaProperties] = useState<OpenAPISchema | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -169,7 +171,7 @@ const SchemaFormFields: React.FC<SchemaFormFieldsProps> = ({
 
     const validate = {
       ...(isRequired && {
-        required: (value: unknown) => (isBlank(value) ? `${label} is required` : true),
+        required: (value: unknown) => (isBlank(value) ? t("formHints.shared.schemaRequired", { label }) : true),
       }),
       ...(customValidation[key] && {
         custom: async (value: unknown) => {
@@ -183,7 +185,7 @@ const SchemaFormFields: React.FC<SchemaFormFieldsProps> = ({
       }),
       ...(isJSONField(key, property) && {
         json: (value: unknown) =>
-          value && !validateJSON(value as string) ? "Please enter valid JSON" : (true as const),
+          value && !validateJSON(value as string) ? t("formHints.shared.validJson") : (true as const),
       }),
     };
 
@@ -207,7 +209,7 @@ const SchemaFormFields: React.FC<SchemaFormFieldsProps> = ({
         required={isRequired}
         rules={Object.keys(validate).length > 0 ? { validate } : undefined}
         defaultValue={defaultValues[key]}
-        help={<div className="text-xs text-muted-foreground">{getFieldHelp(key, property, type)}</div>}
+        help={<div className="text-xs text-muted-foreground">{getFieldHelp(key, property, type, t)}</div>}
       >
         {(control) => {
           if (isJSONField(key, property)) {
@@ -216,7 +218,7 @@ const SchemaFormFields: React.FC<SchemaFormFieldsProps> = ({
                 {...control}
                 value={control.value as string | undefined}
                 rows={4}
-                placeholder="Enter as JSON"
+                placeholder={t("formHints.shared.jsonPlaceholder")}
                 className="font-mono"
               />
             );
@@ -256,7 +258,11 @@ const SchemaFormFields: React.FC<SchemaFormFieldsProps> = ({
           }
           if (key === "duration") {
             return (
-              <Input {...control} value={(control.value as string | undefined) ?? ""} placeholder="eg: 30s, 30h, 30d" />
+              <Input
+                {...control}
+                value={(control.value as string | undefined) ?? ""}
+                placeholder={t("formHints.shared.durationExample")}
+              />
             );
           }
           return <Input {...control} value={(control.value as string | undefined) ?? ""} placeholder={tooltip || ""} />;

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useTranslation } from "@/i18n/useTranslation";
 import { Bot } from "lucide-react";
 import { useDebouncedCallback } from "@tanstack/react-pacer/debouncer";
 import { Input } from "@/components/ui/input";
@@ -22,7 +23,7 @@ interface ModelSelectorProps {
 const ModelSelector: React.FC<ModelSelectorProps> = ({
   accessToken,
   value,
-  placeholder = "Select a Model",
+  placeholder,
   onChange,
   disabled = false,
   style,
@@ -30,6 +31,7 @@ const ModelSelector: React.FC<ModelSelectorProps> = ({
   showLabel = true,
   labelText = "Select Model",
 }) => {
+  const { t } = useTranslation();
   const [selectedModel, setSelectedModel] = useState<string | undefined>(value);
   const [showCustomModelInput, setShowCustomModelInput] = useState<boolean>(false);
   const [modelInfo, setModelInfo] = useState<ModelGroup[]>([]);
@@ -91,10 +93,10 @@ const ModelSelector: React.FC<ModelSelectorProps> = ({
               value: model_group,
               label: model_group,
             })),
-            { value: "custom", label: "Enter custom model" },
+            { value: "custom", label: t("formHints.shared.customModel") },
           ]}
           value={selectedModel}
-          placeholder={placeholder}
+          placeholder={placeholder ?? t("formHints.shared.selectModel")}
           onValueChange={onModelChange}
           disabled={disabled}
         />
@@ -102,7 +104,7 @@ const ModelSelector: React.FC<ModelSelectorProps> = ({
       {showCustomModelInput && (
         <Input
           className="mt-2"
-          placeholder="Enter custom model name"
+          placeholder={t("formHints.shared.customModelName")}
           onChange={(e) => debouncedSelect(e.target.value)}
           disabled={disabled}
         />

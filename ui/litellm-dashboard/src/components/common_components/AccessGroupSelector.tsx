@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "@/i18n/useTranslation";
 import { Users } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MultiSelect, type MultiSelectOption } from "@/components/shared/MultiSelect";
@@ -25,13 +26,14 @@ export interface AccessGroupSelectorProps {
 const AccessGroupSelector: React.FC<AccessGroupSelectorProps> = ({
   value,
   onChange,
-  placeholder = "Select access groups",
+  placeholder,
   disabled = false,
   style,
   className,
   showLabel = false,
   labelText = "Access Group",
 }) => {
+  const { t } = useTranslation();
   const { data: accessGroups, isLoading, isError } = useAccessGroups();
 
   // ── Loading skeleton ─────────────────────────────────────────────────────
@@ -68,8 +70,8 @@ const AccessGroupSelector: React.FC<AccessGroupSelectorProps> = ({
           options={options}
           value={value}
           onValueChange={onChange ?? (() => {})}
-          placeholder={placeholder}
-          emptyText={isError ? "Failed to load access groups" : "No access groups found"}
+          placeholder={placeholder ?? t("formHints.shared.selectGroups")}
+          emptyText={isError ? t("formHints.shared.groupsFailed") : t("formHints.shared.noGroups")}
           disabled={disabled}
           className={`w-full rounded-md ${className ?? ""}`}
         />

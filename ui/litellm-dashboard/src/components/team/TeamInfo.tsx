@@ -557,7 +557,7 @@ const TeamInfoView: React.FC<TeamInfoProps> = ({
   const { data: allMcpToolsets = [], isError: mcpToolsetsFailed, isLoading: mcpToolsetsLoading } = useMCPToolsets();
   const { data: allAccessGroups = [], isError: accessGroupsFailed, isLoading: accessGroupsLoading } = useAccessGroups();
   const canEditTeamEstimates = isProxyAdminRole(userRole);
-  const teamEstimateTooltip = estimateTooltips(canEditTeamEstimates, "team");
+  const teamEstimateTooltip = estimateTooltips(canEditTeamEstimates, "team", t);
   const { data: userOrganizations = [] } = useOrganizations();
   const { data: teamMetadataSchemaFields = [], isLoading: isTeamMetadataSchemaLoading } = useTeamMetadataSchema();
   const queryClient = useQueryClient();
@@ -2059,7 +2059,7 @@ const TeamInfoView: React.FC<TeamInfoProps> = ({
               label: (
                 <span>
                   {t("people.teamMemberBudgetUsd")}{" "}
-                  <SimpleTooltip content="Maximum amount in USD this member can spend within this team. This is separate from any global user budget limits">
+                  <SimpleTooltip content={t("formHints.teams.memberBudget")}>
                     <Info className="ml-1 inline size-3.5 align-text-bottom" />
                   </SimpleTooltip>
                 </span>
@@ -2074,7 +2074,7 @@ const TeamInfoView: React.FC<TeamInfoProps> = ({
               label: (
                 <span>
                   {t("people.budgetResetPeriod")}{" "}
-                  <SimpleTooltip content="How often this member's budget resets within the team. Leave unset and the budget never resets.">
+                  <SimpleTooltip content={t("formHints.teams.memberBudgetDuration")}>
                     <Info className="ml-1 inline size-3.5 align-text-bottom" />
                   </SimpleTooltip>
                 </span>
@@ -2086,7 +2086,7 @@ const TeamInfoView: React.FC<TeamInfoProps> = ({
               label: (
                 <span>
                   {t("people.teamMemberTpmLimit")}{" "}
-                  <SimpleTooltip content="Maximum tokens per minute this member can use within this team. This is separate from any global user TPM limit">
+                  <SimpleTooltip content={t("formHints.teams.memberTpmLimit")}>
                     <Info className="ml-1 inline size-3.5 align-text-bottom" />
                   </SimpleTooltip>
                 </span>
@@ -2101,7 +2101,7 @@ const TeamInfoView: React.FC<TeamInfoProps> = ({
               label: (
                 <span>
                   {t("people.teamMemberRpmLimit")}{" "}
-                  <SimpleTooltip content="Maximum requests per minute this member can make within this team. This is separate from any global user RPM limit">
+                  <SimpleTooltip content={t("formHints.teams.memberRpmLimit")}>
                     <Info className="ml-1 inline size-3.5 align-text-bottom" />
                   </SimpleTooltip>
                 </span>
@@ -2116,7 +2116,7 @@ const TeamInfoView: React.FC<TeamInfoProps> = ({
               label: (
                 <span>
                   {t("people.allowedModels")}{" "}
-                  <SimpleTooltip content="Models this member can access within this team. Leave empty to inherit all team models.">
+                  <SimpleTooltip content={t("formHints.teams.memberModels")}>
                     <Info className="ml-1 inline size-3.5 align-text-bottom" />
                   </SimpleTooltip>
                 </span>

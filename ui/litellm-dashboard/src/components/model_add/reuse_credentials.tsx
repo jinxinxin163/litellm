@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "@/i18n/useTranslation";
 import { z } from "zod/v4";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { FormField } from "@/components/shared/form/FormField";
@@ -35,6 +36,7 @@ const ReuseCredentialsModal: React.FC<ReuseCredentialsModalProps> = ({
   existingCredential,
   setIsCredentialModalOpen,
 }) => {
+  const { t } = useTranslation();
   const fieldIdPrefix = React.useId();
   const storedValues = storedValuesOf(existingCredential);
   const form = useZodForm(reuseCredentialsSchema, {
@@ -63,7 +65,7 @@ const ReuseCredentialsModal: React.FC<ReuseCredentialsModalProps> = ({
             <FieldGroup>
               <FormField control={form.control} name="credential_name" label="Credential Name:">
                 {({ ref, ...field }) => (
-                  <Input {...field} ref={ref} placeholder="Enter a friendly name for these credentials" />
+                  <Input {...field} ref={ref} placeholder={t("formHints.models.credentialFriendlyName")} />
                 )}
               </FormField>
 
@@ -73,7 +75,7 @@ const ReuseCredentialsModal: React.FC<ReuseCredentialsModalProps> = ({
                   <Input
                     id={`${fieldIdPrefix}-${key}`}
                     value={String(value)}
-                    placeholder={`Enter ${key}`}
+                    placeholder={t("formHints.models.enterCredentialField", { field: key })}
                     disabled
                     readOnly
                   />

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "@/i18n/useTranslation";
 import { Loader2 } from "lucide-react";
 import { useMemo, useRef, useState, type SyntheticEvent } from "react";
 
@@ -64,10 +65,10 @@ export function PaginatedSearchSelect({
   hasNextPage = false,
   isLoading = false,
   isFetchingNextPage = false,
-  placeholder = "Search…",
-  emptyText = "No results",
+  placeholder,
+  emptyText,
   errorText,
-  loadingText = "Loading…",
+  loadingText,
   autoHighlight = false,
   disabled = false,
   className,
@@ -76,6 +77,7 @@ export function PaginatedSearchSelect({
   "aria-invalid": ariaInvalid,
   "aria-describedby": ariaDescribedBy,
 }: PaginatedSearchSelectProps) {
+  const { t } = useTranslation();
   const [pickedOption, setPickedOption] = useState<SearchSelectOption | null>(null);
   const wholeSelectionRef = useRef(false);
 
@@ -138,13 +140,16 @@ export function PaginatedSearchSelect({
         onFocus={(event) => event.currentTarget.select()}
         onKeyDown={snapshotWholeSelection}
         onPaste={snapshotWholeSelection}
-        placeholder={placeholder}
+        placeholder={placeholder ?? t("formHints.shared.search")}
         showClear={value !== undefined && value !== ""}
         className={`w-full ${className ?? ""}`}
       />
       <ComboboxContent>
         <ComboboxEmpty className={errorText == null ? undefined : "text-destructive"}>
-          {errorText ?? (isLoading ? loadingText : emptyText)}
+          {errorText ??
+            (isLoading
+              ? loadingText ?? t("formHints.shared.loadingEllipsis")
+              : emptyText ?? t("formHints.shared.noResults"))}
         </ComboboxEmpty>
         <ComboboxList onScroll={handleScroll} data-testid="paginated-search-select-list">
           {(item: SearchSelectOption) => (

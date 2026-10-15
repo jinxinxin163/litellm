@@ -700,7 +700,7 @@ const ComplexityRouterConfig: React.FC<ComplexityRouterConfigProps> = ({
                       <InputGroupInput
                         value={value.tier_labels?.[row.id as keyof ComplexityTiers] ?? ""}
                         onChange={(event) => handleTierLabelChange(row.id as keyof ComplexityTiers, event.target.value)}
-                        placeholder={`Display name (default: ${tierInfo.label})`}
+                        placeholder={t("formHints.models.tierDisplayName", { tier: tierInfo.label })}
                         aria-label={`Display name for the ${tierInfo.label} tier`}
                       />
                       {value.tier_labels?.[row.id as keyof ComplexityTiers] && (
@@ -720,7 +720,7 @@ const ComplexityRouterConfig: React.FC<ComplexityRouterConfigProps> = ({
                     options={modelOptions}
                     value={row.models}
                     onValueChange={(models: string[]) => setRowModels(row, models)}
-                    placeholder={`Select model(s) for ${label.toLowerCase()} queries`}
+                    placeholder={t("formHints.models.tierModels", { tier: label.toLowerCase() })}
                     emptyText={t("models.noModelsFound")}
                     className={tierMissing ? "w-full border-destructive" : "w-full"}
                   />

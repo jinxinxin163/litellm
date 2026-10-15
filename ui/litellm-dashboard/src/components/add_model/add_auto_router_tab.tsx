@@ -543,7 +543,7 @@ const AddAutoRouterTab: React.FC<AddAutoRouterTabProps> = ({
                   )}
                 >
                   {({ ref, ...field }) => (
-                    <Input {...field} ref={ref} placeholder="e.g., smart_router, auto_router_1" />
+                    <Input {...field} ref={ref} placeholder={t("formHints.models.routerNameExample")} />
                   )}
                 </FormField>
 

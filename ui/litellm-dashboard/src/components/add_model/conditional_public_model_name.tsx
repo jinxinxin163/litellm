@@ -39,23 +39,34 @@ const tooltipCodeClassName = "rounded-sm bg-background/20 px-1 py-0.5 font-mono 
 
 const ANTHROPIC_1M_HEADERS = JSON.stringify({ extra_headers: { "anthropic-beta": "context-1m-2025-08-07" } }, null, 2);
 
-const publicNameTooltipContent = (
-  <div className="flex flex-col gap-2 text-left font-normal">
-    <div>The name you specify in your API calls to LiteLLM Proxy</div>
-    <div>
-      <strong>Example:</strong> If you name your public model <code className={tooltipCodeClassName}>example-name</code>
-      , and choose <code className={tooltipCodeClassName}>openai/qwen-plus-latest</code> as the LiteLLM model
+const PublicNameTooltipContent = () => {
+  const { t } = useTranslation();
+  return (
+    <div className="flex flex-col gap-2 text-left font-normal">
+      <div>{t("formHints.models.publicNameDescription")}</div>
+      <div>
+        <strong>{t("formHints.models.exampleLabel")}</strong>{" "}
+        {t("formHints.models.publicNameExamplePrefix")} <code className={tooltipCodeClassName}>example-name</code>
+        {t("formHints.models.publicNameExampleChoose")}{" "}
+        <code className={tooltipCodeClassName}>openai/qwen-plus-latest</code>{" "}
+        {t("formHints.models.publicNameExampleSuffix")}
+      </div>
+      <div>
+        <strong>{t("formHints.models.usageLabel")}</strong> {t("formHints.models.publicNameUsage")}{" "}
+        <code className={tooltipCodeClassName}>model = &quot;example-name&quot;</code>
+      </div>
+      <div>
+        <strong>{t("formHints.models.resultLabel")}</strong> {t("formHints.models.publicNameResultPrefix")}{" "}
+        <code className={tooltipCodeClassName}>qwen-plus-latest</code> {t("formHints.models.publicNameResultSuffix")}
+      </div>
     </div>
-    <div>
-      <strong>Usage:</strong> You make an API call to the LiteLLM proxy with{" "}
-      <code className={tooltipCodeClassName}>model = &quot;example-name&quot;</code>
-    </div>
-    <div>
-      <strong>Result:</strong> LiteLLM sends <code className={tooltipCodeClassName}>qwen-plus-latest</code> to the
-      provider
-    </div>
-  </div>
-);
+  );
+};
+
+const LiteLLMNameTooltipContent = () => {
+  const { t } = useTranslation();
+  return <div>{t("models.theModelNameLitellmWillSendToTheLlmApi")}</div>;
+};
 
 const PublicNameInput: React.FC<{ readonly index: number; readonly value: string }> = ({ index, value }) => {
   const form = useFormContext<MountedFormValues>();
@@ -96,7 +107,7 @@ const columns: ColumnDef<ModelMapping>[] = [
     header: () => (
       <span className="flex items-center">
         Public Model Name
-        <SimpleTooltip content={publicNameTooltipContent} width="500px" />
+        <SimpleTooltip content={<PublicNameTooltipContent />} width="500px" />
       </span>
     ),
     cell: ({ row }) => <PublicNameInput index={row.index} value={row.original.public_name} />,
@@ -107,7 +118,7 @@ const columns: ColumnDef<ModelMapping>[] = [
     header: () => (
       <span className="flex items-center">
         LiteLLM Model Name
-        <SimpleTooltip content={<div>The model name LiteLLM will send to the LLM API</div>} width="360px" />
+        <SimpleTooltip content={<LiteLLMNameTooltipContent />} width="360px" />
       </span>
     ),
   },

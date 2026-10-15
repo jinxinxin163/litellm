@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "@/i18n/useTranslation";
 import React from "react";
 import {
   Combobox,
@@ -42,14 +43,15 @@ export function SearchSelect({
   options,
   value,
   onValueChange,
-  placeholder = "Select…",
-  emptyText = "No results",
+  placeholder,
+  emptyText,
   disabled = false,
   className,
   inputId,
   allowClear = true,
   "aria-label": ariaLabel,
 }: SearchSelectProps) {
+  const { t } = useTranslation();
   const selected =
     value === undefined || value === ""
       ? null
@@ -70,12 +72,12 @@ export function SearchSelect({
       <ComboboxInput
         id={inputId}
         aria-label={ariaLabel}
-        placeholder={placeholder}
+        placeholder={placeholder ?? t("formHints.shared.select")}
         showClear={allowClear && value != null && value !== ""}
         className={`h-8 w-full text-sm ${className ?? ""}`}
       />
       <ComboboxContent side="bottom" collisionAvoidance={{ side: "shift", align: "shift", fallbackAxisSide: "none" }}>
-        <ComboboxEmpty>{emptyText}</ComboboxEmpty>
+        <ComboboxEmpty>{emptyText ?? t("formHints.shared.noResults")}</ComboboxEmpty>
         <ComboboxList>
           {(item: SearchSelectOption) => (
             <ComboboxItem key={item.value} value={item}>

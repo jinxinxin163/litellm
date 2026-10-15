@@ -19,9 +19,8 @@ interface LatencyBasedConfigurationProps {
 const LatencyBasedConfiguration: React.FC<LatencyBasedConfigurationProps> = ({ routingStrategyArgs }) => {
   const { t } = useTranslation();
   const paramExplanation: { [key: string]: string } = {
-    ttl: "Sliding window to look back over when calculating the average latency of a deployment. Default - 1 hour (in seconds).",
-    lowest_latency_buffer:
-      "Shuffle between deployments within this % of the lowest latency. Default - 0 (i.e. always pick lowest latency).",
+    ttl: t("formHints.shared.latencyWindow"),
+    lowest_latency_buffer: t("formHints.shared.latencyBuffer"),
   };
 
   return (

@@ -28,7 +28,7 @@ const EscalationKeywords: React.FC<EscalationKeywordsProps> = ({ keywords, onCha
         options={keywords.map((keyword) => ({ label: keyword, value: keyword }))}
         value={keywords}
         onValueChange={onChange}
-        placeholder="e.g., LITELLM ESCALATE"
+        placeholder={t("formHints.models.escalationExample")}
         emptyText={t("models.typeToAddAPhrase")}
         allowCustomValues
         className="w-full"

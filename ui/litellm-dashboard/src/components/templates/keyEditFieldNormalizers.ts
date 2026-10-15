@@ -1,3 +1,5 @@
+import { translate } from "@/i18n/useTranslation";
+
 const WORD_FORM_BUDGET_DURATIONS: Record<string, string> = {
   hourly: "1h",
   daily: "24h",
@@ -38,8 +40,11 @@ export const currentValuePlaceholder = (
   premiumUser: boolean,
   current: unknown,
   premiumHint: string,
-  emptyHint: string,
+  emptyHint: string | { text: string; t: typeof translate },
 ): string => {
+  const { text, t } = typeof emptyHint === "string" ? { text: emptyHint, t: translate } : emptyHint;
   if (!premiumUser) return premiumHint;
-  return Array.isArray(current) && current.length > 0 ? `Current: ${current.join(", ")}` : emptyHint;
+  return Array.isArray(current) && current.length > 0
+    ? t("formHints.shared.currentValue", { value: current.join(", ") })
+    : text;
 };

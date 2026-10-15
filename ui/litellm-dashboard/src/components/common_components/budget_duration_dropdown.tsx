@@ -1,4 +1,4 @@
-import { useTranslation } from "@/i18n/useTranslation";
+import { translate, useTranslation } from "@/i18n/useTranslation";
 import React from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
@@ -20,10 +20,11 @@ const BudgetDurationDropdown: React.FC<BudgetDurationDropdownProps> = ({
   onChange,
   className = "",
   style = {},
-  placeholder = "n/a",
+  placeholder,
   showNeverResets = false,
 }) => {
   const { t } = useTranslation();
+  const displayPlaceholder = placeholder ?? t("formHints.shared.notApplicable");
   const durationLabelKeys: Record<string, string> = {
     none: "keyControls.neverResets",
     "1h": "keyControls.hourlyLower",
@@ -39,10 +40,10 @@ const BudgetDurationDropdown: React.FC<BudgetDurationDropdownProps> = ({
       onValueChange={(next: string | null) => onChange?.(next ?? undefined)}
     >
       <SelectTrigger id={id} className={`w-full ${className}`} style={style}>
-        <SelectValue placeholder={placeholder} />
+        <SelectValue placeholder={displayPlaceholder} />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value={null}>{placeholder}</SelectItem>
+        <SelectItem value={null}>{displayPlaceholder}</SelectItem>
         {showNeverResets ? (
           <SelectItem value={NEVER_RESETS_BUDGET_DURATION}>{t("keyControls.neverResets")}</SelectItem>
         ) : null}
@@ -55,14 +56,14 @@ const BudgetDurationDropdown: React.FC<BudgetDurationDropdownProps> = ({
   );
 };
 
-export const getBudgetDurationLabel = (value: string | null | undefined): string => {
-  if (!value) return "Not set";
+export const getBudgetDurationLabel = (value: string | null | undefined, t = translate): string => {
+  if (!value) return t("keys.notSet");
 
   const budgetDurationMap: Record<string, string> = {
-    "1h": "hourly",
-    "24h": "daily",
-    "7d": "weekly",
-    "30d": "monthly",
+    "1h": t("keyControls.hourlyLower"),
+    "24h": t("keyControls.dailyLower"),
+    "7d": t("keyControls.weeklyLower"),
+    "30d": t("keyControls.monthlyLower"),
   };
 
   return budgetDurationMap[value] || value;

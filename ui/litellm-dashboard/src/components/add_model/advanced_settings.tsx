@@ -15,7 +15,6 @@ import { MountedFormField } from "../common_components/MountedFormField";
 import { UtcDateTimeInput } from "@/components/shared/form/UtcDateTimeInput";
 import CacheControlInjectionPoints, {
   CACHE_CONTROL_LABEL,
-  CACHE_CONTROL_TOOLTIP,
   NEW_CACHE_CONTROL_POINT,
 } from "./cache_control_settings";
 import { Tag } from "../tag_management/types";
@@ -379,7 +378,7 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
 
             <MountedFormField
               name="cache_control"
-              label={labelWithHint(CACHE_CONTROL_LABEL, CACHE_CONTROL_TOOLTIP)}
+              label={labelWithHint(CACHE_CONTROL_LABEL, t("formHints.models.cacheControlTooltip"))}
               className="mb-4"
             >
               {(control) => (

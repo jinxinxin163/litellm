@@ -163,7 +163,7 @@ const ModelAliasManager: React.FC<ModelAliasManagerProps> = ({
                   aliasName: e.target.value,
                 })
               }
-              placeholder="e.g., gpt-4o"
+              placeholder={t("formHints.shared.aliasExample")}
             />
           </div>
           <div>

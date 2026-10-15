@@ -90,7 +90,7 @@ const KeywordTierRules: React.FC<KeywordTierRulesProps> = ({ rules, onChange, ti
                       options={rule.keywords.map((keyword) => ({ label: keyword, value: keyword }))}
                       value={rule.keywords}
                       onValueChange={replaceKeywords(rule)}
-                      placeholder="e.g., invoice, refund, billing"
+                      placeholder={t("formHints.models.keywordExamples")}
                       emptyText={t("models.typeToAddAKeyword")}
                       allowCustomValues
                       className={emptyRuleIndexes.has(index) ? "w-full border-destructive" : "w-full"}

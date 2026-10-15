@@ -757,7 +757,7 @@ const EditAutoRouterModal: React.FC<EditAutoRouterModalProps> = ({
           <form onSubmit={(event) => event.preventDefault()} noValidate>
             <FieldGroup>
               <FormField control={form.control} name="auto_router_name" label={t("models.autoRouterName")}>
-                {({ ref, ...field }) => <Input {...field} ref={ref} placeholder="e.g., auto_router_1, smart_routing" />}
+                {({ ref, ...field }) => <Input {...field} ref={ref} placeholder={t("formHints.models.editRouterNameExample")} />}
               </FormField>
 
               {isComplexityRouterModel ? (

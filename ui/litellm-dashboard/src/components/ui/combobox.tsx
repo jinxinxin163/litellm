@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "@/i18n/useTranslation";
 import * as React from "react";
 import { Combobox as ComboboxPrimitive } from "@base-ui/react";
 
@@ -32,13 +33,14 @@ const ComboboxTrigger = React.forwardRef<
 });
 ComboboxTrigger.displayName = "ComboboxTrigger";
 
-function ComboboxClear({ className, "aria-label": ariaLabel = "Clear", ...props }: ComboboxPrimitive.Clear.Props) {
+function ComboboxClear({ className, "aria-label": ariaLabel, ...props }: ComboboxPrimitive.Clear.Props) {
+  const { t } = useTranslation();
   return (
     <ComboboxPrimitive.Clear
       data-slot="combobox-clear"
       render={<InputGroupButton variant="ghost" size="icon-xs" />}
       className={cn(className)}
-      aria-label={ariaLabel}
+      aria-label={ariaLabel ?? t("formHints.shared.clear")}
       {...props}
     >
       <XIcon className="pointer-events-none" />

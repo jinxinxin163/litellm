@@ -1,4 +1,5 @@
 import { TriangleAlert } from "lucide-react";
+import { useTranslation } from "@/i18n/useTranslation";
 import { useState } from "react";
 import { z } from "zod/v4";
 import { modelPatchUpdateCall } from "./networking";
@@ -35,6 +36,7 @@ export default function UpdateModelCredentialsModal({
   modelId,
   onUpdated,
 }: UpdateModelCredentialsModalProps) {
+  const { t } = useTranslation();
   const form = useZodForm(updateCredentialsSchema, { defaultValues: EMPTY_VALUES });
   const [isSaving, setIsSaving] = useState(false);
 
@@ -90,7 +92,7 @@ export default function UpdateModelCredentialsModal({
           <FieldGroup>
             <FormField control={form.control} name="api_key" label="New API Key">
               {({ ref, ...field }) => (
-                <PasswordInput {...field} ref={ref} placeholder="Enter the new API key" autoComplete="new-password" />
+                <PasswordInput {...field} ref={ref} placeholder={t("formHints.models.enterNewApiKey")} autoComplete="new-password" />
               )}
             </FormField>
           </FieldGroup>

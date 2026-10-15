@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "@/i18n/useTranslation";
 import { useState } from "react";
 import {
   Combobox,
@@ -56,13 +57,15 @@ export function MultiSelect({
   options,
   value = [],
   onValueChange,
-  placeholder = "Select options",
-  emptyText = "No options found",
+  placeholder,
+  emptyText,
   disabled = false,
   loading = false,
   allowCustomValues = false,
   className,
 }: MultiSelectProps) {
+  const { t } = useTranslation();
+  const resolvedPlaceholder = placeholder ?? t("formHints.shared.selectOptions");
   const anchor = useComboboxAnchor();
   const [query, setQuery] = useState("");
   const safeOptions = options.filter(
@@ -82,7 +85,7 @@ export function MultiSelect({
   const customOptionExists = safeOptions.some((option) => option.value.toLowerCase() === customOption.toLowerCase());
   const items =
     allowCustomValues && customOption && !customOptionExists
-      ? [...safeOptions, { label: `Create "${customOption}"`, value: customOption }]
+      ? [...safeOptions, { label: t("formHints.shared.createOption", { value: customOption }), value: customOption }]
       : safeOptions;
 
   const canClear = (selected: MultiSelectOption[]) => selected.length > 0 && !disabled && !loading;
@@ -119,17 +122,17 @@ export function MultiSelect({
               ))}
               <ComboboxChipsInput
                 id={id}
-                placeholder={loading ? "Loading..." : placeholder}
+                placeholder={loading ? t("formHints.shared.loading") : resolvedPlaceholder}
                 className="min-w-24"
-                aria-label={placeholder || undefined}
+                aria-label={resolvedPlaceholder || undefined}
               />
-              {canClear(selected) && <ComboboxClear className="ml-auto self-center" aria-label="Clear all" />}
+              {canClear(selected) && <ComboboxClear className="ml-auto self-center" aria-label={t("table.clearAll")} />}
             </>
           )}
         </ComboboxValue>
       </ComboboxChips>
       <ComboboxContent anchor={anchor}>
-        <ComboboxEmpty>{emptyText}</ComboboxEmpty>
+        <ComboboxEmpty>{emptyText ?? t("formHints.shared.noOptions")}</ComboboxEmpty>
         <ComboboxList>
           {(option: MultiSelectOption) => (
             <ComboboxItem key={option.value} value={option} disabled={option.disabled}>
