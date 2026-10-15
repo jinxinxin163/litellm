@@ -41,41 +41,37 @@ const OPTIONAL_FIELDS: readonly OptionalField[] = [
   {
     name: GeneralSettingsFieldName.MAXIMUM_SPEND_LOGS_RETENTION_PERIOD,
     kind: "duration",
-    label: "Maximum Spend Logs Retention Period (Optional)",
-    placeholder: "e.g., 7d, 30d",
-    fallbackTooltip:
-      "Set the maximum retention period for spend logs (e.g., '7d' for 7 days, '30d' for 30 days). Leave empty for no limit.",
+    label: "adminLogging.retentionLabel",
+    placeholder: "adminLogging.retentionExample",
+    fallbackTooltip: "adminLogging.retentionHint",
   },
   {
     name: GeneralSettingsFieldName.MAXIMUM_SPEND_LOGS_CLEANUP_BATCH_SIZE,
     kind: "count",
-    label: "Spend Logs Cleanup Batch Size (Optional)",
-    placeholder: "e.g., 1000",
-    fallbackTooltip: "Rows deleted per DELETE statement during cleanup. Leave empty to use the default of 1000.",
+    label: "adminLogging.batchSizeLabel",
+    placeholder: "adminLogging.batchSizeExample",
+    fallbackTooltip: "adminLogging.batchSizeHint",
   },
   {
     name: GeneralSettingsFieldName.MAXIMUM_SPEND_LOGS_CLEANUP_MAX_BATCHES,
     kind: "count",
-    label: "Spend Logs Cleanup Max Batches (Optional)",
-    placeholder: "e.g., 500",
-    fallbackTooltip:
-      "Maximum number of DELETE statements run per table per cleanup run. Leave empty to use the default of 500.",
+    label: "adminLogging.maxBatchesLabel",
+    placeholder: "adminLogging.maxBatchesExample",
+    fallbackTooltip: "adminLogging.maxBatchesHint",
   },
   {
     name: GeneralSettingsFieldName.MAXIMUM_SPEND_LOGS_CLEANUP_RUN_BUDGET,
     kind: "duration",
-    label: "Spend Logs Cleanup Run Budget (Optional)",
-    placeholder: "e.g., 5m",
-    fallbackTooltip:
-      "Wall-clock budget for a whole cleanup run, shared across every table it cleans (e.g., '5m'). Leave empty to use the default of 5m.",
+    label: "adminLogging.runBudgetLabel",
+    placeholder: "adminLogging.runBudgetExample",
+    fallbackTooltip: "adminLogging.runBudgetHint",
   },
   {
     name: GeneralSettingsFieldName.MAXIMUM_SPEND_LOGS_CLEANUP_BATCH_TIMEOUT,
     kind: "duration",
-    label: "Spend Logs Cleanup Batch Timeout (Optional)",
-    placeholder: "e.g., 30s",
-    fallbackTooltip:
-      "Postgres statement and lock timeout applied to each cleanup batch, so cleanup never monopolizes a connection (e.g., '30s'). Leave empty to use the default of 30s.",
+    label: "adminLogging.batchTimeoutLabel",
+    placeholder: "adminLogging.batchTimeoutExample",
+    fallbackTooltip: "adminLogging.batchTimeoutHint",
   },
 ];
 
@@ -173,7 +169,7 @@ const LoggingSettingsForm: React.FC<LoggingSettingsFormProps> = ({
               t("admin.storePromptsInSpendLogs"),
               describeField(
                 STORE_PROMPTS_FIELD_NAME,
-                "When enabled, prompts will be stored in spend logs for tracking and analysis purposes.",
+                t("adminLogging.storePromptsHint"),
               ),
             )}
           >
@@ -187,7 +183,7 @@ const LoggingSettingsForm: React.FC<LoggingSettingsFormProps> = ({
               key={field.name}
               control={form.control}
               name={field.name}
-              label={labelWithHint(field.label, describeField(field.name, field.fallbackTooltip))}
+              label={labelWithHint(t(field.label), describeField(field.name, t(field.fallbackTooltip)))}
             >
               {({ ref, onChange, onBlur, ...control }) =>
                 field.kind === "duration" ? (
@@ -197,7 +193,7 @@ const LoggingSettingsForm: React.FC<LoggingSettingsFormProps> = ({
                       ref={ref}
                       onChange={(event) => onChange(event.target.value)}
                       onBlur={onBlur}
-                      placeholder={field.placeholder}
+                      placeholder={t(field.placeholder)}
                     />
                     <InputGroupAddon>
                       <Clock />
@@ -213,7 +209,7 @@ const LoggingSettingsForm: React.FC<LoggingSettingsFormProps> = ({
                       onChange(countDisplay(event.target.value));
                       onBlur();
                     }}
-                    placeholder={field.placeholder}
+                    placeholder={t(field.placeholder)}
                   />
                 )
               }
@@ -222,7 +218,7 @@ const LoggingSettingsForm: React.FC<LoggingSettingsFormProps> = ({
         </FieldGroup>
 
         <Button type="submit" className="mt-6" disabled={isSaving}>
-          {isSaving && <UiLoadingSpinner role="img" aria-label="loading" className="size-4" />}
+          {isSaving && <UiLoadingSpinner role="img" aria-label={t("common.loadingAria")} className="size-4" />}
           {isSaving ? t("admin.saving") : t("admin.saveSettings")}
         </Button>
       </form>
@@ -299,7 +295,7 @@ const LoggingSettings: React.FC = () => {
     const submitUpdate = () =>
       mutate(updateParams, {
         onSuccess: () => toast.success(t("admin.spendLogsSettingsUpdatedSuccessfully")),
-        onError: (error) => toast.fromError("Failed to save spend logs settings: " + parseErrorMessage(error)),
+        onError: (error) => toast.fromError(t("adminLogging.saveError", { error: parseErrorMessage(error) })),
       });
 
     const fieldsToClear = omittedFieldNames(updateParams, isStored);
@@ -312,7 +308,7 @@ const LoggingSettings: React.FC = () => {
       if (failed.length > 0) {
         // Reporting an unqualified success here would tell the admin a setting
         // was reset to its default while the old value is still in force.
-        toast.fromError(`Failed to clear saved value for: ${failed.join(", ")}`);
+        toast.fromError(t("adminLogging.clearError", { fields: failed.join(", ") }));
         return;
       }
       submitUpdate();

@@ -17,7 +17,7 @@ const COMPACT_TABLE_HEADER_HEIGHT = 33;
 const COMPACT_TABLE_ROW_HEIGHT = 32;
 
 const KeyModelUsageView: React.FC<KeyModelUsageViewProps> = ({ topModels }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const columns: ColumnDef<TopModelData>[] = [
     {
       header: t("usage.model"),
@@ -85,6 +85,7 @@ const KeyModelUsageView: React.FC<KeyModelUsageViewProps> = ({ topModels }) => {
               data={topModels.map((m) => ({ key: m.model, spend: m.spend }))}
               index="key"
               categories={["spend"]}
+              categoryLabels={i18n.resolvedLanguage?.startsWith("zh") ? { spend: t("usageActivity.series.spend") } : undefined}
               colors={["cyan"]}
               valueFormatter={(value) => `$${formatNumberWithCommas(value, 2)}`}
               layout="vertical"

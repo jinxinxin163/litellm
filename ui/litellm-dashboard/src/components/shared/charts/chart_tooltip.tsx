@@ -6,7 +6,7 @@ import type { TooltipContentProps, TooltipValueType } from "recharts";
 export type ChartTooltipProps = Pick<
   TooltipContentProps<TooltipValueType, string | number>,
   "active" | "payload" | "label"
->;
+> & { categoryLabels?: Record<string, string>; unavailableLabel?: string };
 
 export type ChartTooltipComponent = React.ComponentType<ChartTooltipProps>;
 
@@ -23,6 +23,7 @@ export const ValueTooltip = ({
   payload,
   label,
   valueFormatter,
+  categoryLabels,
 }: ChartTooltipProps & { valueFormatter?: (value: number) => string }) => {
   if (!active || !payload || payload.length === 0) return null;
 
@@ -42,7 +43,9 @@ export const ValueTooltip = ({
           >
             <div className="flex items-center gap-1.5">
               <span className="h-2.5 w-2.5 shrink-0 rounded-[2px]" style={{ backgroundColor: item.color }} />
-              <span className="text-muted-foreground">{String(item.name ?? item.dataKey ?? "")}</span>
+              <span className="text-muted-foreground">
+                {categoryLabels?.[String(item.dataKey ?? item.name ?? "")] ?? String(item.name ?? item.dataKey ?? "")}
+              </span>
             </div>
             <span className="font-mono font-medium tabular-nums text-foreground">{formatValue(item.value)}</span>
           </div>
@@ -61,13 +64,19 @@ const rawMetricValue = (row: unknown, dataKey: string): number | undefined => {
   return typeof value === "number" ? value : undefined;
 };
 
-const formatMetricValue = (rawValue: number | undefined, isSpend: boolean): string => {
-  if (rawValue === undefined) return "N/A";
+const formatMetricValue = (rawValue: number | undefined, isSpend: boolean, unavailableLabel: string): string => {
+  if (rawValue === undefined) return unavailableLabel;
   if (isSpend) return `$${rawValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   return rawValue.toLocaleString();
 };
 
-export const CustomTooltip = ({ active, payload, label }: ChartTooltipProps) => {
+export const CustomTooltip = ({
+  active,
+  payload,
+  label,
+  categoryLabels,
+  unavailableLabel = "N/A",
+}: ChartTooltipProps) => {
   if (!active || !payload || payload.length === 0) return null;
 
   return (
@@ -77,7 +86,11 @@ export const CustomTooltip = ({ active, payload, label }: ChartTooltipProps) => 
         const dataKey = item.dataKey?.toString();
         if (!dataKey || !item.payload) return null;
 
-        const formattedValue = formatMetricValue(rawMetricValue(item.payload, dataKey), dataKey.includes("spend"));
+        const formattedValue = formatMetricValue(
+          rawMetricValue(item.payload, dataKey),
+          dataKey.includes("spend"),
+          unavailableLabel,
+        );
 
         return (
           <div key={dataKey} className="flex items-center justify-between space-x-4">
@@ -86,7 +99,9 @@ export const CustomTooltip = ({ active, payload, label }: ChartTooltipProps) => 
                 className="h-2 w-2 shrink-0 rounded-full ring-2 ring-white drop-shadow-md"
                 style={{ backgroundColor: item.color }}
               />
-              <p className="font-medium text-muted-foreground">{formatCategoryName(dataKey)}</p>
+              <p className="font-medium text-muted-foreground">
+                {categoryLabels?.[dataKey] ?? formatCategoryName(dataKey)}
+              </p>
             </div>
             <p className="font-medium text-foreground">{formattedValue}</p>
           </div>

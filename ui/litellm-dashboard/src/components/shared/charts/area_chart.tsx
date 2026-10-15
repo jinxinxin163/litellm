@@ -11,6 +11,8 @@ export type AreaChartProps<TDatum extends Record<string, unknown>> = {
   data: readonly TDatum[];
   index: string;
   categories: readonly string[];
+  categoryLabels?: Record<string, string>;
+  emptyMessage?: string;
   colors?: readonly ChartColor[];
   valueFormatter?: (value: number) => string;
   yAxisWidth?: number;
@@ -27,6 +29,8 @@ export function AreaChart<TDatum extends Record<string, unknown>>({
   data,
   index,
   categories,
+  categoryLabels,
+  emptyMessage = "No data",
   colors,
   valueFormatter,
   yAxisWidth = 56,
@@ -46,13 +50,15 @@ export function AreaChart<TDatum extends Record<string, unknown>>({
         className={cn("flex h-80 w-full items-center justify-center rounded-lg border border-dashed", className)}
         style={style}
       >
-        <p className="text-sm text-muted-foreground">No data</p>
+        <p className="text-sm text-muted-foreground">{emptyMessage}</p>
       </div>
     );
   }
 
   const fills = categoryFills(categories.length, colors);
-  const config: ChartConfig = Object.fromEntries(categories.map((category) => [category, { label: category }]));
+  const config: ChartConfig = Object.fromEntries(
+    categories.map((category) => [category, { label: categoryLabels?.[category] ?? category }]),
+  );
   const TooltipContent = customTooltip ?? ValueTooltip;
 
   return (
@@ -76,6 +82,7 @@ export function AreaChart<TDatum extends Record<string, unknown>>({
                 active={active}
                 payload={payload}
                 label={label}
+                categoryLabels={categoryLabels}
                 {...(customTooltip ? {} : { valueFormatter })}
               />
             )}

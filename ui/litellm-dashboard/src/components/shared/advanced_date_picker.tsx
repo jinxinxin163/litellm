@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n/useTranslation";
 import { Calendar, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/cva.config";
@@ -19,6 +20,20 @@ interface RelativeTimeOption {
   shortLabel: string;
   getValue: () => { from: Date; to: Date };
 }
+
+const chineseRangeFormat: Intl.DateTimeFormatOptions = {
+  day: "numeric",
+  month: "short",
+  hour: "2-digit",
+  minute: "2-digit",
+  hourCycle: "h23",
+};
+
+const chineseSelectionFormat: Intl.DateTimeFormatOptions = {
+  ...chineseRangeFormat,
+  year: "numeric",
+  second: "2-digit",
+};
 
 const relativeTimeOptions: RelativeTimeOption[] = [
   {
@@ -69,11 +84,14 @@ const relativeTimeOptions: RelativeTimeOption[] = [
 const AdvancedDatePicker: React.FC<AdvancedDatePickerProps> = ({
   value,
   onValueChange,
-  label = "Select Time Range",
+  label,
   className,
   showTimeRange = true,
   align = "right",
 }) => {
+  const { t, i18n } = useTranslation();
+  const isChinese = i18n.resolvedLanguage === "zh-CN";
+  const displayLabel = label ?? t("usageActivityShared.selectTimeRange");
   const [isOpen, setIsOpen] = useState(false);
   const [tempValue, setTempValue] = useState<DateRangePickerValue>(value);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
@@ -119,11 +137,11 @@ const AdvancedDatePicker: React.FC<AdvancedDatePickerProps> = ({
     const end = moment(endDate, "YYYY-MM-DD");
 
     if (!start.isValid() || !end.isValid()) {
-      return { isValid: false, error: "Invalid date format" };
+      return { isValid: false, error: "usageActivityShared.invalidDateFormat" };
     }
 
     if (end.isBefore(start)) {
-      return { isValid: false, error: "End date cannot be before start date" };
+      return { isValid: false, error: "usageActivityShared.endDateBeforeStartDate" };
     }
 
     return { isValid: true, error: "" };
@@ -159,15 +177,25 @@ const AdvancedDatePicker: React.FC<AdvancedDatePickerProps> = ({
     };
   }, [isOpen]);
 
-  const formatDisplayRange = useCallback((from: Date | undefined, to: Date | undefined) => {
-    if (!from || !to) return "Select date range";
+  const formatDisplayRange = useCallback(
+    (from: Date | undefined, to: Date | undefined) => {
+      if (!from || !to) return t("usageActivityShared.selectDateRange");
 
-    const formatDateTime = (date: Date) => {
-      return moment(date).format("D MMM, HH:mm");
-    };
+      const formatDateTime = (date: Date) => {
+        return isChinese
+          ? new Intl.DateTimeFormat("zh-CN", chineseRangeFormat).format(date)
+          : moment(date).locale("en").format("D MMM, HH:mm");
+      };
 
-    return `${formatDateTime(from)} - ${formatDateTime(to)}`;
-  }, []);
+      return `${formatDateTime(from)} - ${formatDateTime(to)}`;
+    },
+    [isChinese, t],
+  );
+
+  const formatSelectionDate = (date: Date) =>
+    isChinese
+      ? new Intl.DateTimeFormat("zh-CN", chineseSelectionFormat).format(date)
+      : moment(date).locale("en").format("MMM D, YYYY [at] HH:mm:ss");
 
   // CRITICAL: Apply the same date adjustment logic as the original component
   const adjustDateRange = useCallback((newValue: DateRangePickerValue): DateRangePickerValue => {
@@ -279,7 +307,7 @@ const AdvancedDatePicker: React.FC<AdvancedDatePickerProps> = ({
 
   return (
     <div className={cn("flex items-center gap-3", className)}>
-      {label && <p className="text-sm font-medium text-foreground whitespace-nowrap">{label}</p>}
+      {displayLabel && <p className="text-sm font-medium text-foreground whitespace-nowrap">{displayLabel}</p>}
       <div className="relative" ref={dropdownRef}>
         {/* Main input display */}
         <button
@@ -319,14 +347,14 @@ const AdvancedDatePicker: React.FC<AdvancedDatePickerProps> = ({
               {/* Left side - Relative time options */}
               <div className="w-1/2 border-r border-border">
                 <div className="p-3 border-b border-border">
-                  <span className="text-sm font-semibold text-foreground">Relative time</span>
+                  <span className="text-sm font-semibold text-foreground">{t("usageActivityShared.relativeTime")}</span>
                 </div>
                 <div className="h-[350px] overflow-y-auto">
                   {relativeTimeOptions.map((option) => {
                     const isSelected = selectedOption === option.shortLabel;
                     return (
                       <button
-                        key={option.label}
+                        key={option.shortLabel}
                         type="button"
                         data-slot="advanced-date-picker-preset"
                         aria-pressed={isSelected}
@@ -336,14 +364,14 @@ const AdvancedDatePicker: React.FC<AdvancedDatePickerProps> = ({
                         onClick={() => handleRelativeTimeSelect(option)}
                       >
                         <span className={`text-sm ${isSelected ? "text-info font-medium" : "text-foreground"}`}>
-                          {option.label}
+                          {t(`usageActivityShared.presets.${option.shortLabel}`)}
                         </span>
                         <span
                           className={`text-xs px-2 py-1 rounded capitalize ${
                             isSelected ? "text-info bg-info/15" : "text-muted-foreground bg-muted"
                           }`}
                         >
-                          {option.shortLabel}
+                          {t(`usageActivityShared.presetShortLabels.${option.shortLabel}`)}
                         </span>
                       </button>
                     );
@@ -356,14 +384,16 @@ const AdvancedDatePicker: React.FC<AdvancedDatePickerProps> = ({
                 <div className="p-3.5 border-b border-border">
                   <div className="flex items-center gap-2">
                     <Calendar className="size-4 text-muted-foreground" />
-                    <span className="text-sm font-semibold text-foreground">Start and end dates</span>
+                    <span className="text-sm font-semibold text-foreground">
+                      {t("usageActivityShared.startAndEndDates")}
+                    </span>
                   </div>
                 </div>
 
                 <div className="p-6 space-y-6 pb-20">
                   {/* Start date */}
                   <div>
-                    <label className="text-sm text-foreground mb-1 block">Start date</label>
+                    <label className="text-sm text-foreground mb-1 block">{t("usageActivityShared.startDate")}</label>
                     <input
                       type="date"
                       value={startDate}
@@ -378,7 +408,7 @@ const AdvancedDatePicker: React.FC<AdvancedDatePickerProps> = ({
 
                   {/* End date */}
                   <div>
-                    <label className="text-sm text-foreground mb-1 block">End date</label>
+                    <label className="text-sm text-foreground mb-1 block">{t("usageActivityShared.endDate")}</label>
                     <input
                       type="date"
                       value={endDate}
@@ -403,7 +433,7 @@ const AdvancedDatePicker: React.FC<AdvancedDatePickerProps> = ({
                             d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
                           />
                         </svg>
-                        <span className="text-sm text-destructive font-medium">{validation.error}</span>
+                        <span className="text-sm text-destructive font-medium">{t(validation.error)}</span>
                       </div>
                     </div>
                   )}
@@ -412,12 +442,12 @@ const AdvancedDatePicker: React.FC<AdvancedDatePickerProps> = ({
                   {tempValue.from && tempValue.to && validation.isValid && (
                     <div className="bg-info/10 p-3 rounded-md space-y-1">
                       <div className="text-xs text-info">
-                        <span className="font-medium">From:</span>{" "}
-                        {moment(tempValue.from).format("MMM D, YYYY [at] HH:mm:ss")}
+                        <span className="font-medium">{t("usageActivityShared.from")}</span>{" "}
+                        {formatSelectionDate(tempValue.from)}
                       </div>
                       <div className="text-xs text-info">
-                        <span className="font-medium">To:</span>{" "}
-                        {moment(tempValue.to).format("MMM D, YYYY [at] HH:mm:ss")}
+                        <span className="font-medium">{t("usageActivityShared.to")}</span>{" "}
+                        {formatSelectionDate(tempValue.to)}
                       </div>
                     </div>
                   )}
@@ -426,10 +456,10 @@ const AdvancedDatePicker: React.FC<AdvancedDatePickerProps> = ({
                 <div className="absolute bottom-4 right-4">
                   <div className="flex gap-2">
                     <Button variant="secondary" onClick={handleCancel}>
-                      Cancel
+                      {t("usageActivityShared.cancel")}
                     </Button>
                     <Button onClick={handleApply} disabled={!tempValue.from || !tempValue.to || !validation.isValid}>
-                      Apply
+                      {t("usageActivityShared.apply")}
                     </Button>
                   </div>
                 </div>

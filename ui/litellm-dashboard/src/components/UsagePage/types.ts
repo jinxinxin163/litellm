@@ -70,6 +70,7 @@ export interface TopModelData {
 
 export interface ModelActivityData {
   label: string;
+  keyLabel?: { keyAlias: string; teamId: string; teamAlias?: string };
   total_requests: number;
   total_successful_requests: number;
   total_failed_requests: number;
