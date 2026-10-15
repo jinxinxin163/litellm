@@ -678,16 +678,6 @@ export default function UserInfoView({
                   </pre>
                 </div>
 
-                <div>
-                  <p className="font-medium mb-2">{t("people.mcpPermissions")}</p>
-                  <MCPServerPermissions
-                    mcpServers={userData.object_permission?.mcp_servers || []}
-                    mcpAccessGroups={userData.object_permission?.mcp_access_groups || []}
-                    mcpToolPermissions={userData.object_permission?.mcp_tool_permissions || {}}
-                    mcpToolsets={userData.object_permission?.mcp_toolsets || []}
-                    accessToken={accessToken}
-                  />
-                </div>
               </div>
             )}
           </Card>
