@@ -2599,5 +2599,41 @@
       "emailInvitationsHelp": "只有配置了邮件集成（SMTP、Resend 或 SendGrid）后，新用户才会收到邀请邮件。",
       "or": "或"
     }
+  },
+  "loggingView": {
+    "successOnly": "仅成功事件",
+    "failureOnly": "仅失败事件",
+    "successAndFailure": "成功和失败事件",
+    "configuredParameters": "已配置 {{count}} 个参数",
+    "noIntegrations": "尚未配置日志集成",
+    "disabledForKey": "已对此密钥禁用",
+    "noDisabledCallbacks": "未禁用任何回调",
+    "description": "此密钥已启用的日志集成和已禁用的回调"
+  },
+  "keyRotation": {
+    "title": "自动轮换",
+    "everyInterval": "每 {{interval}}",
+    "lastRotation": "上次轮换",
+    "nextRotation": "下次计划轮换",
+    "noHistory": "暂无轮换历史",
+    "notEnabled": "此密钥未启用自动轮换",
+    "description": "此密钥的自动轮换设置和状态",
+    "timestamp": "{{date}} {{time}}"
+  },
+  "savingsTiles": {
+    "totalSaved": "节省总额",
+    "compression": "压缩节省金额",
+    "caching": "提示词缓存节省金额",
+    "autorouter": "自动路由节省金额",
+    "totalHint": "压缩 + 提示词缓存 + 自动路由",
+    "tokensCompressed": "已压缩 {{tokens}} 个 Token",
+    "injected": "由 LiteLLM 注入",
+    "total": "总计",
+    "autorouterHint": "相较于可选模型中价格最高的模型",
+    "howCalculated": "{{label}}的计算方式",
+    "totalInfo": "右侧三张卡片的金额之和。其中缓存部分仅计入 LiteLLM 注入带来的节省，因此此总额反映网关自身带来的节省；客户端或 provider 自行启用缓存产生的节省，仅计入缓存卡片的“总计”。",
+    "compressionInfo": "Headroom 在调用前移除的 Token，按该模型的输入价格计算。",
+    "cachingInfo": "与所有 Token 均按输入价格收费相比，缓存带来的净节省：命中缓存的 Token 折扣，减去 provider 对写入缓存收取的额外费用。主数值是 LiteLLM 通过配置的注入点或自动提示词缓存，自行插入缓存断点带来的节省；旁边的总计还包含请求自带 cache_control 或 provider 隐式缓存带来的节省。如果写入缓存的流量多于复用缓存的流量，这两个数值都可能为负。因此，主数值不一定小于总计。",
+    "autorouterInfo": "假设所有请求都使用自动路由可选模型中价格最高的模型时的费用，减去实际费用。切换模型后，新模型的缓存尚未预热，需要重新付费写入提示词，而对照费用按缓存已预热计算；频繁切换模型导致缓存反复失效时，节省总额可能为负。首次请求中双方均无缓存时，该节省金额会被低估。"
   }
 }

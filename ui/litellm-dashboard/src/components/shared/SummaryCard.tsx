@@ -8,6 +8,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 
 export interface SummaryCardProps {
   label: string;
+  idLabel?: string;
+  infoLabel?: string;
   value: string;
   hint?: string;
   /** Rendered behind an info affordance. Use it for how a figure is derived, not for restating the label. */
@@ -23,15 +25,15 @@ export interface SummaryCardProps {
  */
 const slugOf = (label: string): string => label.toLowerCase().replace(/\s+/g, "-");
 
-const SummaryCard = ({ label, value, hint, info, secondary }: SummaryCardProps) => (
-  <Card data-testid={`summary-card-${slugOf(label)}`}>
+const SummaryCard = ({ label, idLabel = label, infoLabel, value, hint, info, secondary }: SummaryCardProps) => (
+  <Card data-testid={`summary-card-${slugOf(idLabel)}`}>
     <CardHeader className="flex flex-row items-center justify-between space-y-0">
       <CardTitle className="text-sm font-medium text-muted-foreground">{label}</CardTitle>
       {info && (
         <Popover>
           <PopoverTrigger
-            aria-label={`How ${label.toLowerCase()} is calculated`}
-            data-testid={`summary-card-info-${slugOf(label)}`}
+            aria-label={infoLabel ?? `How ${label.toLowerCase()} is calculated`}
+            data-testid={`summary-card-info-${slugOf(idLabel)}`}
             className="cursor-pointer text-muted-foreground hover:text-foreground"
           >
             <Info className="size-3.5" />

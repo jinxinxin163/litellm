@@ -2599,5 +2599,41 @@
       "emailInvitationsHelp": "New users receive an email invite only when an email integration (SMTP, Resend, or SendGrid) is configured.",
       "or": "or"
     }
+  },
+  "loggingView": {
+    "successOnly": "Success Only",
+    "failureOnly": "Failure Only",
+    "successAndFailure": "Success & Failure",
+    "configuredParameters": "{{count}} parameters configured",
+    "noIntegrations": "No logging integrations configured",
+    "disabledForKey": "Disabled for this key",
+    "noDisabledCallbacks": "No callbacks disabled",
+    "description": "Active logging integrations and disabled callbacks for this key"
+  },
+  "keyRotation": {
+    "title": "Auto-Rotation",
+    "everyInterval": "Every {{interval}}",
+    "lastRotation": "Last Rotation",
+    "nextRotation": "Next Scheduled Rotation",
+    "noHistory": "No rotation history available",
+    "notEnabled": "Auto-rotation is not enabled for this key",
+    "description": "Automatic key rotation settings and status for this key",
+    "timestamp": "{{date}} at {{time}}"
+  },
+  "savingsTiles": {
+    "totalSaved": "Total saved",
+    "compression": "Compression savings",
+    "caching": "Prompt caching savings",
+    "autorouter": "Auto-router savings",
+    "totalHint": "Compression + prompt caching + auto-router",
+    "tokensCompressed": "{{tokens}} tokens compressed",
+    "injected": "LiteLLM injected",
+    "total": "Total",
+    "autorouterHint": "vs. the priciest model it could pick",
+    "howCalculated": "How {{label}} is calculated",
+    "totalInfo": "The sum of the three tiles beside it. Its caching term is the LiteLLM-injected share, so this total is what the gateway itself delivered; caching that clients or providers brought on their own appears only in the caching tile's Total figure.",
+    "compressionInfo": "Tokens Headroom removed before the call, priced at the model's input rate.",
+    "cachingInfo": "What caching saved against paying the input rate for every token: the discount on tokens served from cache, less the premium providers charge to write a cache entry. The headline figure is the share LiteLLM earned by inserting the breakpoints itself, through configured injection points or auto prompt caching. The total beside it also counts requests that arrived with their own cache_control and providers that cache implicitly. Either can be negative on traffic that writes more cache than it reuses, which is why the headline is not always the smaller of the two.",
+    "autorouterInfo": "What this traffic would have cost had every request gone to the most expensive model the auto-router can route to, minus what it actually cost. Switching leaves the new model with a cold cache, so it pays to write the prompt again while the baseline is priced as already warm; a route that thrashes the cache can total below zero, and a genuine first turn, where neither side had anything cached, is undercounted."
   }
 }
