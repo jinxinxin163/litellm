@@ -113,7 +113,7 @@ const MemberPermissions: React.FC<MemberPermissionsProps> = ({ teamId, accessTok
             </TableHeader>
             <TableBody>
               {permissions.map((permission) => {
-                const permInfo = getPermissionInfo(permission);
+                const permInfo = getPermissionInfo(permission, t);
                 return (
                   <TableRow key={permission} className="hover:bg-accent transition-colors">
                     <TableCell>

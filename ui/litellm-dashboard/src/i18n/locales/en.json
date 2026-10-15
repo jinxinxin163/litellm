@@ -2432,5 +2432,20 @@
       "MTD": "MTD",
       "YTD": "YTD"
     }
+  },
+  "teamPermissions": {
+    "generateKey": "Member can generate a virtual key for this team",
+    "generateServiceAccountKey": "Member can generate a service account key (not belonging to any user) for this team",
+    "updateKey": "Member can update a virtual key belonging to this team",
+    "deleteKey": "Member can delete a virtual key belonging to this team",
+    "keyInfo": "Member can get info about a virtual key belonging to this team",
+    "regenerateKey": "Member can regenerate a virtual key belonging to this team",
+    "listKeys": "Member can list virtual keys belonging to this team",
+    "blockKey": "Member can block a virtual key belonging to this team",
+    "unblockKey": "Member can unblock a virtual key belonging to this team",
+    "assignAccessGroups": "Member can assign access groups to virtual keys for this team",
+    "viewTeamUsage": "Member can view all team usage data (not just their own)",
+    "viewTeamSpendLogs": "Member can view spend logs for the entire team (not just their own)",
+    "access": "Access {{permission}}"
   }
 }

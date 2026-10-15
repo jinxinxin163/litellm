@@ -2432,5 +2432,20 @@
       "MTD": "本月至今",
       "YTD": "今年至今"
     }
+  },
+  "teamPermissions": {
+    "generateKey": "成员可以为此团队生成虚拟密钥",
+    "generateServiceAccountKey": "成员可以为此团队生成服务账户密钥（不属于任何用户）",
+    "updateKey": "成员可以更新属于此团队的虚拟密钥",
+    "deleteKey": "成员可以删除属于此团队的虚拟密钥",
+    "keyInfo": "成员可以查看属于此团队的虚拟密钥信息",
+    "regenerateKey": "成员可以重新生成属于此团队的虚拟密钥",
+    "listKeys": "成员可以查看属于此团队的虚拟密钥列表",
+    "blockKey": "成员可以禁用属于此团队的虚拟密钥",
+    "unblockKey": "成员可以启用属于此团队的虚拟密钥",
+    "assignAccessGroups": "成员可以为此团队的虚拟密钥分配访问组",
+    "viewTeamUsage": "成员可以查看整个团队的用量数据（不限于自己的用量）",
+    "viewTeamSpendLogs": "成员可以查看整个团队的消费日志（不限于自己的日志）",
+    "access": "访问 {{permission}}"
   }
 }

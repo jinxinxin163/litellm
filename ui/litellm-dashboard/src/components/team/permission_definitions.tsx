@@ -1,3 +1,5 @@
+import { translate } from "@/i18n/useTranslation";
+
 export interface PermissionInfo {
   method: string;
   endpoint: string;
@@ -8,22 +10,25 @@ export interface PermissionInfo {
 /**
  * Map of permission endpoint patterns to their descriptions
  */
-export const PERMISSION_DESCRIPTIONS: Record<string, string> = {
-  "/key/generate": "Member can generate a virtual key for this team",
-  "/key/service-account/generate":
-    "Member can generate a service account key (not belonging to any user) for this team",
-  "/key/update": "Member can update a virtual key belonging to this team",
-  "/key/delete": "Member can delete a virtual key belonging to this team",
-  "/key/info": "Member can get info about a virtual key belonging to this team",
-  "/key/regenerate": "Member can regenerate a virtual key belonging to this team",
-  "/key/{key_id}/regenerate": "Member can regenerate a virtual key belonging to this team",
-  "/key/list": "Member can list virtual keys belonging to this team",
-  "/key/block": "Member can block a virtual key belonging to this team",
-  "/key/unblock": "Member can unblock a virtual key belonging to this team",
-  "/key/access_group_assignment": "Member can assign access groups to virtual keys for this team",
-  "/team/daily/activity": "Member can view all team usage data (not just their own)",
-  "/spend/logs": "Member can view spend logs for the entire team (not just their own)",
+const PERMISSION_DESCRIPTION_KEYS: Record<string, string> = {
+  "/key/generate": "teamPermissions.generateKey",
+  "/key/service-account/generate": "teamPermissions.generateServiceAccountKey",
+  "/key/update": "teamPermissions.updateKey",
+  "/key/delete": "teamPermissions.deleteKey",
+  "/key/info": "teamPermissions.keyInfo",
+  "/key/regenerate": "teamPermissions.regenerateKey",
+  "/key/{key_id}/regenerate": "teamPermissions.regenerateKey",
+  "/key/list": "teamPermissions.listKeys",
+  "/key/block": "teamPermissions.blockKey",
+  "/key/unblock": "teamPermissions.unblockKey",
+  "/key/access_group_assignment": "teamPermissions.assignAccessGroups",
+  "/team/daily/activity": "teamPermissions.viewTeamUsage",
+  "/spend/logs": "teamPermissions.viewTeamSpendLogs",
 };
+
+export const PERMISSION_DESCRIPTIONS: Record<string, string> = Object.fromEntries(
+  Object.entries(PERMISSION_DESCRIPTION_KEYS).map(([endpoint, key]) => [endpoint, translate(key)]),
+);
 
 /**
  * Determines the HTTP method for a given permission endpoint
@@ -43,16 +48,16 @@ export const getMethodForEndpoint = (endpoint: string): string => {
 /**
  * Parses a permission string into a structured PermissionInfo object
  */
-export const getPermissionInfo = (permission: string): PermissionInfo => {
+export const getPermissionInfo = (permission: string, t = translate): PermissionInfo => {
   const method = getMethodForEndpoint(permission);
   const endpoint = permission;
 
   // Find exact match or fallback to default description
-  let description = PERMISSION_DESCRIPTIONS[permission];
+  let description = PERMISSION_DESCRIPTION_KEYS[permission];
 
   // If no exact match, try to find a partial match based on patterns
   if (!description) {
-    for (const [pattern, desc] of Object.entries(PERMISSION_DESCRIPTIONS)) {
+    for (const [pattern, desc] of Object.entries(PERMISSION_DESCRIPTION_KEYS)) {
       if (permission.includes(pattern)) {
         description = desc;
         break;
@@ -60,15 +65,10 @@ export const getPermissionInfo = (permission: string): PermissionInfo => {
     }
   }
 
-  // Fallback if no match found
-  if (!description) {
-    description = `Access ${permission}`;
-  }
-
   return {
     method,
     endpoint,
-    description,
+    description: description ? t(description) : t("teamPermissions.access", { permission }),
     route: permission,
   };
 };
