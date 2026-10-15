@@ -262,7 +262,7 @@ export function VirtualKeysTable({ headerActions }: VirtualKeysTableProps) {
       <PageHeader
         icon={<KeyRound />}
         title={t("keys.virtualKeys")}
-        subtitle="Every key that authenticates requests to the gateway."
+        subtitle={t("keys.gatewayAuthenticationSubtitle")}
         primaryAction={headerActions}
       />
       <DataTable

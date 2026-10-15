@@ -143,6 +143,7 @@
   "keys": {
     "loadingKey": "正在加载密钥…",
     "virtualKeys": "虚拟密钥",
+    "gatewayAuthenticationSubtitle": "用于网关请求身份验证的所有密钥。",
     "searchByKeyAliasOrId": "按密钥别名或 ID 搜索…",
     "filters": "筛选",
     "narrowDownVirtualKeys": "筛选虚拟密钥",

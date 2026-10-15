@@ -143,6 +143,7 @@
   "keys": {
     "loadingKey": "Loading key...",
     "virtualKeys": "Virtual Keys",
+    "gatewayAuthenticationSubtitle": "Every key that authenticates requests to the gateway.",
     "searchByKeyAliasOrId": "Search by key alias or ID…",
     "filters": "Filters",
     "narrowDownVirtualKeys": "Narrow down virtual keys",
