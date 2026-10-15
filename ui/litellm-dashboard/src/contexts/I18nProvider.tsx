@@ -2,12 +2,24 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import { I18nextProvider } from "react-i18next";
-import { createDashboardI18n, LANGUAGE_STORAGE_KEY } from "@/i18n/config";
+import { createDashboardI18n, LANGUAGE_STORAGE_KEY, resolveBrowserLanguage, type Language } from "@/i18n/config";
 
 export default function I18nProvider({ children }: { children: ReactNode }) {
   const [instance] = useState(createDashboardI18n);
 
   useEffect(() => {
+    const resolveLanguage = (savedLanguage: string | null): Language => {
+      if (savedLanguage === "en" || savedLanguage === "zh-CN") return savedLanguage;
+      const languages = navigator.languages?.length ? navigator.languages : [navigator.language];
+      return resolveBrowserLanguage(languages);
+    };
+    const readLanguage = (): Language => {
+      try {
+        return resolveLanguage(localStorage.getItem(LANGUAGE_STORAGE_KEY));
+      } catch {
+        return resolveLanguage(null);
+      }
+    };
     const applyLanguage = (language: string) => {
       document.documentElement.lang = language;
       try {
@@ -16,18 +28,16 @@ export default function I18nProvider({ children }: { children: ReactNode }) {
         // Storage may be disabled by the browser; language switching still works.
       }
     };
-    let language = "en";
-    try {
-      language = localStorage.getItem(LANGUAGE_STORAGE_KEY) === "zh-CN" ? "zh-CN" : "en";
-    } catch {
-      // Use the exported page's language when storage is unavailable.
-    }
     instance.on("languageChanged", applyLanguage);
-    void instance.changeLanguage(language);
+    void instance.changeLanguage(readLanguage());
     const syncLanguage = (event: StorageEvent) => {
-      if (event.key === LANGUAGE_STORAGE_KEY) {
-        void instance.changeLanguage(event.newValue === "zh-CN" ? "zh-CN" : "en");
+      if (event.key !== LANGUAGE_STORAGE_KEY && event.key !== null) return;
+      try {
+        if (event.storageArea && event.storageArea !== localStorage) return;
+      } catch {
+        return;
       }
+      void instance.changeLanguage(resolveLanguage(event.newValue));
     };
     window.addEventListener("storage", syncLanguage);
     return () => {
