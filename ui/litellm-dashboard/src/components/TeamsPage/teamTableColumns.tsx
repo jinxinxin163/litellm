@@ -1,4 +1,5 @@
 "use client";
+import { translate, useTranslation } from "@/i18n/useTranslation";
 
 import { ColumnDef } from "@tanstack/react-table";
 import { Copy, KeyRound, Layers, MoreHorizontal, Pencil, Trash2, Users } from "lucide-react";
@@ -70,10 +71,11 @@ function ResourcesCell({ team }: { team: Team }) {
 }
 
 function RateLimitLine({ label, value }: { label: string; value: number | null }) {
+  const { t } = useTranslation();
   return (
     <div>
       <span className="text-[10px] font-semibold text-muted-foreground">{label} </span>
-      <span className="tabular-nums">{value != null ? formatNumberWithCommas(value) : "Unlimited"}</span>
+      <span className="tabular-nums">{value != null ? formatNumberWithCommas(value) : t("people.unlimited")}</span>
     </div>
   );
 }
@@ -86,14 +88,15 @@ interface TeamRowActionsProps {
 }
 
 function TeamRowActions({ team, canManage, onEditTeam, onDeleteTeam }: TeamRowActionsProps) {
+  const { t } = useTranslation();
   const handleCopy = () => {
-    void copyToClipboard(team.team_id, "Team ID copied");
+    void copyToClipboard(team.team_id, t("people.teamIdCopied"));
   };
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        aria-label="Open team actions"
+        aria-label={t("people.openTeamActions")}
         data-testid={`team-actions-${team.team_id}`}
         className={cn(buttonVariants({ variant: "ghost", size: "icon-sm" }), "text-muted-foreground")}
       >
@@ -103,19 +106,19 @@ function TeamRowActions({ team, canManage, onEditTeam, onDeleteTeam }: TeamRowAc
         {canManage && (
           <DropdownMenuItem onClick={() => onEditTeam(team)} data-testid="team-action-edit">
             <Pencil />
-            Edit team
+            {t("people.editTeam")}
           </DropdownMenuItem>
         )}
         <DropdownMenuItem onClick={handleCopy} data-testid="team-action-copy">
           <Copy />
-          Copy team ID
+          {t("people.copyTeamId")}
         </DropdownMenuItem>
         {canManage && (
           <>
             <DropdownMenuSeparator />
             <DropdownMenuItem variant="destructive" onClick={() => onDeleteTeam(team)} data-testid="team-action-delete">
               <Trash2 />
-              Delete team
+              {t("people.deleteTeam2")}
             </DropdownMenuItem>
           </>
         )}
@@ -132,21 +135,18 @@ interface TeamTableColumnsDeps {
   onDeleteTeam: (team: Team) => void;
 }
 
-export const getTeamTableColumns = ({
-  organizations,
-  userRole,
-  onSelectTeam,
-  onEditTeam,
-  onDeleteTeam,
-}: TeamTableColumnsDeps): ColumnDef<Team>[] => {
-  const canManage = userRole === "Admin";
+export const getTeamTableColumns = (
+  { organizations, userRole, onSelectTeam, onEditTeam, onDeleteTeam }: TeamTableColumnsDeps,
+  t: (key: string) => string = translate,
+): ColumnDef<Team>[] => {
+  const canManage = userRole === t("people.admin");
 
   return [
     {
       id: "team_alias",
       accessorKey: "team_alias",
       meta: {
-        title: "Team",
+        title: t("people.team"),
         renderSkeleton: () => (
           <div className="flex flex-col gap-2 py-1">
             <Skeleton className="h-4 w-32" />
@@ -154,7 +154,7 @@ export const getTeamTableColumns = ({
           </div>
         ),
       },
-      header: ({ column }) => <DataTableSortHeader column={column} title="Team" variant="header-cycle" />,
+      header: ({ column }) => <DataTableSortHeader column={column} title={t("people.team")} variant="header-cycle" />,
       size: 260,
       enableSorting: true,
       cell: ({ row }) => {
@@ -172,8 +172,8 @@ export const getTeamTableColumns = ({
     {
       id: "organization_alias",
       accessorKey: "organization_id",
-      meta: { title: "Organization" },
-      header: "Organization",
+      meta: { title: t("people.organization") },
+      header: t("people.organization"),
       size: 160,
       enableSorting: false,
       cell: (info) => {
@@ -192,7 +192,7 @@ export const getTeamTableColumns = ({
     {
       id: "resources",
       meta: {
-        title: "Resources",
+        title: t("people.resources"),
         renderSkeleton: () => (
           <div className="flex items-center gap-1.5">
             <Skeleton className="h-6 w-12 rounded-md" />
@@ -201,7 +201,7 @@ export const getTeamTableColumns = ({
           </div>
         ),
       },
-      header: "Resources",
+      header: t("people.resources"),
       size: 210,
       enableSorting: false,
       cell: ({ row }) => <ResourcesCell team={row.original} />,
@@ -209,8 +209,8 @@ export const getTeamTableColumns = ({
     {
       id: "spend",
       accessorKey: "spend",
-      meta: { title: "Spend / Budget", skeleton: "meter" },
-      header: "Spend / Budget",
+      meta: { title: t("people.spendBudget"), skeleton: "meter" },
+      header: t("people.spendBudget"),
       size: 200,
       enableSorting: false,
       cell: ({ row }) => (
@@ -225,54 +225,58 @@ export const getTeamTableColumns = ({
     {
       id: "created_at",
       accessorKey: "created_at",
-      meta: { title: "Created" },
-      header: ({ column }) => <DataTableSortHeader column={column} title="Created" variant="header-cycle" />,
+      meta: { title: t("people.created") },
+      header: ({ column }) => (
+        <DataTableSortHeader column={column} title={t("people.created")} variant="header-cycle" />
+      ),
       size: 130,
       enableSorting: true,
       cell: (info) => <DateCell value={info.getValue() as string | null} precision="date" />,
     },
     {
       id: "members",
-      meta: { title: "Members" },
-      header: "Members",
+      meta: { title: t("people.members") },
+      header: t("people.members"),
       size: 110,
       enableSorting: false,
       cell: ({ row }) => <span className="text-sm tabular-nums">{teamMemberCount(row.original)}</span>,
     },
     {
       id: "models",
-      meta: { title: "Models" },
-      header: "Models",
+      meta: { title: t("people.models") },
+      header: t("people.models"),
       size: 100,
       enableSorting: false,
       cell: ({ row }) => <span className="text-sm tabular-nums">{teamModelCount(row.original)}</span>,
     },
     {
       id: "rate_limits",
-      meta: { title: "Rate Limits", skeleton: "twoLine" },
-      header: "Rate Limits",
+      meta: { title: t("people.rateLimits"), skeleton: "twoLine" },
+      header: t("people.rateLimits"),
       size: 140,
       enableSorting: false,
       cell: ({ row }) => (
         <div className="text-xs leading-tight">
-          <RateLimitLine label="TPM" value={row.original.tpm_limit} />
-          <RateLimitLine label="RPM" value={row.original.rpm_limit} />
+          <RateLimitLine label={t("people.tpm")} value={row.original.tpm_limit} />
+          <RateLimitLine label={t("people.rpm")} value={row.original.rpm_limit} />
         </div>
       ),
     },
     {
       id: "updated_at",
       accessorKey: "updated_at",
-      meta: { title: "Updated" },
-      header: "Updated",
+      meta: { title: t("people.updated") },
+      header: t("people.updated"),
       size: 130,
       enableSorting: false,
-      cell: (info) => <DateCell value={info.getValue() as string | null} precision="date" fallback="Never" />,
+      cell: (info) => (
+        <DateCell value={info.getValue() as string | null} precision="date" fallback={t("people.never")} />
+      ),
     },
     {
       id: "actions",
       meta: { className: "text-right", headerClassName: "text-right" },
-      header: () => <span className="sr-only">Actions</span>,
+      header: () => <span className="sr-only">{t("people.actions")}</span>,
       size: 60,
       enableSorting: false,
       enableHiding: false,

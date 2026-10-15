@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n/useTranslation";
 import { LoaderCircle } from "lucide-react";
 import React from "react";
 
@@ -52,9 +53,10 @@ const ModelRetrySettingsTab = ({
   handleSaveRetrySettings,
   isSaving = false,
 }: ModelRetrySettingsTabProps) => {
+  const { t } = useTranslation();
   const isGlobalScope = selectedModelGroup === "global";
   const scopeItems = [
-    { value: "global", label: "Global Default" },
+    { value: "global", label: t("models.globalDefault") },
     ...availableModelGroups.map((group) => ({ value: group, label: group })),
   ];
 
@@ -85,7 +87,7 @@ const ModelRetrySettingsTab = ({
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
-        <Label htmlFor="retry-policy-scope">Retry Policy Scope:</Label>
+        <Label htmlFor="retry-policy-scope">{t("models.retryPolicyScope")}</Label>
         <div className="w-48">
           <Select
             items={scopeItems}
@@ -108,16 +110,18 @@ const ModelRetrySettingsTab = ({
 
       {isGlobalScope ? (
         <div>
-          <h2 className="text-lg font-semibold">Global Retry Policy</h2>
+          <h2 className="text-lg font-semibold">{t("models.globalRetryPolicy")}</h2>
           <p className="text-sm text-muted-foreground">
-            Default retry settings applied to all model groups unless overridden
+            {t("models.defaultRetrySettingsAppliedToAllModelGroupsUnlessOverridden")}
           </p>
         </div>
       ) : (
         <div>
-          <h2 className="text-lg font-semibold">Retry Policy for {selectedModelGroup}</h2>
+          <h2 className="text-lg font-semibold">
+            {t("models.retryPolicyFor")} {selectedModelGroup}
+          </h2>
           <p className="text-sm text-muted-foreground">
-            Model-specific retry settings. Falls back to global defaults if not set.
+            {t("models.modelSpecificRetrySettingsFallsBackToGlobalDefaultsIfNot")}
           </p>
         </div>
       )}
@@ -133,7 +137,9 @@ const ModelRetrySettingsTab = ({
                 <td className="text-sm">
                   <span>{exceptionType}</span>
                   {!isGlobalScope && (
-                    <span className="ml-2 text-xs text-muted-foreground">(Global: {inheritedValue})</span>
+                    <span className="ml-2 text-xs text-muted-foreground">
+                      {t("models.global")} {inheritedValue})
+                    </span>
                   )}
                 </td>
                 <td className="flex items-center gap-2">
@@ -149,7 +155,7 @@ const ModelRetrySettingsTab = ({
                   />
                   {!isGlobalScope && hasOverride && (
                     <Button variant="ghost" size="xs" onClick={() => setModelOverride(retryPolicyKey, null)}>
-                      Reset
+                      {t("models.reset")}
                     </Button>
                   )}
                 </td>
@@ -160,7 +166,7 @@ const ModelRetrySettingsTab = ({
       </table>
       <Button onClick={handleSaveRetrySettings} disabled={isSaving}>
         {isSaving && <LoaderCircle className="animate-spin" />}
-        Save
+        {t("models.save")}
       </Button>
     </div>
   );

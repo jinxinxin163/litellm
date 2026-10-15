@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n/useTranslation";
 import { Inbox, Info, Plus, Trash2 } from "lucide-react";
 import { SimpleTooltip } from "@/components/ui/tooltip";
 import { MultiSelect } from "@/components/shared/MultiSelect";
@@ -29,6 +30,7 @@ interface KeywordTierRulesProps {
 // rather than waiting for a submit; the submit button is disabled while one is outstanding, so
 // there is no failed attempt left to surface it.
 const KeywordTierRules: React.FC<KeywordTierRulesProps> = ({ rules, onChange, tierLabels, tierNames }) => {
+  const { t } = useTranslation();
   const emptyRuleIndexes = new Set(emptyKeywordTierRuleIndexes(rules));
 
   const replaceKeywords = (rule: KeywordTierRule) => (keywords: string[]) => {
@@ -51,19 +53,18 @@ const KeywordTierRules: React.FC<KeywordTierRulesProps> = ({ rules, onChange, ti
     <div className="w-full max-w-none">
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
-          <h4 className="m-0 text-xl font-semibold text-foreground">Keyword Tier Overrides</h4>
-          <SimpleTooltip content="Match known terms and force the request straight to a chosen complexity tier, bypassing rule-based scoring.">
+          <h4 className="m-0 text-xl font-semibold text-foreground">{t("models.keywordTierOverrides")}</h4>
+          <SimpleTooltip content={t("models.matchKnownTermsAndForceTheRequestStraight")}>
             <Info className="size-4 text-muted-foreground" />
           </SimpleTooltip>
         </div>
         <Button variant="outline" onClick={addRule}>
           <Plus />
-          Add keyword rule
+          {t("models.addKeywordRule")}
         </Button>
       </div>
       <span className="mb-4 block text-muted-foreground">
-        Optional: route requests containing specific keywords directly to a tier, e.g. route &quot;invoice, refund,
-        billing&quot; to the medium tier.
+        {t("models.optionalRouteRequestsContainingSpecificKeywordsDirectlyTo")}
       </span>
 
       {rules.length === 0 ? (
@@ -71,7 +72,7 @@ const KeywordTierRules: React.FC<KeywordTierRulesProps> = ({ rules, onChange, ti
           <CardContent>
             <div className="py-2 text-center">
               <Inbox className="mx-auto mb-2 size-6 text-muted-foreground" aria-hidden="true" />
-              <p className="text-sm text-muted-foreground">No keyword tier overrides configured</p>
+              <p className="text-sm text-muted-foreground">{t("models.noKeywordTierOverridesConfigured")}</p>
             </div>
           </CardContent>
         </Card>
@@ -82,22 +83,24 @@ const KeywordTierRules: React.FC<KeywordTierRulesProps> = ({ rules, onChange, ti
               <CardContent>
                 <div className="flex items-end gap-3">
                   <div className="flex-1">
-                    <strong className="mb-2 block font-semibold">Keywords {index + 1}</strong>
+                    <strong className="mb-2 block font-semibold">
+                      {t("models.keywords")} {index + 1}
+                    </strong>
                     <MultiSelect
                       options={rule.keywords.map((keyword) => ({ label: keyword, value: keyword }))}
                       value={rule.keywords}
                       onValueChange={replaceKeywords(rule)}
                       placeholder="e.g., invoice, refund, billing"
-                      emptyText="Type to add a keyword"
+                      emptyText={t("models.typeToAddAKeyword")}
                       allowCustomValues
                       className={emptyRuleIndexes.has(index) ? "w-full border-destructive" : "w-full"}
                     />
                     {emptyRuleIndexes.has(index) && (
-                      <span className="text-xs text-destructive">At least one keyword is required</span>
+                      <span className="text-xs text-destructive">{t("models.atLeastOneKeywordIsRequired")}</span>
                     )}
                   </div>
                   <div style={{ width: 220 }}>
-                    <strong className="mb-2 block font-semibold">Route to tier</strong>
+                    <strong className="mb-2 block font-semibold">{t("models.routeToTier")}</strong>
                     <Select
                       items={tierOptions(tierLabels, tierNames)}
                       value={rule.tier}

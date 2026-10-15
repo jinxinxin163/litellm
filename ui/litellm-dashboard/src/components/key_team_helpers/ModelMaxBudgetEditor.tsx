@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n/useTranslation";
 import { SearchSelect } from "@/components/shared/SearchSelect";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
@@ -90,6 +91,18 @@ export function ModelMaxBudgetEditor({
   premiumUser,
   usage,
 }: ModelMaxBudgetEditorProps) {
+  const { t } = useTranslation();
+  const periodLabelKeys: Record<string, string> = {
+    "1h": "keyControls.hourly",
+    "24h": "keyControls.daily",
+    "7d": "keyControls.weekly",
+    "30d": "keyControls.monthly",
+    "1mo": "keyControls.calendarMonth",
+  };
+  const periodOptions = MODEL_BUDGET_PERIOD_OPTIONS.map((option) => ({
+    ...option,
+    label: t(periodLabelKeys[option.value]),
+  }));
   const [entries, setEntries] = useState<ModelBudgetEntry[]>(() => modelMaxBudgetToEntries(value));
 
   const emitChange = (updated: ModelBudgetEntry[]) => {
@@ -109,13 +122,11 @@ export function ModelMaxBudgetEditor({
     emitChange(entries.map((entry) => (entry.id === id ? { ...entry, ...patch } : entry)));
 
   const usedModels = new Set(entries.map((entry) => entry.model).filter(Boolean));
-  const hintWhenLocked = premiumUser ? undefined : MODEL_MAX_BUDGET_PREMIUM_HINT;
+  const hintWhenLocked = premiumUser ? undefined : t("keyControls.premiumModelBudgets");
 
   const blurb = (
     <div className="text-xs text-muted-foreground">
-      {premiumUser
-        ? "Cap spend per model over its own window. A budget set on the bare model name also covers the provider-prefixed spelling of that model."
-        : MODEL_MAX_BUDGET_PREMIUM_HINT}
+      {premiumUser ? t("keyControls.modelBudgetHint") : t("keyControls.premiumModelBudgets")}
     </div>
   );
 
@@ -125,7 +136,7 @@ export function ModelMaxBudgetEditor({
         <div className="mb-2">{blurb}</div>
         <Button variant="outline" size="sm" onClick={addEntry} disabled={!premiumUser} title={hintWhenLocked}>
           <Plus className="w-3 h-3" />
-          Add Model Budget
+          {t("keyControls.addModelBudget")}
         </Button>
       </div>
     );
@@ -150,13 +161,13 @@ export function ModelMaxBudgetEditor({
             </button>
 
             <div className="mb-3">
-              <label className="block text-xs font-medium text-muted-foreground mb-1">Model</label>
+              <label className="block text-xs font-medium text-muted-foreground mb-1">{t("keyControls.model")}</label>
               <SearchSelect
                 options={modelOptions.map((model) => ({ label: model, value: model }))}
                 value={entry.model ?? ""}
                 onValueChange={(model) => updateEntry(entry.id, { model: model === "" ? null : model })}
-                placeholder="Select model"
-                emptyText="No models found"
+                placeholder={t("keyControls.selectModel")}
+                emptyText={t("keyControls.noModelsFound")}
                 disabled={!premiumUser}
               />
             </div>
@@ -177,12 +188,12 @@ export function ModelMaxBudgetEditor({
                     const typed = event.target.valueAsNumber;
                     updateEntry(entry.id, { budgetLimit: Number.isNaN(typed) ? null : typed });
                   }}
-                  placeholder="Max spend ($)"
+                  placeholder={t("keyControls.maxSpend")}
                   disabled={!premiumUser}
                 />
               </InputGroup>
               <Select
-                items={MODEL_BUDGET_PERIOD_OPTIONS}
+                items={periodOptions}
                 value={entry.timePeriod}
                 onValueChange={(period: string | null) => period && updateEntry(entry.id, { timePeriod: period })}
               >
@@ -190,7 +201,7 @@ export function ModelMaxBudgetEditor({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {MODEL_BUDGET_PERIOD_OPTIONS.map((option) => (
+                  {periodOptions.map((option) => (
                     <SelectItem key={option.value} value={option.value}>
                       {option.label}
                     </SelectItem>
@@ -201,8 +212,9 @@ export function ModelMaxBudgetEditor({
 
             {spent !== undefined && (
               <div className="text-[11px] text-muted-foreground mt-2 ml-1">
-                Current window spend: ${spent}
-                {entry.budgetLimit !== null && ` of $${entry.budgetLimit}`}
+                {t("keyControls.currentWindowSpend")}
+                {spent}
+                {entry.budgetLimit !== null && t("keyControls.budgetTotal", { budget: entry.budgetLimit })}
               </div>
             )}
           </div>
@@ -210,7 +222,7 @@ export function ModelMaxBudgetEditor({
       })}
       <Button variant="outline" size="sm" onClick={addEntry} disabled={!premiumUser} title={hintWhenLocked}>
         <Plus className="w-3 h-3" />
-        Add Model Budget
+        {t("keyControls.addModelBudget")}
       </Button>
     </div>
   );
@@ -222,10 +234,11 @@ interface ModelMaxBudgetFieldProps extends ModelMaxBudgetEditorProps {
 
 /** The editor with its label, so every form that offers it presents it the same way. */
 export function ModelMaxBudgetField({ hint, ...editorProps }: ModelMaxBudgetFieldProps) {
+  const { t } = useTranslation();
   return (
     <Field>
       <FieldLabel>
-        <span title={hint}>Per-Model Budgets</span>
+        <span title={hint}>{t("keyControls.perModelBudgets")}</span>
       </FieldLabel>
       <ModelMaxBudgetEditor {...editorProps} />
     </Field>

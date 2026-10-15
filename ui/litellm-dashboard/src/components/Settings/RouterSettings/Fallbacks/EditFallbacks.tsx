@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n/useTranslation";
 /**
  * Modal for editing an existing fallback entry
  * Lets the user add/remove models from a primary model's fallback chain
@@ -42,6 +43,7 @@ export default function EditFallbacks({
   onClose,
   maxFallbacks = 10,
 }: EditFallbacksProps) {
+  const { t } = useTranslation();
   const [group, setGroup] = useState<FallbackGroup>(() => toGroup(fallbackEntry));
   const [isSaving, setIsSaving] = useState(false);
 
@@ -69,7 +71,7 @@ export default function EditFallbacks({
     setIsSaving(true);
     try {
       await onChange(updatedFallbacks);
-      toast.success(`Fallbacks for ${primaryModel} updated successfully!`);
+      toast.success(t("router.fallbacksUpdated", { model: primaryModel }));
       onClose();
     } catch (error) {
       console.error("Error updating fallbacks:", error);
@@ -89,11 +91,11 @@ export default function EditFallbacks({
       />
       <div className="flex items-center justify-end space-x-3 pt-6 mt-6 border-t border-border">
         <Button variant="outline" onClick={onClose} disabled={isSaving}>
-          Cancel
+          {t("router.cancel")}
         </Button>
         <Button onClick={handleSave} disabled={isSaving || group.fallbackModels.length === 0}>
           {isSaving ? <LoaderCircle className="w-4 h-4 animate-spin" /> : <Pencil className="w-4 h-4" />}
-          {isSaving ? "Saving Changes..." : "Save Changes"}
+          {isSaving ? t("router.savingChanges") : t("router.saveChanges")}
         </Button>
       </div>
     </AddFallbacksModal>

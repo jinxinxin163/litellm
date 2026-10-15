@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n/useTranslation";
 import { OnChangeFn, PaginationState, RowSelectionState } from "@tanstack/react-table";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
@@ -167,6 +168,7 @@ const HealthCheckComponent: React.FC<HealthCheckComponentProps> = ({
   onPaginationChange,
   rowCount,
 }) => {
+  const { t } = useTranslation();
   const [modelHealthStatuses, setModelHealthStatuses] = useState<{ [key: string]: HealthStatus }>({});
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [errorModalVisible, setErrorModalVisible] = useState(false);
@@ -501,9 +503,9 @@ const HealthCheckComponent: React.FC<HealthCheckComponentProps> = ({
       <div className="mb-6">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-semibold text-foreground">Model Health Status</h2>
+            <h2 className="text-lg font-semibold text-foreground">{t("models.modelHealthStatus")}</h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              Run health checks on individual models to verify they are working correctly
+              {t("models.runHealthChecksOnIndividualModelsToVerifyTheyAreWorking")}
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -514,7 +516,7 @@ const HealthCheckComponent: React.FC<HealthCheckComponentProps> = ({
                 onClick={() => setRowSelection({})}
                 data-testid="clear-health-selection"
               >
-                Clear Selection
+                {t("models.clearSelection")}
               </Button>
             )}
             <Button
@@ -524,7 +526,7 @@ const HealthCheckComponent: React.FC<HealthCheckComponentProps> = ({
               disabled={anyCheckRunning}
               data-testid="run-health-checks"
             >
-              {isPartialSelection ? "Run Selected Checks" : "Run All Checks"}
+              {isPartialSelection ? t("models.runSelectedChecks") : t("models.runAllChecks")}
             </Button>
           </div>
         </div>
@@ -556,21 +558,23 @@ const HealthCheckComponent: React.FC<HealthCheckComponentProps> = ({
         <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-y-auto sm:max-w-3xl">
           <DialogHeader>
             <DialogTitle>
-              {selectedErrorDetails ? `Health Check Error - ${selectedErrorDetails.modelName}` : "Error Details"}
+              {selectedErrorDetails
+                ? `Health Check Error - ${selectedErrorDetails.modelName}`
+                : t("models.errorDetails")}
             </DialogTitle>
-            <DialogDescription>Details returned by the model health check.</DialogDescription>
+            <DialogDescription>{t("models.detailsReturnedByTheModelHealthCheck")}</DialogDescription>
           </DialogHeader>
           {selectedErrorDetails && (
             <div className="space-y-4">
               <div>
-                <span className="font-medium">Error:</span>
+                <span className="font-medium">{t("models.error")}</span>
                 <div className="mt-2 rounded-md border border-destructive/30 bg-destructive/10 p-3">
                   <span className="text-destructive">{selectedErrorDetails.cleanedError}</span>
                 </div>
               </div>
 
               <div>
-                <span className="font-medium">Full Error Details:</span>
+                <span className="font-medium">{t("models.fullErrorDetails")}</span>
                 <div className="mt-2 max-h-96 overflow-y-auto rounded-md border bg-muted/50 p-3">
                   <pre className="whitespace-pre-wrap text-sm text-foreground">{selectedErrorDetails.fullError}</pre>
                 </div>
@@ -579,7 +583,7 @@ const HealthCheckComponent: React.FC<HealthCheckComponentProps> = ({
           )}
           <DialogFooter>
             <Button type="button" variant="outline" onClick={closeErrorModal}>
-              Close
+              {t("models.close")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -596,21 +600,21 @@ const HealthCheckComponent: React.FC<HealthCheckComponentProps> = ({
             <DialogTitle>
               {selectedSuccessDetails
                 ? `Health Check Response - ${selectedSuccessDetails.modelName}`
-                : "Response Details"}
+                : t("models.responseDetails2")}
             </DialogTitle>
-            <DialogDescription>Response returned by the successful model health check.</DialogDescription>
+            <DialogDescription>{t("models.responseReturnedByTheSuccessfulModelHealthCheck")}</DialogDescription>
           </DialogHeader>
           {selectedSuccessDetails && (
             <div className="space-y-4">
               <div>
-                <span className="font-medium">Status:</span>
+                <span className="font-medium">{t("models.status")}</span>
                 <div className="mt-2 rounded-md border border-primary/30 bg-primary/5 p-3">
-                  <span className="text-foreground">Health check passed successfully</span>
+                  <span className="text-foreground">{t("models.healthCheckPassedSuccessfully")}</span>
                 </div>
               </div>
 
               <div>
-                <span className="font-medium">Response Details:</span>
+                <span className="font-medium">{t("models.responseDetails")}</span>
                 <div className="mt-2 max-h-96 overflow-y-auto rounded-md border bg-muted/50 p-3">
                   <pre className="whitespace-pre-wrap text-sm text-foreground">
                     {JSON.stringify(selectedSuccessDetails.response, null, 2)}
@@ -621,7 +625,7 @@ const HealthCheckComponent: React.FC<HealthCheckComponentProps> = ({
           )}
           <DialogFooter>
             <Button type="button" variant="outline" onClick={closeSuccessModal}>
-              Close
+              {t("models.close")}
             </Button>
           </DialogFooter>
         </DialogContent>

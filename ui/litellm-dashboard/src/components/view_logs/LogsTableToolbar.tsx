@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "@/i18n/useTranslation";
 import moment from "moment";
 import { CalendarDays } from "lucide-react";
 import { useState } from "react";
@@ -11,6 +12,15 @@ import { Switch } from "@/components/ui/switch";
 
 import { QUICK_SELECT_OPTIONS } from "./constants";
 import { getTimeRangeDisplay } from "./logs_utils";
+
+const presetLabelKeys: Record<string, string> = {
+  "Last Minute": "logs.presetLastMinute",
+  "Last 15 Minutes": "logs.presetLast15Minutes",
+  "Last Hour": "logs.presetLastHour",
+  "Last 4 Hours": "logs.presetLast4Hours",
+  "Last 24 Hours": "logs.presetLast24Hours",
+  "Last 7 Days": "logs.presetLast7Days"
+};
 
 interface LogsTableToolbarProps {
   startTime: string;
@@ -45,6 +55,7 @@ export function LogsTableToolbar({
   onResetToFirstPage,
   onResetFilters,
 }: LogsTableToolbarProps) {
+  const { t } = useTranslation();
   const [quickSelectOpen, setQuickSelectOpen] = useState(false);
 
   const applyQuickSelect = (option: { label: string; value: number; unit: string }) => {
@@ -72,7 +83,7 @@ export function LogsTableToolbar({
           render={
             <Button variant="outline" size="sm" className="gap-2">
               <CalendarDays className="size-4" />
-              {displayLabel}
+              {displayLabel && (isCustomDate ? displayLabel : t(presetLabelKeys[displayLabel]))}
             </Button>
           }
         />
@@ -85,7 +96,7 @@ export function LogsTableToolbar({
                 className="w-full justify-start font-normal"
                 onClick={() => applyQuickSelect(option)}
               >
-                {option.label}
+                {t(presetLabelKeys[option.label])}
               </Button>
             ))}
             <div className="my-2 border-t" />
@@ -97,7 +108,7 @@ export function LogsTableToolbar({
                 onResetToFirstPage();
               }}
             >
-              Custom Range
+              {t("logs.customRange")}
             </Button>
           </div>
         </PopoverContent>
@@ -114,7 +125,7 @@ export function LogsTableToolbar({
               onResetToFirstPage();
             }}
           />
-          <span className="text-sm text-muted-foreground">to</span>
+          <span className="text-sm text-muted-foreground">{t("logs.to")}</span>
           <Input
             type="datetime-local"
             className="w-auto"
@@ -128,32 +139,33 @@ export function LogsTableToolbar({
       )}
 
       <div className="flex items-center gap-2">
-        <span className="text-sm font-medium">Live Tail</span>
-        <Switch checked={isLiveTail} onCheckedChange={onIsLiveTailChange} aria-label="Live Tail" />
+        <span className="text-sm font-medium">{t("logs.liveTail")}</span>
+        <Switch checked={isLiveTail} onCheckedChange={onIsLiveTailChange} aria-label={t("logs.liveTail")} />
       </div>
 
       <div className="flex items-center gap-2">
-        <span className="text-sm font-medium">Hide Health Checks</span>
+        <span className="text-sm font-medium">{t("logs.hideHealthChecks")}</span>
         <Switch
           checked={excludeInternalHealthChecks}
           onCheckedChange={onExcludeInternalHealthChecksChange}
-          aria-label="Hide Health Checks"
+          aria-label={t("logs.hideHealthChecks")}
         />
       </div>
 
       <Button variant="outline" size="sm" onClick={onResetFilters}>
-        Reset Filters
+        {t("logs.resetFilters")}
       </Button>
     </div>
   );
 }
 
 export function LiveTailBanner({ onStop }: { onStop: () => void }) {
+  const { t } = useTranslation();
   return (
     <div className="mb-4 flex items-center justify-between rounded-md border border-success/20 bg-success/10 px-4 py-2">
-      <span className="text-sm text-success">Auto-refreshing every 15 seconds</span>
+      <span className="text-sm text-success">{t("logs.autoRefreshingEvery15Seconds")}</span>
       <button type="button" onClick={onStop} className="text-sm text-success hover:text-success/80">
-        Stop
+        {t("logs.stop")}
       </button>
     </div>
   );

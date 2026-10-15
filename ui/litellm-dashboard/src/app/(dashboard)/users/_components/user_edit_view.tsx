@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n/useTranslation";
 import React, { useMemo, useState } from "react";
 import { z } from "zod/v4";
 import { all_admin_roles } from "@/utils/roles";
@@ -57,7 +58,7 @@ const userEditShape = {
   mcp_tool_permissions: z.record(z.string(), z.array(z.string())).optional(),
 };
 
-const budgetSchema = (unlimitedBudget: boolean) =>
+const budgetSchema = (unlimitedBudget: boolean, t: (key: string) => string) =>
   z.object({
     ...userEditShape,
     max_budget: z
@@ -65,7 +66,7 @@ const budgetSchema = (unlimitedBudget: boolean) =>
       .nullish()
       .refine(
         (value) => unlimitedBudget || (value !== "" && value !== null && value !== undefined),
-        "Please enter a budget or select Unlimited Budget",
+        t("people.budgetRequired"),
       ),
   });
 
@@ -141,13 +142,14 @@ export function UserEditView({
   objectPermission,
   premiumUser = false,
 }: UserEditViewProps) {
+  const { t } = useTranslation();
   const canEditMcpPermissions = !isBulkEdit && all_admin_roles.includes(userRole || "");
   const [unlimitedBudget, setUnlimitedBudget] = useState(false);
   const [modelMaxBudget, setModelMaxBudget] = useSeededState<ModelMaxBudget>(
     userData.user_id,
     () => userData.user_info?.model_max_budget ?? {},
   );
-  const schema = useMemo(() => budgetSchema(unlimitedBudget), [unlimitedBudget]);
+  const schema = useMemo(() => budgetSchema(unlimitedBudget, t), [unlimitedBudget, t]);
   const form = useZodForm(schema, {
     defaultValues: toFormValues(userData, objectPermission, isBulkEdit, canEditMcpPermissions),
   });
@@ -182,8 +184,8 @@ export function UserEditView({
   };
 
   const modelOptions = [
-    { label: "All Proxy Models", value: "all-proxy-models" },
-    { label: "No Default Models", value: "no-default-models" },
+    { label: t("people.allProxyModels"), value: "all-proxy-models" },
+    { label: t("people.noDefaultModels"), value: "no-default-models" },
     ...userModels.map((model) => ({ label: getModelDisplayName(model), value: model })),
   ];
 
@@ -198,28 +200,25 @@ export function UserEditView({
       <form onSubmit={form.handleSubmit(handleSubmit)}>
         <FieldGroup>
           {!isBulkEdit && (
-            <FormField control={form.control} name="user_id" label="User ID">
+            <FormField control={form.control} name="user_id" label={t("people.userId")}>
               {({ ref, value, ...control }) => <Input {...control} ref={ref} value={value ?? ""} disabled />}
             </FormField>
           )}
 
           {!isBulkEdit && (
-            <FormField control={form.control} name="user_email" label="Email">
+            <FormField control={form.control} name="user_email" label={t("people.email")}>
               {({ ref, value, ...control }) => <Input {...control} ref={ref} value={value ?? ""} />}
             </FormField>
           )}
 
-          <FormField control={form.control} name="user_alias" label="User Alias">
+          <FormField control={form.control} name="user_alias" label={t("people.userAlias")}>
             {({ ref, value, ...control }) => <Input {...control} ref={ref} value={value ?? ""} />}
           </FormField>
 
           <FormField
             control={form.control}
             name="user_role"
-            label={labelWithHint(
-              "Global Proxy Role",
-              "This is the role that the user will globally on the proxy. This role is independent of any team/org specific roles.",
-            )}
+            label={labelWithHint(t("people.globalProxyRole"), t("people.thisIsTheRoleThatTheUserWillGlobally"))}
           >
             {({ id, value, onChange }) => (
               <Select
@@ -245,17 +244,14 @@ export function UserEditView({
           <FormField
             control={form.control}
             name="models"
-            label={labelWithHint(
-              "Personal Models",
-              "Select which models this user can access outside of team-scope. Choose 'All Proxy Models' to grant access to all models available on the proxy.",
-            )}
+            label={labelWithHint(t("people.personalModels"), t("people.selectWhichModelsThisUserCanAccessOutsideOf"))}
           >
             {({ value, onChange }) => (
               <MultiSelect
                 options={modelOptions}
                 value={value}
                 onValueChange={onChange}
-                placeholder="Select models"
+                placeholder={t("people.selectModels")}
                 disabled={!all_admin_roles.includes(userRole || "")}
               />
             )}
@@ -266,10 +262,10 @@ export function UserEditView({
             name="max_budget"
             label={
               <>
-                Max Budget (USD)
+                {t("people.maxBudgetUsd")}
                 <label className="ml-3 inline-flex items-center gap-2 font-normal">
                   <Checkbox checked={unlimitedBudget} onCheckedChange={handleUnlimitedBudgetChange} />
-                  Unlimited Budget
+                  {t("people.unlimitedBudget")}
                 </label>
               </>
             }
@@ -283,13 +279,13 @@ export function UserEditView({
                 value={value ?? ""}
                 onChange={(event) => onChange(event.target.value)}
                 onWheel={(event) => event.currentTarget.blur()}
-                placeholder="Enter a numerical value"
+                placeholder={t("people.enterANumericalValue")}
                 disabled={unlimitedBudget}
               />
             )}
           </FormField>
 
-          <FormField control={form.control} name="budget_duration" label="Reset Budget">
+          <FormField control={form.control} name="budget_duration" label={t("people.resetBudget")}>
             {({ id, value, onChange }) => <BudgetDurationDropdown id={id} value={value} onChange={onChange} />}
           </FormField>
 
@@ -303,13 +299,19 @@ export function UserEditView({
               onChange={setModelMaxBudget}
               availableModels={userModels}
               usage={userData.user_info?.model_max_budget_usage}
-              hint="Cap this user's spend on individual models, each with its own reset window. Applies across every key the user holds."
+              hint={t("people.capThisUserSSpendOnIndividualModelsEach")}
             />
           )}
 
-          <FormField control={form.control} name="metadata" label="Metadata">
+          <FormField control={form.control} name="metadata" label={t("people.metadata")}>
             {({ ref, value, ...control }) => (
-              <Textarea {...control} ref={ref} value={value ?? ""} rows={4} placeholder="Enter metadata as JSON" />
+              <Textarea
+                {...control}
+                ref={ref}
+                value={value ?? ""}
+                rows={4}
+                placeholder={t("people.enterMetadataAsJson")}
+              />
             )}
           </FormField>
 
@@ -319,8 +321,8 @@ export function UserEditView({
                 control={form.control}
                 name="mcp_servers_and_groups"
                 label={labelWithHint(
-                  "MCP Servers / Access Groups",
-                  "Caps which MCP servers, access groups, and tools this user may reach. Every key the user holds is limited to this set.",
+                  t("people.mcpServersAccessGroups"),
+                  t("people.capsWhichMcpServersAccessGroupsAndToolsThis"),
                 )}
               >
                 {({ value, onChange }) => (
@@ -328,7 +330,7 @@ export function UserEditView({
                     onChange={onChange}
                     value={value}
                     accessToken={accessToken || ""}
-                    placeholder="Select MCP servers or access groups (optional)"
+                    placeholder={t("people.selectMcpServersOrAccessGroupsOptional")}
                   />
                 )}
               </FormField>
@@ -345,9 +347,9 @@ export function UserEditView({
 
         <div className="mt-6 flex justify-end gap-2">
           <Button variant="secondary" type="button" onClick={onCancel}>
-            Cancel
+            {t("people.cancel")}
           </Button>
-          <Button type="submit">Save Changes</Button>
+          <Button type="submit">{t("people.saveChanges")}</Button>
         </div>
       </form>
     </TooltipProvider>

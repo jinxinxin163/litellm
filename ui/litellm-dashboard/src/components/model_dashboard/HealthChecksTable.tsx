@@ -1,4 +1,5 @@
 "use client";
+import { useTranslation } from "@/i18n/useTranslation";
 
 import { OnChangeFn, PaginationState, RowSelectionState, SortingState } from "@tanstack/react-table";
 import { HeartPulse } from "lucide-react";
@@ -27,13 +28,14 @@ interface HealthChecksTableProps {
 }
 
 function EmptyState() {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-col items-center gap-1 py-6">
       <div className="mb-1 flex size-10 items-center justify-center rounded-lg bg-muted">
         <HeartPulse className="size-5 text-muted-foreground" />
       </div>
-      <div className="text-sm font-medium text-foreground">No models found</div>
-      <div className="text-sm text-muted-foreground">Models added to this proxy will show their health here.</div>
+      <div className="text-sm font-medium text-foreground">{t("models.noModelsFound")}</div>
+      <div className="text-sm text-muted-foreground">{t("models.modelsAddedToThisProxyWillShowTheirHealthHere")}</div>
     </div>
   );
 }
@@ -54,6 +56,7 @@ export function HealthChecksTable({
   onSelectModel,
   teams,
 }: HealthChecksTableProps) {
+  const { t } = useTranslation();
   const [sorting, setSorting] = useState<SortingState>([]);
 
   const columns = useMemo(() => {
@@ -66,8 +69,8 @@ export function HealthChecksTable({
       onSelectModel,
       teams,
     };
-    return getHealthChecksTableColumns(columnDeps);
-  }, [modelHealthStatuses, getDisplayModelName, onRunHealthCheck, onShowError, onShowSuccess, onSelectModel, teams]);
+    return getHealthChecksTableColumns(columnDeps, t);
+  }, [t, modelHealthStatuses, getDisplayModelName, onRunHealthCheck, onShowError, onShowSuccess, onSelectModel, teams]);
 
   return (
     <DataTable
@@ -84,7 +87,7 @@ export function HealthChecksTable({
       rowSelection={rowSelection}
       onRowSelectionChange={onRowSelectionChange}
       isLoading={isLoading}
-      loadingMessage="Loading models…"
+      loadingMessage={t("models.loadingModels")}
       noDataMessage={<EmptyState />}
       size="compact"
     />

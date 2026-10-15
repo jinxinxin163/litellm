@@ -1,3 +1,5 @@
+import { translateTierRestriction } from "./TierRestrictions";
+import { useTranslation } from "@/i18n/useTranslation";
 import React, { useEffect, useState } from "react";
 import useAuthorized from "@/app/(dashboard)/hooks/useAuthorized";
 import { getAutoRouterAssembledPromptCall } from "@/components/networking";
@@ -76,6 +78,7 @@ const OpeningPromptEditor: React.FC<OpeningPromptEditorProps> = ({
   tierSource,
   contextWindowSize,
 }) => {
+  const { t } = useTranslation();
   const { accessToken } = useAuthorized();
   const [isOpen, setIsOpen] = useState(false);
   const [instructionDraft, setInstructionDraft] = useState("");
@@ -158,7 +161,7 @@ const OpeningPromptEditor: React.FC<OpeningPromptEditorProps> = ({
       )}
       <div className="flex items-center gap-2">
         <Button type="button" size="sm" variant="outline" onClick={openEditor}>
-          {isOverridden ? "Edit custom prompt" : "Customize prompt"}
+          {isOverridden ? t("models.editCustomPrompt") : t("models.customizePrompt")}
         </Button>
         {isOverridden && (
           <Button
@@ -173,7 +176,7 @@ const OpeningPromptEditor: React.FC<OpeningPromptEditorProps> = ({
               })
             }
           >
-            Reset to default
+            {t("models.resetToDefault")}
           </Button>
         )}
       </div>
@@ -182,13 +185,13 @@ const OpeningPromptEditor: React.FC<OpeningPromptEditorProps> = ({
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-4xl">
           <DialogHeader>
-            <DialogTitle>Classifier prompt</DialogTitle>
+            <DialogTitle>{t("models.classifierPrompt2")}</DialogTitle>
           </DialogHeader>
 
           {tierSource.kind === "builtIn" && (
             <div>
               <label className="text-sm font-medium" htmlFor="base-classification-rubric">
-                Base rubric
+                {t("models.baseRubric")}
               </label>
               <Select
                 items={Object.entries(CLASSIFICATION_RUBRIC_DESCRIPTIONS).map(([rubric, description]) => ({
@@ -199,7 +202,11 @@ const OpeningPromptEditor: React.FC<OpeningPromptEditorProps> = ({
                 onValueChange={(rubric: ClassificationRubric | null) => rubric && setRubricDraft(rubric)}
                 disabled={Boolean(tierSource.rubricRestriction)}
               >
-                <SelectTrigger id="base-classification-rubric" aria-label="Base rubric" className="mt-1 w-full">
+                <SelectTrigger
+                  id="base-classification-rubric"
+                  aria-label={t("models.baseRubric")}
+                  className="mt-1 w-full"
+                >
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent
@@ -215,7 +222,7 @@ const OpeningPromptEditor: React.FC<OpeningPromptEditorProps> = ({
                 </SelectContent>
               </Select>
               <p className="mt-1 text-xs text-muted-foreground">
-                {tierSource.rubricRestriction ?? draftRubricSummary?.description}
+                {translateTierRestriction(tierSource.rubricRestriction, t) ?? draftRubricSummary?.description}
               </p>
             </div>
           )}
@@ -225,10 +232,10 @@ const OpeningPromptEditor: React.FC<OpeningPromptEditorProps> = ({
           <div className="mt-3 space-y-4">
             <div>
               <label className="text-sm font-medium" htmlFor="classification-instructions">
-                Classification instructions
+                {t("models.classificationInstructions")}
               </label>
               <p className="mt-1 text-xs text-muted-foreground">
-                Explain what the classifier should judge. Tier definitions are managed separately below.
+                {t("models.explainWhatTheClassifierShouldJudgeTierDefinitions")}
               </p>
               <Textarea
                 id="classification-instructions"
@@ -236,18 +243,17 @@ const OpeningPromptEditor: React.FC<OpeningPromptEditorProps> = ({
                 onChange={(e) => setInstructionDraft(e.target.value)}
                 rows={5}
                 placeholder={copy.placeholder}
-                aria-label="Classification instructions"
+                aria-label={t("models.classificationInstructions")}
                 className="mt-2 font-mono text-xs"
               />
             </div>
 
             <div>
               <label className="text-sm font-medium" htmlFor="calibration-examples">
-                Calibration examples
+                {t("models.calibrationExamples")}
               </label>
               <p className="mt-1 text-xs text-muted-foreground">
-                Show representative requests and the tier they should receive. The router adds these after its tier
-                definitions.
+                {t("models.showRepresentativeRequestsAndTheTierTheyShould")}
               </p>
               <Textarea
                 id="calibration-examples"
@@ -255,21 +261,19 @@ const OpeningPromptEditor: React.FC<OpeningPromptEditorProps> = ({
                 onChange={(e) => setExampleDraft(e.target.value)}
                 rows={6}
                 placeholder={'- "what is the capital of France?" -> SIMPLE'}
-                aria-label="Calibration examples"
+                aria-label={t("models.calibrationExamples")}
                 className="mt-2 font-mono text-xs"
               />
             </div>
           </div>
 
           <div className="mt-3">
-            <p className="text-xs font-medium">What this router sends</p>
+            <p className="text-xs font-medium">{t("models.whatThisRouterSends")}</p>
             {preview.status === "loading" && (
-              <p className="mt-1 text-xs text-muted-foreground">Loading the assembled prompt…</p>
+              <p className="mt-1 text-xs text-muted-foreground">{t("models.loadingTheAssembledPrompt")}</p>
             )}
             {preview.status === "error" && (
-              <p className="mt-1 text-xs text-muted-foreground">
-                Could not load the assembled prompt. Your text is still saved as written.
-              </p>
+              <p className="mt-1 text-xs text-muted-foreground">{t("models.couldNotLoadTheAssembledPromptYourText")}</p>
             )}
             {preview.status === "ready" && (
               <pre
@@ -283,10 +287,10 @@ const OpeningPromptEditor: React.FC<OpeningPromptEditorProps> = ({
 
           <DialogFooter className="mt-4">
             <Button type="button" variant="outline" onClick={() => setIsOpen(false)}>
-              Cancel
+              {t("models.cancel")}
             </Button>
             <Button type="button" onClick={handleSave}>
-              Save prompt
+              {t("models.savePrompt")}
             </Button>
           </DialogFooter>
         </DialogContent>

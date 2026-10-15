@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n/useTranslation";
 import React, { useEffect, useMemo } from "react";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useFormContext, useWatch } from "react-hook-form";
@@ -113,6 +114,7 @@ const columns: ColumnDef<ModelMapping>[] = [
 ];
 
 const ConditionalPublicModelName: React.FC = () => {
+  const { t } = useTranslation();
   const form = useFormContext<MountedFormValues>();
 
   const modelValue = useWatch({ control: form.control, name: "model" }) || [];
@@ -205,8 +207,8 @@ const ConditionalPublicModelName: React.FC = () => {
       name="model_mappings"
       label={
         <span className="flex items-center">
-          Model Mappings
-          <SimpleTooltip content="Map public model names to LiteLLM model names for load balancing" />
+          {t("models.modelMappings")}
+          <SimpleTooltip content={t("models.mapPublicModelNamesToLitellmModelNamesForLoadBalancing")} />
         </span>
       }
       required

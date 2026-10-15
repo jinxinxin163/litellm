@@ -1,4 +1,5 @@
 "use client";
+import { useTranslation } from "@/i18n/useTranslation";
 
 import { useUISettings } from "@/app/(dashboard)/hooks/uiSettings/useUISettings";
 import { useUpdateUISettings } from "@/app/(dashboard)/hooks/uiSettings/useUpdateUISettings";
@@ -46,6 +47,7 @@ function SettingRow({
 }
 
 export default function UISettings() {
+  const { t } = useTranslation();
   const { accessToken } = useAuthorized();
   const { data, isLoading, isError, error } = useUISettings();
   const { mutate: updateSettings, isPending: isUpdating, error: updateError } = useUpdateUISettings(accessToken);
@@ -76,7 +78,7 @@ export default function UISettings() {
       { disable_model_add_for_internal_users: checked },
       {
         onSuccess: () => {
-          toast.success("UI settings updated successfully");
+          toast.success(t("admin.uiSettingsUpdatedSuccessfully"));
         },
         onError: (error) => {
           toast.fromError(error);
@@ -90,7 +92,7 @@ export default function UISettings() {
       { disable_team_admin_delete_team_user: checked },
       {
         onSuccess: () => {
-          toast.success("UI settings updated successfully");
+          toast.success(t("admin.uiSettingsUpdatedSuccessfully"));
         },
         onError: (error) => {
           toast.fromError(error);
@@ -102,7 +104,7 @@ export default function UISettings() {
   const handleUpdatePageVisibility = (settings: { enabled_ui_pages_internal_users: string[] | null }) => {
     updateSettings(settings, {
       onSuccess: () => {
-        toast.success("Page visibility settings updated successfully");
+        toast.success(t("admin.pageVisibilitySettingsUpdatedSuccessfully"));
       },
       onError: (error) => {
         toast.fromError(error);
@@ -115,7 +117,7 @@ export default function UISettings() {
       { forward_client_headers_to_llm_api: checked },
       {
         onSuccess: () => {
-          toast.success("UI settings updated successfully");
+          toast.success(t("admin.uiSettingsUpdatedSuccessfully"));
         },
         onError: (error) => {
           toast.fromError(error);
@@ -129,7 +131,7 @@ export default function UISettings() {
       { forward_llm_provider_auth_headers: checked },
       {
         onSuccess: () => {
-          toast.success("UI settings updated successfully");
+          toast.success(t("admin.uiSettingsUpdatedSuccessfully"));
         },
         onError: (error) => {
           toast.fromError(error);
@@ -143,7 +145,7 @@ export default function UISettings() {
       { enable_projects_ui: checked },
       {
         onSuccess: () => {
-          toast.success("UI settings updated successfully. Refreshing page...");
+          toast.success(t("admin.uiSettingsUpdatedSuccessfullyRefreshingPage"));
           setTimeout(() => window.location.reload(), 1000);
         },
         onError: (error) => {
@@ -158,7 +160,7 @@ export default function UISettings() {
       { enable_chat_ui: checked },
       {
         onSuccess: () => {
-          toast.success("UI settings updated successfully. Refreshing page...");
+          toast.success(t("admin.uiSettingsUpdatedSuccessfullyRefreshingPage"));
           setTimeout(() => window.location.reload(), 1000);
         },
         onError: (error) => {
@@ -173,7 +175,7 @@ export default function UISettings() {
       { require_auth_for_public_ai_hub: checked },
       {
         onSuccess: () => {
-          toast.success("UI settings updated successfully");
+          toast.success(t("admin.uiSettingsUpdatedSuccessfully"));
         },
         onError: (error) => {
           toast.fromError(error);
@@ -187,7 +189,7 @@ export default function UISettings() {
       { disable_agents_for_internal_users: checked },
       {
         onSuccess: () => {
-          toast.success("UI settings updated successfully");
+          toast.success(t("admin.uiSettingsUpdatedSuccessfully"));
         },
         onError: (error) => {
           toast.fromError(error);
@@ -201,7 +203,7 @@ export default function UISettings() {
       { allow_agents_for_team_admins: checked },
       {
         onSuccess: () => {
-          toast.success("UI settings updated successfully");
+          toast.success(t("admin.uiSettingsUpdatedSuccessfully"));
         },
         onError: (error) => {
           toast.fromError(error);
@@ -215,7 +217,7 @@ export default function UISettings() {
       { disable_vector_stores_for_internal_users: checked },
       {
         onSuccess: () => {
-          toast.success("UI settings updated successfully");
+          toast.success(t("admin.uiSettingsUpdatedSuccessfully"));
         },
         onError: (error) => {
           toast.fromError(error);
@@ -229,7 +231,7 @@ export default function UISettings() {
       { allow_vector_stores_for_team_admins: checked },
       {
         onSuccess: () => {
-          toast.success("UI settings updated successfully");
+          toast.success(t("admin.uiSettingsUpdatedSuccessfully"));
         },
         onError: (error) => {
           toast.fromError(error);
@@ -243,7 +245,7 @@ export default function UISettings() {
       { scope_user_search_to_org: checked },
       {
         onSuccess: () => {
-          toast.success("UI settings updated successfully");
+          toast.success(t("admin.uiSettingsUpdatedSuccessfully"));
         },
         onError: (error) => {
           toast.fromError(error);
@@ -257,7 +259,7 @@ export default function UISettings() {
       { disable_custom_api_keys: checked },
       {
         onSuccess: () => {
-          toast.success("UI settings updated successfully");
+          toast.success(t("admin.uiSettingsUpdatedSuccessfully"));
         },
         onError: (error) => {
           toast.fromError(error);
@@ -270,19 +272,19 @@ export default function UISettings() {
     <Card>
       <CardHeader>
         <CardTitle>
-          <h3>UI Settings</h3>
+          <h3>{t("admin.uiSettings")}</h3>
         </CardTitle>
       </CardHeader>
       <CardContent>
         {isLoading ? (
-          <div role="status" aria-label="Loading UI settings" className="space-y-3">
+          <div role="status" aria-label={t("admin.loadingUiSettings")} className="space-y-3">
             <Skeleton className="h-5 w-72" />
             <Skeleton className="h-16 w-full" />
             <Skeleton className="h-16 w-full" />
           </div>
         ) : isError ? (
           <Alert variant="error">
-            <AlertTitle>Could not load UI settings</AlertTitle>
+            <AlertTitle>{t("admin.couldNotLoadUiSettings")}</AlertTitle>
             {error instanceof Error && <AlertDescription>{error.message}</AlertDescription>}
           </Alert>
         ) : (
@@ -290,7 +292,7 @@ export default function UISettings() {
             {schema?.description && <p className="text-sm text-foreground">{schema.description}</p>}
             {updateError && (
               <Alert variant="error">
-                <AlertTitle>Could not update UI settings</AlertTitle>
+                <AlertTitle>{t("admin.couldNotUpdateUiSettings")}</AlertTitle>
                 {updateError instanceof Error && <AlertDescription>{updateError.message}</AlertDescription>}
               </Alert>
             )}
@@ -299,53 +301,50 @@ export default function UISettings() {
               checked={isDisabledForInternalUsers}
               disabled={isUpdating}
               onCheckedChange={handleToggle}
-              ariaLabel={property?.description ?? "Disable model add for internal users"}
-              label="Disable model add for internal users"
+              ariaLabel={property?.description ?? t("admin.disableModelAddForInternalUsers")}
+              label={t("admin.disableModelAddForInternalUsers")}
               description={property?.description}
             />
             <SettingRow
               checked={isDisabledTeamAdminDeleteTeamUser}
               disabled={isUpdating}
               onCheckedChange={handleToggleTeamAdminDelete}
-              ariaLabel={disableTeamAdminDeleteProperty?.description ?? "Disable team admin delete team user"}
-              label="Disable team admin delete team user"
+              ariaLabel={disableTeamAdminDeleteProperty?.description ?? t("admin.disableTeamAdminDeleteTeamUser")}
+              label={t("admin.disableTeamAdminDeleteTeamUser")}
               description={disableTeamAdminDeleteProperty?.description}
             />
-            
+
             <SettingRow
               checked={Boolean(values.forward_client_headers_to_llm_api)}
               disabled={isUpdating}
               onCheckedChange={handleToggleForwardClientHeaders}
-              ariaLabel={forwardClientHeadersProperty?.description ?? "Forward client headers to LLM API"}
-              label="Forward client headers to LLM API"
+              ariaLabel={forwardClientHeadersProperty?.description ?? t("admin.forwardClientHeadersToLlmApi")}
+              label={t("admin.forwardClientHeadersToLlmApi")}
               description={
                 forwardClientHeadersProperty?.description ??
-                "Forwards client headers (Authorization, anthropic-beta, and x-* custom headers) to the upstream LLM. Enable for Claude Code with a Max subscription (forwards the OAuth token) or to pass custom/tracing headers through to the provider. Independent of the BYOK toggle — enable only the one(s) you need."
+                t("admin.forwardsClientHeadersAuthorizationAnthropicBetaAndXCustom")
               }
             />
             <SettingRow
               checked={Boolean(values.forward_llm_provider_auth_headers)}
               disabled={isUpdating}
               onCheckedChange={handleToggleForwardLLMProviderAuthHeaders}
-              ariaLabel={forwardLLMProviderAuthHeadersProperty?.description ?? "Forward LLM provider auth headers"}
-              label="Forward LLM provider auth headers"
+              ariaLabel={forwardLLMProviderAuthHeadersProperty?.description ?? t("admin.forwardLlmProviderAuthHeaders")}
+              label={t("admin.forwardLlmProviderAuthHeaders")}
               description={
-                forwardLLMProviderAuthHeadersProperty?.description ??
-                "Forwards provider auth headers (x-api-key, x-goog-api-key, api-key, ocp-apim-subscription-key) to the upstream LLM, overriding any deployment-configured key for that request. Enable for Claude Code BYOK (clients bring their own API key). Independent of the client-headers toggle — enable only the one(s) you need."
+                forwardLLMProviderAuthHeadersProperty?.description ?? t("admin.forwardsProviderAuthHeadersXApiKeyXGoog")
               }
             />
-            
 
             <Separator />
             <SettingRow
               checked={Boolean(values.scope_user_search_to_org)}
               disabled={isUpdating}
               onCheckedChange={handleToggleScopeUserSearch}
-              ariaLabel={scopeUserSearchProperty?.description ?? "Scope user search to organization"}
-              label="Scope user search to organization"
+              ariaLabel={scopeUserSearchProperty?.description ?? t("admin.scopeUserSearchToOrganization")}
+              label={t("admin.scopeUserSearchToOrganization")}
               description={
-                scopeUserSearchProperty?.description ??
-                "If enabled, the user search endpoint restricts results by organization. When off, any authenticated user can search all users."
+                scopeUserSearchProperty?.description ?? t("admin.ifEnabledTheUserSearchEndpointRestrictsResultsBy")
               }
             />
 
@@ -354,11 +353,10 @@ export default function UISettings() {
               checked={Boolean(values.disable_custom_api_keys)}
               disabled={isUpdating}
               onCheckedChange={handleToggleDisableCustomApiKeys}
-              ariaLabel={disableCustomApiKeysProperty?.description ?? "Disable custom Virtual key values"}
-              label="Disable custom Virtual key values"
+              ariaLabel={disableCustomApiKeysProperty?.description ?? t("admin.disableCustomVirtualKeyValues")}
+              label={t("admin.disableCustomVirtualKeyValues")}
               description={
-                disableCustomApiKeysProperty?.description ??
-                "If true, users cannot specify custom key values. All keys must be auto-generated."
+                disableCustomApiKeysProperty?.description ?? t("admin.ifTrueUsersCannotSpecifyCustomKeyValuesAll")
               }
             />
 

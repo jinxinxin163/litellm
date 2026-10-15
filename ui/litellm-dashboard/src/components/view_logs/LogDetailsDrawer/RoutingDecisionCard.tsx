@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "@/i18n/useTranslation";
 import { Waypoints } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -157,6 +158,7 @@ export function RoutingDecisionCard({
   decision?: RoutingDecision | null;
   className?: string;
 }) {
+  const { t } = useTranslation();
   if (!decision || !decision.cause) return null;
 
   const {
@@ -183,7 +185,7 @@ export function RoutingDecisionCard({
 
   return (
     <div className={cn("mb-6 w-full max-w-full overflow-hidden rounded-lg bg-card shadow-sm", className)}>
-      <div className="border-b px-4 py-2.5 text-sm font-medium">Routing</div>
+      <div className="border-b px-4 py-2.5 text-sm font-medium">{t("logs.routing")}</div>
       <div className="px-4 py-3">
         {routerModelName && (
           <div className="mb-2 flex items-center gap-2 text-sm font-medium">

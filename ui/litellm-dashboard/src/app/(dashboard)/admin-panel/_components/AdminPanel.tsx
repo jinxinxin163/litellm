@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n/useTranslation";
 /**
  * Allow proxy admin to add other people to view global spend
  * Use this to avoid sharing master key with others
@@ -42,16 +43,17 @@ const allowedIPSchema = z.object({
 type AllowedIPFormValues = z.infer<typeof allowedIPSchema>;
 
 const AddAllowedIPForm = ({ onSubmit }: { onSubmit: (values: AllowedIPFormValues) => Promise<void> }) => {
+  const { t } = useTranslation();
   const form = useZodForm(allowedIPSchema, { defaultValues: { ip: "" } });
 
   return (
     <form onSubmit={form.handleSubmit(onSubmit)}>
       <FieldGroup>
         <FormField control={form.control} name="ip">
-          {({ ref, ...field }) => <Input ref={ref} placeholder="Enter IP address" {...field} />}
+          {({ ref, ...field }) => <Input ref={ref} placeholder={t("admin.enterIpAddress")} {...field} />}
         </FormField>
         <div>
-          <Button type="submit">Add IP Address</Button>
+          <Button type="submit">{t("admin.addIpAddress")}</Button>
         </div>
       </FieldGroup>
     </form>
@@ -63,6 +65,7 @@ interface AdminPanelProps {
 }
 
 const AdminPanel: React.FC<AdminPanelProps> = ({ proxySettings }) => {
+  const { t } = useTranslation();
   const { premiumUser, accessToken, userId: userID } = useAuthorized();
   const form = useSSOSettingsForm("admin-panel");
   const [isAddSSOModalVisible, setIsAddSSOModalVisible] = useState(false);
@@ -105,7 +108,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ proxySettings }) => {
   const handleShowAllowedIPs = async () => {
     try {
       if (premiumUser !== true) {
-        toast.fromError("This feature is only available for premium users. Please upgrade your account.");
+        toast.fromError(t("admin.thisFeatureIsOnlyAvailableForPremiumUsersPlease"));
         return;
       }
       if (accessToken) {
@@ -132,7 +135,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ proxySettings }) => {
         // Fetch the updated list of IPs
         const updatedIPs = await getAllowedIPs(accessToken);
         setAllowedIPs(updatedIPs);
-        toast.success("IP address added successfully");
+        toast.success(t("admin.ipAddressAddedSuccessfully"));
       }
     } catch (error) {
       console.error("Error adding IP:", error);
@@ -154,7 +157,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ proxySettings }) => {
         // Fetch the updated list of IPs
         const updatedIPs = await getAllowedIPs(accessToken);
         setAllowedIPs(updatedIPs.length > 0 ? updatedIPs : [all_ip_address_allowed]);
-        toast.success("IP address deleted successfully");
+        toast.success(t("admin.ipAddressDeletedSuccessfully"));
       } catch (error) {
         console.error("Error deleting IP:", error);
         toast.fromError(`Failed to delete IP address ${error}`);
@@ -212,7 +215,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ proxySettings }) => {
   const tabItems = [
     {
       key: "ui-settings",
-      label: "UI Settings",
+      label: t("admin.uiSettings"),
       children: (
         <div className="flex flex-col gap-4">
           <UISettings />
@@ -222,20 +225,20 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ proxySettings }) => {
     },
     {
       key: "sso-settings",
-      label: "SSO Settings",
+      label: t("admin.ssoSettings"),
       children: <SSOSettings />,
     },
     {
       key: "logging-settings",
-      label: "Logging Settings",
+      label: t("admin.loggingSettings"),
       children: <LoggingSettings />,
     },
   ];
 
   return (
     <div className="w-full m-2 mt-2 p-8">
-      <h2 className="mb-2 text-base font-semibold text-foreground">Admin Access</h2>
-      <p className="mb-4 text-sm text-foreground">Go to &apos;Internal Users&apos; page to add other admins.</p>
+      <h2 className="mb-2 text-base font-semibold text-foreground">{t("admin.adminAccess")}</h2>
+      <p className="mb-4 text-sm text-foreground">{t("admin.goToInternalUsersPageToAddOtherAdmins")}</p>
       <Tabs defaultValue={tabItems[0].key}>
         <TabsList variant="line" className="mb-4 h-auto flex-wrap">
           {tabItems.map((item) => (

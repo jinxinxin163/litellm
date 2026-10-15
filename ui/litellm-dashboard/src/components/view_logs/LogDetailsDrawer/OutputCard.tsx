@@ -3,6 +3,7 @@
  * Datadog-style: header with icon/metrics, content below
  */
 
+import { useTranslation } from "@/i18n/useTranslation";
 import { useState } from "react";
 import { toast } from "@/lib/toast";
 import { COLOR_BORDER } from "./constants";
@@ -17,6 +18,7 @@ interface OutputCardProps {
 }
 
 export function OutputCard({ message, completionTokens, outputCost }: OutputCardProps) {
+  const { t } = useTranslation();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   const handleCopy = () => {
@@ -45,7 +47,7 @@ export function OutputCard({ message, completionTokens, outputCost }: OutputCard
           {message ? (
             <SimpleMessageBlock label="ASSISTANT" content={message.content} toolCalls={message.toolCalls} />
           ) : (
-            <span className="text-[13px] text-muted-foreground italic">No response data available</span>
+            <span className="text-[13px] text-muted-foreground italic">{t("logs.noResponseDataAvailable")}</span>
           )}
         </div>
       </div>

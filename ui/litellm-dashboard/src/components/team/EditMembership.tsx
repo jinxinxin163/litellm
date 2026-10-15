@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n/useTranslation";
 import React, { useEffect, useMemo, useState } from "react";
 import { z } from "zod/v4";
 import NumericalInput from "../shared/numerical_input";
@@ -39,17 +40,18 @@ interface MemberModalProps<T extends BaseMember> {
   config: ModalConfig;
 }
 
-const ROLE_REQUIRED_MESSAGE = "Please select a role!";
-
 const isEmailish = (value: string): boolean => value === "" || z.email().safeParse(value).success;
 
 const memberFieldSchema = z.union([z.string(), z.number(), z.null(), z.array(z.string())]).optional();
 
-const buildMemberSchema = (config: ModalConfig): z.ZodType<MemberFormValues, MemberFormValues> => {
+const buildMemberSchema = (
+  config: ModalConfig,
+  t: (key: string) => string,
+): z.ZodType<MemberFormValues, MemberFormValues> => {
   const shape = {
-    user_email: z.string().refine(isEmailish, "Please enter a valid email!").nullish(),
+    user_email: z.string().refine(isEmailish, t("people.emailInvalid")).nullish(),
     user_id: z.string().nullish(),
-    role: z.string({ error: ROLE_REQUIRED_MESSAGE }).min(1, ROLE_REQUIRED_MESSAGE),
+    role: z.string({ error: t("people.roleRequired") }).min(1, t("people.roleRequired")),
     ...Object.fromEntries((config.additionalFields ?? []).map((field) => [field.name, memberFieldSchema])),
   };
 
@@ -64,7 +66,8 @@ const MemberModal = <T extends BaseMember>({
   mode,
   config,
 }: MemberModalProps<T>) => {
-  const schema = useMemo(() => buildMemberSchema(config), [config]);
+  const { t } = useTranslation();
+  const schema = useMemo(() => buildMemberSchema(config, t), [config, t]);
   const form = useZodForm(schema, { defaultValues: emptyMemberFormValues(config) });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -119,7 +122,7 @@ const MemberModal = <T extends BaseMember>({
                 step={field.step || 1}
                 min={field.min || 0}
                 style={{ width: "100%" }}
-                placeholder={field.placeholder || "Enter a numerical value"}
+                placeholder={field.placeholder || t("people.enterANumericalValue")}
                 value={value ?? ""}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => onChange(event.target.value)}
               />
@@ -149,7 +152,7 @@ const MemberModal = <T extends BaseMember>({
                 options={field.options ?? []}
                 value={Array.isArray(value) ? value : []}
                 onValueChange={onChange}
-                placeholder={field.placeholder || "Select options"}
+                placeholder={field.placeholder || t("people.selectOptions")}
               />
             );
           case "budget-duration":
@@ -171,17 +174,17 @@ const MemberModal = <T extends BaseMember>({
     <Dialog open={visible} onOpenChange={(open) => !open && onCancel()}>
       <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-y-auto sm:max-w-[1000px]">
         <DialogHeader>
-          <DialogTitle>{config.title || (mode === "add" ? "Add Member" : "Edit Member")}</DialogTitle>
+          <DialogTitle>{config.title || (mode === "add" ? t("people.addMember") : t("people.editMember"))}</DialogTitle>
         </DialogHeader>
         <form onSubmit={form.handleSubmit(handleSubmit)}>
           <FieldGroup>
             {config.showEmail && (
-              <FormField control={form.control} name="user_email" label="Email">
+              <FormField control={form.control} name="user_email" label={t("people.email")}>
                 {({ ref, value, onChange, ...rest }) => (
                   <Input
                     {...rest}
                     ref={ref}
-                    placeholder="user@example.com"
+                    placeholder={t("people.userExampleCom")}
                     value={typeof value === "string" ? value : ""}
                     onChange={(event) => onChange(event.target.value)}
                   />
@@ -190,11 +193,11 @@ const MemberModal = <T extends BaseMember>({
             )}
 
             {config.showEmail && config.showUserId && (
-              <div className="text-center text-sm text-muted-foreground">OR</div>
+              <div className="text-center text-sm text-muted-foreground">{t("people.or")}</div>
             )}
 
             {config.showUserId && (
-              <FormField control={form.control} name="user_id" label="User ID">
+              <FormField control={form.control} name="user_id" label={t("people.userId")}>
                 {({ ref, value, onChange, ...rest }) => (
                   <Input
                     {...rest}
@@ -212,9 +215,12 @@ const MemberModal = <T extends BaseMember>({
               name="role"
               label={
                 <span className="flex items-center gap-2">
-                  <span>Role</span>
+                  <span>{t("people.role")}</span>
                   {mode === "edit" && initialData && (
-                    <span className="text-sm text-muted-foreground">(Current: {getRoleLabel(initialData.role)})</span>
+                    <span className="text-sm text-muted-foreground">
+                      {t("people.current")}
+                      {getRoleLabel(initialData.role)})
+                    </span>
                   )}
                 </span>
               }
@@ -244,17 +250,17 @@ const MemberModal = <T extends BaseMember>({
 
           <div className="mt-6 text-right">
             <Button type="button" variant="outline" onClick={onCancel} disabled={isSubmitting} className="mr-2">
-              Cancel
+              {t("people.cancel")}
             </Button>
             <Button type="submit" variant="outline" disabled={isSubmitting}>
               {isSubmitting && <UiLoadingSpinner className="size-4" />}
               {mode === "add"
                 ? isSubmitting
-                  ? "Adding..."
-                  : "Add Member"
+                  ? t("people.adding")
+                  : t("people.addMember")
                 : isSubmitting
-                  ? "Saving..."
-                  : "Save Changes"}
+                  ? t("people.saving")
+                  : t("people.saveChanges")}
             </Button>
           </div>
         </form>

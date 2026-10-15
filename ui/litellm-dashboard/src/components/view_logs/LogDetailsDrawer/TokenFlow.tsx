@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n/useTranslation";
 interface TokenFlowProps {
   prompt?: number;
   completion?: number;
@@ -9,10 +10,10 @@ interface TokenFlowProps {
  * Shows total with breakdown of prompt and completion tokens.
  */
 export function TokenFlow({ prompt = 0, completion = 0, total = 0 }: TokenFlowProps) {
+  const { t } = useTranslation();
   return (
     <span>
-      {total.toLocaleString()} ({prompt.toLocaleString()} prompt tokens + {completion.toLocaleString()} completion
-      tokens)
+      {total.toLocaleString()} ({prompt.toLocaleString()} {t("logs.promptTokens")} {completion.toLocaleString()} {t("logs.completionTokens")}
     </span>
   );
 }

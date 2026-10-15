@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n/useTranslation";
 import { ChevronDown } from "lucide-react";
 import React, { useState } from "react";
 import { useComplexityScorerDefaults } from "@/app/(dashboard)/hooks/autoRouter/useComplexityScorerDefaults";
@@ -23,38 +24,46 @@ interface GroupSpec {
   labels: Record<string, string>;
 }
 
+const DIMENSION_TRANSLATION_KEYS: Record<string, string> = {
+  codePresence: "models.dimensions.codePresence",
+  reasoningMarkers: "models.dimensions.reasoningMarkers",
+  technicalTerms: "models.dimensions.technicalTerms",
+  tokenCount: "models.dimensions.tokenCount",
+  simpleIndicators: "models.dimensions.simpleIndicators",
+  multiStepPatterns: "models.dimensions.multiStepPatterns",
+  questionComplexity: "models.dimensions.questionComplexity",
+};
+
 const OVERRIDE_FLOOR_ID = "reasoning-override-min-score";
 
 const GROUPS: GroupSpec[] = [
   {
     group: "tier_boundaries",
-    title: "Tier boundaries",
-    blurb:
-      "The weighted score each tier starts at. Scores run from -1 to 1, and short or conversational prompts score below 0, so a negative boundary is a valid way to lift trivial traffic into a higher tier.",
+    title: "models.tierBoundaries",
+    blurb: "models.tierBoundariesHelp",
     min: -1,
     max: 1,
     step: 0.01,
     withSlider: false,
     labels: {
-      simple_medium: "Simple to Medium",
-      medium_complex: "Medium to Complex",
-      complex_reasoning: "Complex to Reasoning",
+      simple_medium: "models.simpleToMedium",
+      medium_complex: "models.mediumToComplex",
+      complex_reasoning: "models.complexToReasoning",
     },
   },
   {
     group: "token_thresholds",
-    title: "Token thresholds",
-    blurb:
-      "Estimated prompt length, in tokens, that pushes the token count dimension to its floor or ceiling. Lengths between the two score neutral.",
+    title: "models.tokenThresholds",
+    blurb: "models.tokenThresholdHelp",
     min: 0,
     step: 1,
     withSlider: false,
-    labels: { simple: "Short below", complex: "Long above" },
+    labels: { simple: "models.shortBelow", complex: "models.longAbove" },
   },
   {
     group: "dimension_weights",
-    title: "Dimension weights",
-    blurb: "How much each signal contributes to the score. Absolute multipliers, so the total need not be 1.00.",
+    title: "models.dimensionWeights",
+    blurb: "models.dimensionWeightsHelp",
     min: 0,
     max: 1,
     step: 0.01,
@@ -70,9 +79,8 @@ const warn = (group: KnobGroup, values: Record<string, number>): string | null =
     group === "tier_boundaries" &&
     (values.simple_medium > values.medium_complex || values.medium_complex > values.complex_reasoning)
   )
-    return "These boundaries decrease, so every tier between them is unreachable and its traffic routes elsewhere.";
-  if (group === "token_thresholds" && values.simple >= values.complex)
-    return "The short threshold is not below the long one, so no prompt length scores neutral on length.";
+    return "models.decreasingBoundaries";
+  if (group === "token_thresholds" && values.simple >= values.complex) return "models.thresholdOrderWarning";
   return null;
 };
 
@@ -82,6 +90,7 @@ interface HeuristicScoringConfigProps {
 }
 
 const HeuristicScoringConfig: React.FC<HeuristicScoringConfigProps> = ({ value, onChange }) => {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [draft, setDraft] = useState<{ id: string; raw: string } | null>(null);
   const { data: defaults, isPending, isError, refetch } = useComplexityScorerDefaults();
@@ -123,7 +132,7 @@ const HeuristicScoringConfig: React.FC<HeuristicScoringConfigProps> = ({ value, 
         <ChevronDown
           className={`size-4 shrink-0 text-muted-foreground transition-transform ${isOpen ? "rotate-180" : ""}`}
         />
-        <span className="text-sm font-medium">Advanced scoring</span>
+        <span className="text-sm font-medium">{t("models.advancedScoring")}</span>
         {overrides > 0 && (
           <Badge variant="secondary" data-testid="advanced-scoring-override-count">
             {overrides} {overrides === 1 ? "override" : "overrides"}
@@ -133,23 +142,19 @@ const HeuristicScoringConfig: React.FC<HeuristicScoringConfigProps> = ({ value, 
 
       <CollapsibleContent>
         <div className="mt-3 space-y-6 pl-6">
-          <p className="text-xs text-muted-foreground">
-            Every knob below is optional. Left untouched, the router follows the shipped defaults, so it picks up any
-            recalibration of them rather than staying pinned to the numbers shown here.
-          </p>
+          <p className="text-xs text-muted-foreground">{t("models.everyKnobBelowIsOptionalLeftUntouchedThe")}</p>
 
           {isPending ? (
-            <p className="text-xs text-muted-foreground">Loading the shipped defaults...</p>
+            <p className="text-xs text-muted-foreground">{t("models.loadingTheShippedDefaults")}</p>
           ) : (
             <>
               {isError && (
                 <div className="flex items-start gap-2" role="alert">
                   <p className="text-xs font-medium text-destructive">
-                    Could not load the shipped defaults, so only values this router already overrides are shown. Saving
-                    still works, and an untouched knob keeps following the defaults.
+                    {t("models.couldNotLoadTheShippedDefaultsSoOnly")}
                   </p>
                   <Button type="button" variant="link" size="xs" onClick={() => void refetch()}>
-                    Retry
+                    {t("models.retry")}
                   </Button>
                 </div>
               )}
@@ -161,12 +166,12 @@ const HeuristicScoringConfig: React.FC<HeuristicScoringConfigProps> = ({ value, 
                   <section key={spec.group} className="space-y-2">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium">{spec.title}</span>
+                        <span className="text-sm font-medium">{t(spec.title)}</span>
                         {/* Only a known dimension set has a meaningful total; summing the overrides
                             alone would state a total that is not the router's. */}
                         {spec.withSlider && defaults !== undefined && (
                           <span className="text-xs text-muted-foreground" data-testid="dimension-weight-total">
-                            total {weightTotal(effective).toFixed(2)}
+                            {t("models.totalWeight", { total: weightTotal(effective).toFixed(2) })}
                           </span>
                         )}
                       </div>
@@ -177,15 +182,16 @@ const HeuristicScoringConfig: React.FC<HeuristicScoringConfigProps> = ({ value, 
                           size="xs"
                           onClick={() => onChange({ ...value, [spec.group]: undefined })}
                         >
-                          Reset to defaults
+                          {t("models.resetToDefaults")}
                         </Button>
                       )}
                     </div>
-                    <p className="text-xs text-muted-foreground">{spec.blurb}</p>
+                    <p className="text-xs text-muted-foreground">{t(spec.blurb)}</p>
 
                     {Object.keys(effective).map((key) => {
                       const id = `${spec.group}-${key}`;
-                      const label = spec.labels[key] ?? dimensionLabel(key);
+                      const labelKey = spec.labels[key] ?? DIMENSION_TRANSLATION_KEYS[key];
+                      const label = labelKey ? t(labelKey) : dimensionLabel(key);
                       return (
                         <div key={key} className="flex items-center gap-3">
                           <Label htmlFor={id} className="w-44 text-xs font-normal">
@@ -201,7 +207,7 @@ const HeuristicScoringConfig: React.FC<HeuristicScoringConfigProps> = ({ value, 
                                 commit(spec, effective, key, String(Array.isArray(next) ? next[0] : next))
                               }
                               className="flex-1"
-                              aria-label={`${label} weight`}
+                              aria-label={t("models.dimensionWeightLabel", { label })}
                             />
                           )}
                           <Input
@@ -222,7 +228,7 @@ const HeuristicScoringConfig: React.FC<HeuristicScoringConfigProps> = ({ value, 
 
                     {problem && (
                       <p className="text-xs font-medium text-destructive" role="alert">
-                        {problem}
+                        {problem ? t(problem) : problem}
                       </p>
                     )}
                   </section>
@@ -231,7 +237,7 @@ const HeuristicScoringConfig: React.FC<HeuristicScoringConfigProps> = ({ value, 
 
               <section className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Reasoning override floor</span>
+                  <span className="text-sm font-medium">{t("models.reasoningOverrideFloor")}</span>
                   {value.reasoning_override_min_score !== undefined && (
                     <Button
                       type="button"
@@ -239,21 +245,20 @@ const HeuristicScoringConfig: React.FC<HeuristicScoringConfigProps> = ({ value, 
                       size="xs"
                       onClick={() => onChange({ ...value, reasoning_override_min_score: undefined })}
                     >
-                      Reset to defaults
+                      {t("models.resetToDefaults")}
                     </Button>
                   )}
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Two or more reasoning markers promote a request to the reasoning tier, but only once its weighted
-                  score reaches this floor.{" "}
+                  {t("models.twoOrMoreReasoningMarkersPromoteARequest")}{" "}
                   {trackedFloor === undefined
-                    ? "Left untouched, it tracks the Simple to Medium boundary."
+                    ? t("models.leftUntouchedItTracksTheSimpleToMedium")
                     : `Left untouched, it tracks the Simple to Medium boundary, currently ${trackedFloor.toFixed(2)}.`}{" "}
-                  Set it to 0 to promote on the markers alone.
+                  {t("models.setItTo0ToPromoteOnThe")}
                 </p>
                 <div className="flex items-center gap-3">
                   <Label htmlFor={OVERRIDE_FLOOR_ID} className="w-44 text-xs font-normal">
-                    Minimum score
+                    {t("models.minimumScore")}
                   </Label>
                   <Input
                     id={OVERRIDE_FLOOR_ID}

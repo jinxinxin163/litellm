@@ -1,4 +1,5 @@
 "use client";
+import { useTranslation } from "@/i18n/useTranslation";
 
 import React, { useMemo } from "react";
 import BaseSSOSettingsForm, {
@@ -74,6 +75,7 @@ export const toSSOFormValues = (values: SSOSettingsValues): SSOSettingsFormValue
 };
 
 const EditSSOSettingsModal: React.FC<EditSSOSettingsModalProps> = ({ isVisible, onCancel, onSuccess }) => {
+  const { t } = useTranslation();
   const ssoSettings = useSSOSettings();
   const { mutateAsync, isPending } = useEditSSOSettings();
 
@@ -90,7 +92,7 @@ const EditSSOSettingsModal: React.FC<EditSSOSettingsModalProps> = ({ isVisible, 
 
       await mutateAsync(payload, {
         onSuccess: () => {
-          toast.success("SSO settings updated successfully");
+          toast.success(t("admin.ssoSettingsUpdatedSuccessfully"));
           onSuccess();
         },
         onError: (error) => {
@@ -111,13 +113,13 @@ const EditSSOSettingsModal: React.FC<EditSSOSettingsModalProps> = ({ isVisible, 
     <Dialog open={isVisible} onOpenChange={(open) => !open && handleCancel()}>
       <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-y-auto sm:max-w-[800px]">
         <DialogHeader>
-          <DialogTitle>Edit SSO Settings</DialogTitle>
+          <DialogTitle>{t("admin.editSsoSettings")}</DialogTitle>
         </DialogHeader>
         <BaseSSOSettingsForm form={form} onFormSubmit={handleFormSubmit} />
         <DialogFooter>
           <div className="flex items-center justify-end gap-2">
             <Button type="button" variant="outline" onClick={handleCancel} disabled={isPending}>
-              Cancel
+              {t("admin.cancel")}
             </Button>
             <Button
               type="button"
@@ -125,7 +127,7 @@ const EditSSOSettingsModal: React.FC<EditSSOSettingsModalProps> = ({ isVisible, 
               onClick={submitMountedSSOValues(form, "sso-settings", handleFormSubmit)}
             >
               {isPending && <UiLoadingSpinner className="size-4 mr-1" />}
-              {isPending ? "Saving..." : "Save"}
+              {isPending ? t("admin.saving") : t("admin.save")}
             </Button>
           </div>
         </DialogFooter>

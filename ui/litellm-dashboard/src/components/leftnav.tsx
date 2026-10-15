@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n/useTranslation";
 import useAuthorized from "@/app/(dashboard)/hooks/useAuthorized";
 import useIsOrgAdmin from "@/app/(dashboard)/hooks/useIsOrgAdmin";
 import { useHealthReadinessDetails } from "@/app/(dashboard)/hooks/healthReadiness/useHealthReadinessDetails";
@@ -39,12 +40,7 @@ import {
 import Link from "next/link";
 import { useState } from "react";
 import { cn } from "@/lib/cva.config";
-import {
-  all_admin_roles,
-  internalUserRoles,
-  isAdminRole,
-  rolesAllowedToViewWriteScopedPages,
-} from "../utils/roles";
+import { all_admin_roles, internalUserRoles, isAdminRole, rolesAllowedToViewWriteScopedPages } from "../utils/roles";
 import BetaBadge from "./BetaBadge";
 import SidebarAccountMenu from "./SidebarAccountMenu/SidebarAccountMenu";
 import SidebarUsageCard from "./SidebarUsageCard";
@@ -228,6 +224,7 @@ const Sidebar_: React.FC<SidebarProps> = ({
   enabledPagesInternalUsers,
   enableProjectsUI,
 }) => {
+  const { t } = useTranslation();
   const { accessToken, userRole } = useAuthorized();
   const isOrgAdmin = useIsOrgAdmin();
   const { logoUrl, logoUrlDark } = useTheme();
@@ -312,7 +309,9 @@ const Sidebar_: React.FC<SidebarProps> = ({
   const renderLeaf = (item: MenuItem, isChild: boolean) => {
     const active = selectedKey === item.key;
     const size = isChild ? "sub" : "default";
-    const label = <span className="flex-1 truncate group-data-[collapsed=true]/sidebar:hidden">{item.label}</span>;
+    const translatedLabel =
+      typeof item.label === "string" ? t(`navigation.pages.${item.key}`, { defaultValue: item.label }) : item.label;
+    const label = <span className="flex-1 truncate group-data-[collapsed=true]/sidebar:hidden">{translatedLabel}</span>;
 
     if (item.external_url) {
       return (
@@ -321,7 +320,7 @@ const Sidebar_: React.FC<SidebarProps> = ({
           href={item.external_url}
           target="_blank"
           rel="noopener noreferrer"
-          title={collapsed ? labelText(item) : undefined}
+          title={collapsed ? t(`navigation.pages.${item.key}`, { defaultValue: labelText(item) }) : undefined}
           data-active={active || undefined}
           className={cn(sidebarMenuButtonVariants({ isActive: active, size }))}
         >
@@ -338,7 +337,7 @@ const Sidebar_: React.FC<SidebarProps> = ({
         key={item.key}
         href={href}
         onClick={(e) => handleLeafClick(e, item)}
-        title={collapsed ? labelText(item) : undefined}
+        title={collapsed ? t(`navigation.pages.${item.key}`, { defaultValue: labelText(item) }) : undefined}
         data-active={active || undefined}
         className={cn(sidebarMenuButtonVariants({ isActive: active, size }))}
       >
@@ -362,10 +361,14 @@ const Sidebar_: React.FC<SidebarProps> = ({
           isActive={active}
           aria-expanded={open}
           onClick={() => toggleGroup(item.key)}
-          title={collapsed ? labelText(item) : undefined}
+          title={collapsed ? t(`navigation.pages.${item.key}`, { defaultValue: labelText(item) }) : undefined}
         >
           {item.icon}
-          <span className="flex-1 truncate group-data-[collapsed=true]/sidebar:hidden">{item.label}</span>
+          <span className="flex-1 truncate group-data-[collapsed=true]/sidebar:hidden">
+            {typeof item.label === "string"
+              ? t(`navigation.pages.${item.key}`, { defaultValue: item.label })
+              : item.label}
+          </span>
           <ChevronRight
             className={cn(
               "size-4 shrink-0 transition-transform group-data-[collapsed=true]/sidebar:hidden",
@@ -393,7 +396,7 @@ const Sidebar_: React.FC<SidebarProps> = ({
       <SidebarHeader className="h-14 border-b border-border group-data-[collapsed=true]/sidebar:h-auto">
         <div className="flex items-center justify-between gap-2 group-data-[collapsed=true]/sidebar:flex-col">
           <div className="flex min-w-0 items-center gap-2">
-            <Link href={migratedHref("")} className="flex min-w-0 items-center" aria-label="LiteLLM home">
+            <Link href={migratedHref("")} className="flex min-w-0 items-center" aria-label={t("shell.home")}>
               <img src={logoSrc} alt="LiteLLM" className={cn(LOGO_CLASS_NAME, "dark:hidden")} />
               <img
                 src={darkLogoSrc}
@@ -418,7 +421,7 @@ const Sidebar_: React.FC<SidebarProps> = ({
               variant="ghost"
               size="icon-sm"
               onClick={onToggleCollapsed}
-              aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+              aria-label={collapsed ? t("shell.expandSidebar") : t("shell.collapseSidebar")}
               className="flex-none text-muted-foreground"
             >
               {collapsed ? <PanelLeftOpen /> : <PanelLeftClose />}
@@ -432,7 +435,9 @@ const Sidebar_: React.FC<SidebarProps> = ({
           {visibleGroups.map((group, gi) => (
             <SidebarGroup key={group.groupLabel}>
               {gi > 0 && <SidebarSeparator className="hidden group-data-[collapsed=true]/sidebar:block" />}
-              <SidebarGroupLabel>{group.groupLabel}</SidebarGroupLabel>
+              <SidebarGroupLabel>
+                {t(`navigation.groups.${group.groupLabel}`, { defaultValue: group.groupLabel })}
+              </SidebarGroupLabel>
               <SidebarMenu>{group.items.map((item) => renderItem(item))}</SidebarMenu>
             </SidebarGroup>
           ))}

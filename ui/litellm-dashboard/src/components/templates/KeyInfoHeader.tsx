@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n/useTranslation";
 import React from "react";
 import {
   ArrowLeft,
@@ -68,12 +69,13 @@ interface KeyInfoHeaderProps {
 }
 
 function UserField({ userAlias, userEmail, userId }: { userAlias?: string | null; userEmail: string; userId: string }) {
+  const { t } = useTranslation();
   const labelEl = (
     <div className="flex items-center gap-1">
       <span className="text-muted-foreground">
         <User className="size-3.5" />
       </span>
-      <span className="text-xs uppercase tracking-[0.05em] text-muted-foreground">User</span>
+      <span className="text-xs uppercase tracking-[0.05em] text-muted-foreground">{t("keys.user")}</span>
     </div>
   );
 
@@ -95,9 +97,9 @@ function UserField({ userAlias, userEmail, userId }: { userAlias?: string | null
   const popoverContent = (
     <div className="flex flex-col gap-2 text-xs min-w-[200px] max-w-[300px]">
       {[
-        { label: "User Alias", value: userAlias ?? null },
-        { label: "User Email", value: userEmail || null },
-        { label: "User ID", value: userId || null },
+        { label: t("keys.userAlias"), value: userAlias ?? null },
+        { label: t("keys.userEmail"), value: userEmail || null },
+        { label: t("keys.userId"), value: userId || null },
       ].map(({ label, value }) => (
         <div key={label} className="flex flex-col min-w-0">
           <span className="text-muted-foreground">{label}</span>
@@ -173,11 +175,12 @@ export function KeyInfoHeader({
   regenerateDisabled = false,
   regenerateTooltip,
 }: KeyInfoHeaderProps) {
+  const { t } = useTranslation();
   const regenerateButton = (
     <span>
       <Button variant="outline" onClick={onRegenerate} disabled={regenerateDisabled}>
         <RefreshCw className="size-3.5" />
-        Regenerate Key
+        {t("keys.regenerateKey")}
       </Button>
     </span>
   );
@@ -188,7 +191,7 @@ export function KeyInfoHeader({
         <div style={{ marginBottom: 16 }}>
           <Button onClick={onCreateNew}>
             <Plus className="size-3.5" />
-            Create New Key
+            {t("keys.createNewKey2")}
           </Button>
         </div>
       )}
@@ -205,18 +208,20 @@ export function KeyInfoHeader({
           <div className="flex items-center gap-2">
             <h3 className="m-0 flex items-center gap-1 text-2xl font-semibold">
               {data.keyName}
-              <CopyButton value={data.keyName} label="Copy Key Alias" iconClassName="size-4" />
+              <CopyButton value={data.keyName} label={t("keys.copyKeyAlias")} iconClassName="size-4" />
             </h3>
             {isBlocked && (
               <Badge variant="destructive">
                 <Ban className="size-3" />
-                Blocked
+                {t("keys.blocked")}
               </Badge>
             )}
           </div>
           <div className="flex min-w-0 items-center gap-1">
-            <span className="min-w-0 break-words text-muted-foreground">Key ID: {data.keyId}</span>
-            <CopyButton value={data.keyId} label="Copy Key ID" iconClassName="size-3.5" />
+            <span className="min-w-0 break-words text-muted-foreground">
+              {t("keys.keyId2")} {data.keyId}
+            </span>
+            <CopyButton value={data.keyId} label={t("keys.copyKeyId")} iconClassName="size-3.5" />
           </div>
         </div>
         {canModifyKey && (
@@ -232,7 +237,9 @@ export function KeyInfoHeader({
               regenerateButton
             )}
             <DropdownMenu>
-              <DropdownMenuTrigger render={<Button variant="outline" size="icon" aria-label="More key actions" />}>
+              <DropdownMenuTrigger
+                render={<Button variant="outline" size="icon" aria-label={t("keys.moreKeyActions")} />}
+              >
                 <MoreVertical className="size-3.5" />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-auto">
@@ -240,23 +247,23 @@ export function KeyInfoHeader({
                   (isBlocked ? (
                     <DropdownMenuItem onClick={onToggleBlocked}>
                       <CircleCheck className="size-3.5" />
-                      Unblock Key
+                      {t("keys.unblockKey")}
                     </DropdownMenuItem>
                   ) : (
                     <DropdownMenuItem variant="destructive" onClick={onToggleBlocked}>
                       <Ban className="size-3.5" />
-                      Block Key
+                      {t("keys.blockKey")}
                     </DropdownMenuItem>
                   ))}
                 {onResetSpend && (
                   <DropdownMenuItem variant="destructive" onClick={onResetSpend}>
                     <ArrowLeftRight className="size-3.5" />
-                    Reset Spend
+                    {t("keys.resetSpend")}
                   </DropdownMenuItem>
                 )}
                 <DropdownMenuItem variant="destructive" onClick={onDelete}>
                   <Trash2 className="size-3.5" />
-                  Delete Key
+                  {t("keys.deleteKey")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -267,15 +274,15 @@ export function KeyInfoHeader({
       <div className="flex items-stretch gap-10" style={{ marginBottom: 40 }}>
         <div className="flex min-w-0 flex-col gap-4">
           <UserField userAlias={data.userAlias} userEmail={data.userEmail} userId={data.userId} />
-          <LabeledField label="Expires" value={data.expires} icon={<Timer className="size-3.5" />} />
+          <LabeledField label={t("keys.expires")} value={data.expires} icon={<Timer className="size-3.5" />} />
         </div>
 
         <Separator orientation="vertical" />
 
         <div className="flex min-w-0 flex-col gap-4">
-          <LabeledField label="Created At" value={data.createdAt} icon={<Calendar className="size-3.5" />} />
+          <LabeledField label={t("keys.createdAt")} value={data.createdAt} icon={<Calendar className="size-3.5" />} />
           <LabeledField
-            label="Created By"
+            label={t("keys.createdBy")}
             value={data.createdBy}
             icon={<ShieldCheck className="size-3.5" />}
             href={data.createdById ? userDetailHref(data.createdById) : undefined}
@@ -288,22 +295,22 @@ export function KeyInfoHeader({
         <Separator orientation="vertical" />
 
         <div className="flex min-w-0 flex-col gap-4">
-          <LabeledField label="Last Updated" value={data.lastUpdated} icon={<Clock className="size-3.5" />} />
-          <LabeledField label="Last Active" value={data.lastActive} icon={<Zap className="size-3.5" />} />
+          <LabeledField label={t("keys.lastUpdated")} value={data.lastUpdated} icon={<Clock className="size-3.5" />} />
+          <LabeledField label={t("keys.lastActive")} value={data.lastActive} icon={<Zap className="size-3.5" />} />
         </div>
 
         <Separator orientation="vertical" />
 
         <div className="flex min-w-0 flex-col gap-4">
           <LabeledField
-            label="Team"
+            label={t("keys.team")}
             value={data.teamAlias || data.teamId}
             icon={<Users className="size-3.5" />}
             href={data.teamId ? teamDetailHref(data.teamId) : undefined}
             truncate
           />
           <LabeledField
-            label="Organization"
+            label={t("keys.organization")}
             value={data.orgAlias || data.orgId}
             icon={<Building2 className="size-3.5" />}
             href={data.orgId ? orgDetailHref(data.orgId) : undefined}

@@ -1,4 +1,5 @@
 "use client";
+import { useTranslation } from "@/i18n/useTranslation";
 
 import React, { useEffect, useMemo } from "react";
 import { useWatch } from "react-hook-form";
@@ -61,6 +62,7 @@ const RoutingGroupModal: React.FC<RoutingGroupModalProps> = ({
   onSubmit,
   saving,
 }) => {
+  const { t } = useTranslation();
   const modelsAnchor = useComboboxAnchor();
   const strategyItems = availableStrategies.map((strategy) => ({ label: strategy, value: strategy }));
 
@@ -74,15 +76,15 @@ const RoutingGroupModal: React.FC<RoutingGroupModalProps> = ({
       group_name: z
         .string()
         .trim()
-        .min(1, "Group name is required")
-        .max(GROUP_NAME_MAX_LENGTH, `Must be ${GROUP_NAME_MAX_LENGTH} characters or fewer`)
-        .refine((value) => !reservedNames.has(value.toLowerCase()), "A group with this name already exists"),
-      models: z.array(z.string()).min(1, "Select at least one model"),
-      routing_strategy: z.string().min(1, "Strategy is required"),
+        .min(1, t("router.groupNameRequired"))
+        .max(GROUP_NAME_MAX_LENGTH, t("router.groupNameLength", { count: GROUP_NAME_MAX_LENGTH }))
+        .refine((value) => !reservedNames.has(value.toLowerCase()), t("router.groupNameExists")),
+      models: z.array(z.string()).min(1, t("router.modelRequired")),
+      routing_strategy: z.string().min(1, t("router.strategyRequired")),
       routing_strategy_args: z.string(),
     };
     return z.object(shape);
-  }, [reservedNames]);
+  }, [reservedNames, t]);
 
   const form = useZodForm(schema, { defaultValues: toRoutingGroupFormValues(initialValue, availableStrategies) });
 
@@ -106,7 +108,9 @@ const RoutingGroupModal: React.FC<RoutingGroupModalProps> = ({
       <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-y-auto sm:max-w-[560px]">
         <DialogHeader>
           <DialogTitle>
-            {mode === "create" ? "Create Routing Group" : `Edit ${initialValue?.group_name ?? ""}`}
+            {mode === "create"
+              ? t("router.createRoutingGroup")
+              : t("router.editGroup", { name: initialValue?.group_name ?? "" })}
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={(event) => event.preventDefault()} noValidate>
@@ -114,8 +118,8 @@ const RoutingGroupModal: React.FC<RoutingGroupModalProps> = ({
             <FormField
               control={form.control}
               name="group_name"
-              label="Group Name"
-              description="Use this name as the model in API calls — LiteLLM routes the request to one of the group's models."
+              label={t("router.groupName")}
+              description={t("router.useThisNameAsTheModelInApiCalls")}
             >
               {({ ref, ...field }) => <Input {...field} ref={ref} placeholder="fast-chat" disabled={mode === "edit"} />}
             </FormField>
@@ -123,8 +127,8 @@ const RoutingGroupModal: React.FC<RoutingGroupModalProps> = ({
             <FormField
               control={form.control}
               name="models"
-              label="Models"
-              description="Models from your model list that this group routes between."
+              label={t("router.models")}
+              description={t("router.modelsFromYourModelListThatThisGroupRoutes")}
             >
               {({ id, value, onChange, "aria-invalid": ariaInvalid, "aria-describedby": ariaDescribedBy }) => (
                 <Combobox multiple items={modelOptions} value={value} onValueChange={onChange}>
@@ -141,14 +145,14 @@ const RoutingGroupModal: React.FC<RoutingGroupModalProps> = ({
                             id={id}
                             aria-invalid={ariaInvalid}
                             aria-describedby={ariaDescribedBy}
-                            placeholder="Select models"
+                            placeholder={t("router.selectModels")}
                           />
                         </>
                       )}
                     </ComboboxValue>
                   </ComboboxChips>
                   <ComboboxContent anchor={modelsAnchor}>
-                    <ComboboxEmpty>No models found</ComboboxEmpty>
+                    <ComboboxEmpty>{t("router.noModelsFound")}</ComboboxEmpty>
                     <ComboboxList>
                       {(model: string) => (
                         <ComboboxItem key={model} value={model}>
@@ -164,7 +168,7 @@ const RoutingGroupModal: React.FC<RoutingGroupModalProps> = ({
             <FormField
               control={form.control}
               name="routing_strategy"
-              label="Routing Strategy"
+              label={t("router.routingStrategy")}
               description={strategyDescriptions[selectedStrategy]}
             >
               {({ id, value, onChange, "aria-invalid": ariaInvalid, "aria-describedby": ariaDescribedBy }) => (
@@ -180,7 +184,7 @@ const RoutingGroupModal: React.FC<RoutingGroupModalProps> = ({
                   }}
                 >
                   <SelectTrigger id={id} aria-invalid={ariaInvalid} aria-describedby={ariaDescribedBy}>
-                    <SelectValue placeholder="Select strategy" />
+                    <SelectValue placeholder={t("router.selectStrategy")} />
                   </SelectTrigger>
                   <SelectContent>
                     {availableStrategies.map((strategy) => (
@@ -197,7 +201,7 @@ const RoutingGroupModal: React.FC<RoutingGroupModalProps> = ({
               <FormField
                 control={form.control}
                 name="routing_strategy_args"
-                label="Strategy Arguments (JSON)"
+                label={t("router.strategyArgumentsJson")}
                 description={ARGS_EXAMPLES[selectedStrategy] ?? 'Example: { "ttl": 60 }'}
               >
                 {({ ref, ...field }) => (
@@ -206,14 +210,12 @@ const RoutingGroupModal: React.FC<RoutingGroupModalProps> = ({
               </FormField>
             )}
 
-            <p className="text-xs text-muted-foreground">
-              Models not claimed by an explicit group fall through to the proxy&apos;s top-level routing strategy.
-            </p>
+            <p className="text-xs text-muted-foreground">{t("router.modelsNotClaimedByAnExplicitGroupFallThrough")}</p>
           </FieldGroup>
         </form>
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>
-            Cancel
+            {t("router.cancel")}
           </Button>
           <Button onClick={() => void form.handleSubmit(handleSubmit)()} disabled={saving} aria-busy={saving}>
             {mode === "create" ? "Create Group" : "Save Changes"}

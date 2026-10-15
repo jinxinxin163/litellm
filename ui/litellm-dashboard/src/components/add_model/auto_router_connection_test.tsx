@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n/useTranslation";
 import React from "react";
 import { CircleCheck, CircleX, LoaderCircle } from "lucide-react";
 
@@ -22,6 +23,7 @@ const AutoRouterConnectionTest: React.FC<AutoRouterConnectionTestProps> = ({
   targets,
   onTestComplete,
 }) => {
+  const { t } = useTranslation();
   const [results, setResults] = React.useState<TargetResult[]>(() => targets.map(() => ({ status: "pending" })));
 
   React.useEffect(() => {
@@ -48,19 +50,12 @@ const AutoRouterConnectionTest: React.FC<AutoRouterConnectionTestProps> = ({
   }, []);
 
   if (targets.length === 0) {
-    return (
-      <p className="text-sm text-muted-foreground">
-        No complexity tiers are configured yet, so there is nothing to test.
-      </p>
-    );
+    return <p className="text-sm text-muted-foreground">{t("models.noComplexityTiersAreConfiguredYetSoThere")}</p>;
   }
 
   return (
     <div className="space-y-3">
-      <p className="mb-2 text-sm text-muted-foreground">
-        Test Connection sends a minimal request to every configured tier, classifier, default, and embedding model. The
-        classifier probe includes its reasoning effort override.
-      </p>
+      <p className="mb-2 text-sm text-muted-foreground">{t("models.testConnectionSendsAMinimalRequestToEvery")}</p>
       {targets.map((target, index) => {
         const result = results[index] ?? { status: "pending" };
         return (

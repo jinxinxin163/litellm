@@ -1,4 +1,5 @@
 "use client";
+import { useTranslation } from "@/i18n/useTranslation";
 
 import { Globe } from "lucide-react";
 import React, { useState } from "react";
@@ -54,6 +55,7 @@ export const GuardrailsSelect: React.FC<GuardrailsSelectProps> = ({
   placeholder = "Select guardrails",
   emptyText = "No guardrails found",
 }) => {
+  const { t } = useTranslation();
   const anchor = useComboboxAnchor();
   const [query, setQuery] = useState("");
 
@@ -62,8 +64,8 @@ export const GuardrailsSelect: React.FC<GuardrailsSelectProps> = ({
   const grouped = globalGuardrails.length > 0 && otherGuardrails.length > 0;
   const groups: GuardrailGroup[] = grouped
     ? [
-        { label: "Global", icon: true, items: [...globalGuardrails] },
-        { label: "Other", icon: false, items: [...otherGuardrails] },
+        { label: t("people.global"), icon: true, items: [...globalGuardrails] },
+        { label: t("people.other"), icon: false, items: [...otherGuardrails] },
       ]
     : [{ label: "", icon: false, items: known }];
 
@@ -89,7 +91,9 @@ export const GuardrailsSelect: React.FC<GuardrailsSelectProps> = ({
             <>
               {chips.map((option) => (
                 <ComboboxChip key={option.name} aria-label={option.name}>
-                  {globalGuardrailNames.has(option.name) && <Globe className="size-3" aria-label="Global guardrail" />}
+                  {globalGuardrailNames.has(option.name) && (
+                    <Globe className="size-3" aria-label={t("people.globalGuardrail")} />
+                  )}
                   {option.name}
                 </ComboboxChip>
               ))}

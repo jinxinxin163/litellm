@@ -1,15 +1,8 @@
+import { useTranslation } from "@/i18n/useTranslation";
 import React from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export const NEVER_RESETS_BUDGET_DURATION = "none";
-
-const DURATION_LABELS: Record<string, string> = {
-  [NEVER_RESETS_BUDGET_DURATION]: "Never resets",
-  "1h": "hourly",
-  "24h": "daily",
-  "7d": "weekly",
-  "30d": "monthly",
-};
 
 interface BudgetDurationDropdownProps {
   id?: string;
@@ -30,9 +23,18 @@ const BudgetDurationDropdown: React.FC<BudgetDurationDropdownProps> = ({
   placeholder = "n/a",
   showNeverResets = false,
 }) => {
+  const { t } = useTranslation();
+  const durationLabelKeys: Record<string, string> = {
+    none: "keyControls.neverResets",
+    "1h": "keyControls.hourlyLower",
+    "24h": "keyControls.dailyLower",
+    "7d": "keyControls.weeklyLower",
+    "30d": "keyControls.monthlyLower",
+  };
+  const durationLabels = Object.fromEntries(Object.entries(durationLabelKeys).map(([value, key]) => [value, t(key)]));
   return (
     <Select
-      items={DURATION_LABELS}
+      items={durationLabels}
       value={value || null}
       onValueChange={(next: string | null) => onChange?.(next ?? undefined)}
     >
@@ -41,11 +43,13 @@ const BudgetDurationDropdown: React.FC<BudgetDurationDropdownProps> = ({
       </SelectTrigger>
       <SelectContent>
         <SelectItem value={null}>{placeholder}</SelectItem>
-        {showNeverResets ? <SelectItem value={NEVER_RESETS_BUDGET_DURATION}>Never resets</SelectItem> : null}
-        <SelectItem value="1h">hourly</SelectItem>
-        <SelectItem value="24h">daily</SelectItem>
-        <SelectItem value="7d">weekly</SelectItem>
-        <SelectItem value="30d">monthly</SelectItem>
+        {showNeverResets ? (
+          <SelectItem value={NEVER_RESETS_BUDGET_DURATION}>{t("keyControls.neverResets")}</SelectItem>
+        ) : null}
+        <SelectItem value="1h">{t("keyControls.hourlyLower")}</SelectItem>
+        <SelectItem value="24h">{t("keyControls.dailyLower")}</SelectItem>
+        <SelectItem value="7d">{t("keyControls.weeklyLower")}</SelectItem>
+        <SelectItem value="30d">{t("keyControls.monthlyLower")}</SelectItem>
       </SelectContent>
     </Select>
   );

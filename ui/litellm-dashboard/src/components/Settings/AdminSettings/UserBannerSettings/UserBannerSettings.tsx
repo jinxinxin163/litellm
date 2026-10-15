@@ -1,4 +1,5 @@
 "use client";
+import { useTranslation } from "@/i18n/useTranslation";
 
 import React, { useState } from "react";
 import useAuthorized from "@/app/(dashboard)/hooks/useAuthorized";
@@ -54,6 +55,7 @@ interface UserBannerSettingsFormProps {
 }
 
 function UserBannerSettingsForm({ persisted, isLoading, isPending, saveBanner }: UserBannerSettingsFormProps) {
+  const { t } = useTranslation();
   const [draft, setDraft] = useState<UserBannerUpdate>({
     enabled: persisted.enabled,
     message: persisted.message,
@@ -65,7 +67,7 @@ function UserBannerSettingsForm({ persisted, isLoading, isPending, saveBanner }:
   const handleSave = () => {
     saveBanner(draft, {
       onSuccess: () => {
-        toast.success("User banner updated successfully");
+        toast.success(t("admin.userBannerUpdatedSuccessfully"));
       },
       onError: (error) => {
         toast.fromError(error);
@@ -76,11 +78,8 @@ function UserBannerSettingsForm({ persisted, isLoading, isPending, saveBanner }:
   return (
     <Card>
       <CardHeader>
-        <CardTitle>User Banner</CardTitle>
-        <CardDescription>
-          Publish an announcement to all dashboard users. Markdown is supported; the banner appears below the header on
-          every page until you unpublish it. Users can dismiss it, and it reappears whenever the content changes.
-        </CardDescription>
+        <CardTitle>{t("admin.userBanner")}</CardTitle>
+        <CardDescription>{t("admin.publishAnAnnouncementToAllDashboardUsersMarkdownIs")}</CardDescription>
       </CardHeader>
       <CardContent>
         {isLoading ? (
@@ -91,13 +90,13 @@ function UserBannerSettingsForm({ persisted, isLoading, isPending, saveBanner }:
               <Switch
                 checked={draft.enabled}
                 onCheckedChange={(checked: boolean) => setDraft({ ...draft, enabled: checked })}
-                aria-label="Publish user banner"
+                aria-label={t("admin.publishUserBanner")}
               />
-              <Label>Publish user banner</Label>
+              <Label>{t("admin.publishUserBanner")}</Label>
             </div>
 
             <div className="flex flex-col gap-2">
-              <Label htmlFor="user-banner-message">Message</Label>
+              <Label htmlFor="user-banner-message">{t("admin.message")}</Label>
               <Textarea
                 id="user-banner-message"
                 value={draft.message}
@@ -108,11 +107,11 @@ function UserBannerSettingsForm({ persisted, isLoading, isPending, saveBanner }:
                   setDraft({ ...draft, message: event.target.value })
                 }
               />
-              {messageMissing && <p className="text-sm text-destructive">Add a message before publishing.</p>}
+              {messageMissing && <p className="text-sm text-destructive">{t("admin.addAMessageBeforePublishing")}</p>}
             </div>
 
             <div className="flex flex-col gap-2">
-              <Label>Severity</Label>
+              <Label>{t("admin.severity")}</Label>
               <Select
                 items={SEVERITY_ITEMS}
                 value={draft.severity}
@@ -120,8 +119,8 @@ function UserBannerSettingsForm({ persisted, isLoading, isPending, saveBanner }:
                   setDraft({ ...draft, severity: (value ?? "info") as UserBannerSeverity })
                 }
               >
-                <SelectTrigger className="w-48" aria-label="Banner severity">
-                  <SelectValue placeholder="Severity" />
+                <SelectTrigger className="w-48" aria-label={t("admin.bannerSeverity")}>
+                  <SelectValue placeholder={t("admin.severity")} />
                 </SelectTrigger>
                 <SelectContent>
                   {SEVERITY_ITEMS.map((item) => (
@@ -135,7 +134,7 @@ function UserBannerSettingsForm({ persisted, isLoading, isPending, saveBanner }:
 
             {draft.message.trim() !== "" && (
               <div className="flex flex-col gap-2">
-                <Label>Preview</Label>
+                <Label>{t("admin.preview")}</Label>
                 <Alert variant={draft.severity}>
                   {SEVERITY_ICONS[draft.severity]}
                   <AlertDescription>
@@ -147,7 +146,7 @@ function UserBannerSettingsForm({ persisted, isLoading, isPending, saveBanner }:
 
             <div>
               <Button onClick={handleSave} disabled={isPending || messageMissing}>
-                {isPending ? "Saving..." : "Save banner"}
+                {isPending ? t("admin.saving") : t("admin.saveBanner")}
               </Button>
             </div>
           </div>

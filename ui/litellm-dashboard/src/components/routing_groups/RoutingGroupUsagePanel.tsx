@@ -1,4 +1,5 @@
 "use client";
+import { useTranslation } from "@/i18n/useTranslation";
 
 import { Code2 } from "lucide-react";
 import React from "react";
@@ -62,14 +63,15 @@ const SNIPPET_TABS = [
 ] as const;
 
 export function RoutingGroupUsagePanel({ group, baseUrl }: RoutingGroupUsagePanelProps) {
+  const { t } = useTranslation();
   return (
     <div className="border-y bg-muted/40 px-4 py-4">
       <div className="mb-2 flex items-center gap-2">
         <Code2 className="size-4 text-primary" />
-        <span className="text-sm font-medium text-foreground">How routing works for this group</span>
+        <span className="text-sm font-medium text-foreground">{t("router.howRoutingWorksForThisGroup")}</span>
       </div>
       <p className="mb-3 text-sm text-muted-foreground">
-        Callers request any model in the group by name; LiteLLM picks a deployment behind the scenes using the{" "}
+        {t("router.callersRequestAnyModelInTheGroupByName")}{" "}
         <span className="font-medium text-foreground">{formatStrategyLabel(group.routing_strategy)}</span> strategy.
       </p>
       <Tabs defaultValue="curl">

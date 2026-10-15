@@ -4,6 +4,7 @@
  * in a readable format instead of raw JSON.
  */
 
+import { useTranslation } from "@/i18n/useTranslation";
 import { useState } from "react";
 import { ChevronDown, ChevronUp, MessageSquare, Mic, Settings, Volume2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -82,6 +83,7 @@ export function isRealtimeResponse(response: any): boolean {
 }
 
 export function RealtimePrettyView({ response, metrics }: RealtimePrettyViewProps) {
+  const { t } = useTranslation();
   const events: RealtimeEvent[] = response?.results || [];
   const usage = response?.usage;
 
@@ -114,7 +116,7 @@ export function RealtimePrettyView({ response, metrics }: RealtimePrettyViewProp
             fontSize: 13,
           }}
         >
-          No recognized realtime events found
+          {t("logs.noRecognizedRealtimeEventsFound")}
         </div>
       )}
     </div>
@@ -122,6 +124,7 @@ export function RealtimePrettyView({ response, metrics }: RealtimePrettyViewProp
 }
 
 function SessionCard({ session, turnCount }: { session: RealtimeSession; turnCount: number }) {
+  const { t } = useTranslation();
   const [isCollapsed, setIsCollapsed] = useState(true);
 
   return (
@@ -162,7 +165,7 @@ function SessionCard({ session, turnCount }: { session: RealtimeSession; turnCou
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <Settings className="size-3.5 text-muted-foreground" />
-            <span style={{ fontWeight: 500, fontSize: 14 }}>Session</span>
+            <span style={{ fontWeight: 500, fontSize: 14 }}>{t("logs.session")}</span>
           </div>
           <span className="text-muted-foreground" style={{ fontSize: 12 }}>
             {session.model}
@@ -230,7 +233,7 @@ function SessionCard({ session, turnCount }: { session: RealtimeSession; turnCou
                   marginBottom: 4,
                 }}
               >
-                Instructions
+                {t("logs.instructions")}
               </span>
               <div
                 style={{
@@ -440,6 +443,7 @@ function OutputMessage({ output }: { output: RealtimeOutputItem }) {
 }
 
 function TokenBreakdown({ label, details }: { label: string; details: Record<string, any> }) {
+  const { t } = useTranslation();
   const entries = Object.entries(details).filter(
     ([, v]) => typeof v === "number" || (typeof v === "object" && v !== null),
   );
@@ -452,7 +456,7 @@ function TokenBreakdown({ label, details }: { label: string; details: Record<str
         className="text-muted-foreground"
         style={{ fontSize: 10, letterSpacing: "0.5px", textTransform: "uppercase" }}
       >
-        {label} Token Breakdown
+        {label} {t("logs.tokenBreakdown")}
       </span>
       <div
         style={{

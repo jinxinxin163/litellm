@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n/useTranslation";
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -56,6 +57,7 @@ interface TagRateLimitEditorProps {
 }
 
 export function TagRateLimitEditor({ value, onChange }: TagRateLimitEditorProps) {
+  const { t } = useTranslation();
   const addRow = () => {
     onChange([...value, { id: newRowId(), tag: "", rpm_limit: null }]);
   };
@@ -73,14 +75,14 @@ export function TagRateLimitEditor({ value, onChange }: TagRateLimitEditorProps)
       {value.map((row, idx) => (
         <div key={row.id} style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 12 }}>
           <Input
-            aria-label="Tag"
+            aria-label={t("keyControls.tag")}
             value={row.tag}
             onChange={(e) => updateRow(idx, "tag", e.target.value)}
-            placeholder="Tag (e.g. cell-1)"
+            placeholder={t("keyControls.tagPlaceholder")}
             style={{ width: 180 }}
           />
           <Input
-            aria-label="RPM limit"
+            aria-label={t("keyControls.rpmLimit")}
             type="number"
             min={0}
             value={row.rpm_limit ?? ""}
@@ -88,7 +90,12 @@ export function TagRateLimitEditor({ value, onChange }: TagRateLimitEditorProps)
             placeholder="RPM"
             style={{ width: 120 }}
           />
-          <Button variant="destructive" size="sm" aria-label="Remove tag limit" onClick={() => removeRow(idx)}>
+          <Button
+            variant="destructive"
+            size="sm"
+            aria-label={t("keyControls.removeTagLimit")}
+            onClick={() => removeRow(idx)}
+          >
             ✕
           </Button>
         </div>
@@ -101,7 +108,7 @@ export function TagRateLimitEditor({ value, onChange }: TagRateLimitEditorProps)
           addRow();
         }}
       >
-        + Add Tag Limit
+        {t("keyControls.addTagLimit")}
       </Button>
     </div>
   );

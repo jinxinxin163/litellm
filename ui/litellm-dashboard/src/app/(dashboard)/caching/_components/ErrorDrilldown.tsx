@@ -1,4 +1,5 @@
 "use client";
+import { useTranslation } from "@/i18n/useTranslation";
 
 import React from "react";
 import { X } from "lucide-react";
@@ -40,6 +41,7 @@ export const groupErrorBuckets = (buckets: readonly CacheActivityErrorBucket[], 
 };
 
 export const ErrorCodeTooltip = ({ active, payload, label }: ChartTooltipProps) => {
+  const { t } = useTranslation();
   if (!active || !payload || payload.length === 0) return null;
   const datum = payload[0]?.payload as ErrorCodeDatum | undefined;
   if (!datum) return null;
@@ -47,7 +49,8 @@ export const ErrorCodeTooltip = ({ active, payload, label }: ChartTooltipProps) 
   return (
     <div className="min-w-40 rounded-lg border border-border/50 bg-background px-2.5 py-1.5 text-xs shadow-xl">
       <p className="mb-1.5 font-medium text-foreground">
-        Error code {String(label)}: {datum[FAILED_REQUESTS_SERIES].toLocaleString()} failed
+        {t("cache.errorCode")}
+        {String(label)}: {datum[FAILED_REQUESTS_SERIES].toLocaleString()} failed
       </p>
       <div className="grid gap-1.5">
         {datum.classes.map((errorClass) => (

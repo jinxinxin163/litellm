@@ -1,4 +1,5 @@
 "use client";
+import { useTranslation } from "@/i18n/useTranslation";
 
 import { useOrganizations } from "@/app/(dashboard)/hooks/organizations/useOrganizations";
 import { useTeamsTable } from "@/app/(dashboard)/hooks/teams/useTeams";
@@ -38,13 +39,8 @@ const toSortOrder = (sorting: SortingState): "asc" | "desc" | undefined => {
   return active.desc ? "desc" : "asc";
 };
 
-const FILTER_LABELS: Record<string, string> = {
-  org_id: "Organization",
-  alias: "Team alias",
-  team_id: "Team ID",
-};
-
 export function TeamsTable({ userRole, userID, onSelectTeam, onEditTeam, onDeleteTeam }: TeamsTableProps) {
+  const { t } = useTranslation();
   const { data: fetchedOrganizations } = useOrganizations();
   const organizations = useMemo(() => fetchedOrganizations ?? [], [fetchedOrganizations]);
 
@@ -118,8 +114,8 @@ export function TeamsTable({ userRole, userID, onSelectTeam, onEditTeam, onDelet
 
   const columns = useMemo(() => {
     const columnDeps = { organizations, userRole, onSelectTeam, onEditTeam, onDeleteTeam };
-    return getTeamTableColumns(columnDeps);
-  }, [organizations, userRole, onSelectTeam, onEditTeam, onDeleteTeam]);
+    return getTeamTableColumns(columnDeps, t);
+  }, [organizations, userRole, onSelectTeam, onEditTeam, onDeleteTeam, t]);
 
   const orgOptions = useMemo(
     () =>
@@ -162,8 +158,8 @@ export function TeamsTable({ userRole, userID, onSelectTeam, onEditTeam, onDelet
       enableColumnResizing
       columnResizeMode="onChange"
       isLoading={isLoading}
-      loadingMessage="Loading teams..."
-      noDataMessage="No teams found"
+      loadingMessage={t("people.loadingTeams")}
+      noDataMessage={t("people.noTeamsFound")}
       fillHeight
       size="compact"
       toolbar={(table) => (
@@ -172,11 +168,15 @@ export function TeamsTable({ userRole, userID, onSelectTeam, onEditTeam, onDelet
             table={table}
             searchValue={searchInput}
             onSearchChange={handleSearchChange}
-            searchPlaceholder="Search teams by name or ID…"
+            searchPlaceholder={t("people.searchTeamsByNameOrId")}
             onRefresh={() => refetch?.()}
             isRefreshing={isFetching}
             onOpenFilters={() => setFiltersOpen(true)}
-            filterLabels={FILTER_LABELS}
+            filterLabels={{
+              org_id: t("people.organization"),
+              alias: t("people.teamAlias"),
+              team_id: t("people.teamId"),
+            }}
             formatFilterValue={formatFilterValue}
           >
             <Button
@@ -187,39 +187,39 @@ export function TeamsTable({ userRole, userID, onSelectTeam, onEditTeam, onDelet
               data-testid="teams-export-csv"
             >
               <Download />
-              {isExporting ? "Exporting..." : "Export CSV"}
+              {isExporting ? t("people.exporting") : t("people.exportCsv")}
             </Button>
           </DataTableToolbar>
           <DataTableFilterDrawer
             table={table}
             open={filtersOpen}
             onOpenChange={setFiltersOpen}
-            title="Filters"
-            description="Narrow down your teams"
+            title={t("people.filters")}
+            description={t("people.narrowDownYourTeams")}
           >
             {({ get, set }) => (
               <>
-                <DataTableFilterField label="Organization">
+                <DataTableFilterField label={t("people.organization")}>
                   <SearchSelect
                     options={orgOptions}
                     value={(get("org_id") as string) || undefined}
                     onValueChange={(value) => set("org_id", value)}
-                    placeholder="Select an organization…"
-                    emptyText="No organizations found"
+                    placeholder={t("people.selectAnOrganization")}
+                    emptyText={t("people.noOrganizationsFound")}
                   />
                 </DataTableFilterField>
-                <DataTableFilterField label="Team alias">
+                <DataTableFilterField label={t("people.teamAlias")}>
                   <Input
                     value={(get("alias") as string) ?? ""}
                     onChange={(event) => set("alias", event.target.value)}
-                    placeholder="Enter team alias…"
+                    placeholder={t("people.enterTeamAlias")}
                   />
                 </DataTableFilterField>
-                <DataTableFilterField label="Team ID">
+                <DataTableFilterField label={t("people.teamId")}>
                   <Input
                     value={(get("team_id") as string) ?? ""}
                     onChange={(event) => set("team_id", event.target.value)}
-                    placeholder="Enter team ID…"
+                    placeholder={t("people.enterTeamId")}
                   />
                 </DataTableFilterField>
               </>

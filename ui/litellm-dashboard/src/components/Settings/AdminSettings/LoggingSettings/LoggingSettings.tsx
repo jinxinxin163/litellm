@@ -1,4 +1,5 @@
 "use client";
+import { useTranslation } from "@/i18n/useTranslation";
 
 import {
   ConfigType,
@@ -158,6 +159,7 @@ const LoggingSettingsForm: React.FC<LoggingSettingsFormProps> = ({
   isSaving,
   onSubmit,
 }) => {
+  const { t } = useTranslation();
   const form = useForm<LoggingSettingsFormValues>({ defaultValues: initialValues });
 
   return (
@@ -168,7 +170,7 @@ const LoggingSettingsForm: React.FC<LoggingSettingsFormProps> = ({
             control={form.control}
             name={STORE_PROMPTS_FIELD_NAME}
             label={labelWithHint(
-              "Store Prompts in Spend Logs",
+              t("admin.storePromptsInSpendLogs"),
               describeField(
                 STORE_PROMPTS_FIELD_NAME,
                 "When enabled, prompts will be stored in spend logs for tracking and analysis purposes.",
@@ -221,7 +223,7 @@ const LoggingSettingsForm: React.FC<LoggingSettingsFormProps> = ({
 
         <Button type="submit" className="mt-6" disabled={isSaving}>
           {isSaving && <UiLoadingSpinner role="img" aria-label="loading" className="size-4" />}
-          {isSaving ? "Saving..." : "Save Settings"}
+          {isSaving ? t("admin.saving") : t("admin.saveSettings")}
         </Button>
       </form>
     </TooltipProvider>
@@ -229,6 +231,7 @@ const LoggingSettingsForm: React.FC<LoggingSettingsFormProps> = ({
 };
 
 const LoggingSettings: React.FC = () => {
+  const { t } = useTranslation();
   const { mutate, isPending } = useStoreRequestInSpendLogs();
   const { mutate: deleteField, isPending: isDeletingField } = useDeleteProxyConfigField();
   const { data: proxyConfigData, isLoading: isLoadingConfig } = useProxyConfig(ConfigType.GENERAL_SETTINGS);
@@ -295,7 +298,7 @@ const LoggingSettings: React.FC = () => {
     const updateParams = buildUpdateParams(formValues);
     const submitUpdate = () =>
       mutate(updateParams, {
-        onSuccess: () => toast.success("Spend logs settings updated successfully"),
+        onSuccess: () => toast.success(t("admin.spendLogsSettingsUpdatedSuccessfully")),
         onError: (error) => toast.fromError("Failed to save spend logs settings: " + parseErrorMessage(error)),
       });
 
@@ -319,13 +322,11 @@ const LoggingSettings: React.FC = () => {
   return (
     <Card>
       <CardHeader className="border-b">
-        <CardTitle>Logging Settings</CardTitle>
+        <CardTitle>{t("admin.loggingSettings")}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="flex w-full flex-col gap-6">
-          <p className="mb-0 text-muted-foreground">
-            Proxy-wide settings that control how request and response data are written to spend logs.
-          </p>
+          <p className="mb-0 text-muted-foreground">{t("admin.proxyWideSettingsThatControlHowRequestAndResponse")}</p>
 
           {isLoadingConfig ? (
             <div className="flex flex-col gap-3">

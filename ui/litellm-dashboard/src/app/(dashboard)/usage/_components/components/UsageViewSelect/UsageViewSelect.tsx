@@ -1,4 +1,5 @@
-import { BarChart3, Bot, Building2, Globe, LineChart, ShoppingCart, Tags, User, Users } from "lucide-react";
+import { useTranslation } from "@/i18n/useTranslation";
+import { BarChart3, Globe, ShoppingCart, User, Users } from "lucide-react";
 import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -40,18 +41,18 @@ interface OptionConfig {
 const OPTIONS: OptionConfig[] = [
   {
     value: "global",
-    label: "Global Usage",
-    showForAdmin: "Global Usage",
-    showForNonAdmin: "Your Usage",
-    description: "View usage across all resources",
-    descriptionForAdmin: "View usage across all resources",
-    descriptionForNonAdmin: "View your usage",
+    label: "usage.globalUsage",
+    showForAdmin: "usage.globalUsage",
+    showForNonAdmin: "usage.yourUsage",
+    description: "usage.viewUsageAcrossAllResources",
+    descriptionForAdmin: "usage.viewUsageAcrossAllResources",
+    descriptionForNonAdmin: "usage.viewYourUsage",
     icon: <Globe className="size-4" />,
   },
   {
     value: "my-usage",
-    label: "Your Usage",
-    description: "View your own usage",
+    label: "usage.yourUsage",
+    description: "usage.viewYourOwnUsage",
     icon: <User className="size-4" />,
     adminOnly: true,
   },
@@ -66,14 +67,14 @@ const OPTIONS: OptionConfig[] = [
   */
   {
     value: "team",
-    label: "Team Usage",
-    description: "View usage by team",
+    label: "usage.teamUsage",
+    description: "usage.viewUsageByTeam",
     icon: <Users className="size-4" />,
   },
   {
     value: "customer",
-    label: "Customer Usage",
-    description: "View usage by customer accounts",
+    label: "usage.customerUsage",
+    description: "usage.viewUsageByCustomerAccounts",
     icon: <ShoppingCart className="size-4" />,
     adminOnly: true,
   },
@@ -97,8 +98,8 @@ const OPTIONS: OptionConfig[] = [
   */
   {
     value: "user",
-    label: "User Usage",
-    description: "View usage by individual users",
+    label: "usage.userUsage",
+    description: "usage.viewUsageByIndividualUsers",
     icon: <User className="size-4" />,
     adminOnly: true,
   },
@@ -122,6 +123,7 @@ export const UsageViewSelect: React.FC<UsageViewSelectProps> = ({
   description = "Select the usage data you want to view",
   "data-id": dataId,
 }) => {
+  const { t } = useTranslation();
   const isAdmin = all_admin_roles.includes(userRole ?? "");
   const getFilteredOptions = () => {
     return OPTIONS.filter((option) => {
@@ -146,8 +148,8 @@ export const UsageViewSelect: React.FC<UsageViewSelectProps> = ({
       }
       return {
         value: option.value,
-        label,
-        description: desc,
+        label: t(label),
+        description: t(desc),
         icon: option.icon,
         badgeText: option.badgeText,
       };
@@ -163,8 +165,8 @@ export const UsageViewSelect: React.FC<UsageViewSelectProps> = ({
             <BarChart3 className="size-8" />
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="text-sm font-semibold text-foreground mb-0.5 leading-tight">{title}</h3>
-            <p className="text-xs text-muted-foreground leading-tight">{description}</p>
+            <h3 className="text-sm font-semibold text-foreground mb-0.5 leading-tight">{title === "Usage View" ? t("usage.usageView") : title}</h3>
+            <p className="text-xs text-muted-foreground leading-tight">{description === "Select the usage data you want to view" ? t("usage.selectTheUsageDataYouWantToView") : description}</p>
           </div>
         </div>
         <div className="shrink-0">

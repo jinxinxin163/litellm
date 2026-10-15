@@ -1,4 +1,5 @@
 "use client";
+import { useTranslation } from "@/i18n/useTranslation";
 
 import React from "react";
 import {
@@ -34,6 +35,7 @@ const ModelChoiceCombobox: React.FC<ModelChoiceComboboxProps> = ({
   ariaInvalid,
   ariaDescribedBy,
 }) => {
+  const { t } = useTranslation();
   const selected = value ? choices.find((choice) => choice.value === value) ?? { value, label: value } : null;
 
   return (
@@ -53,7 +55,7 @@ const ModelChoiceCombobox: React.FC<ModelChoiceComboboxProps> = ({
         showClear={value !== ""}
       />
       <ComboboxContent>
-        <ComboboxEmpty>No models found</ComboboxEmpty>
+        <ComboboxEmpty>{t("models.noModelsFound")}</ComboboxEmpty>
         <ComboboxList>
           {(choice: ModelChoice) => (
             <ComboboxItem key={choice.value} value={choice}>

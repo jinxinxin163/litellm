@@ -1,4 +1,5 @@
 "use client";
+import { useTranslation } from "@/i18n/useTranslation";
 
 import { useKeyInfo } from "@/app/(dashboard)/hooks/keys/useKeyInfo";
 import { useKeys } from "@/app/(dashboard)/hooks/keys/useKeys";
@@ -32,10 +33,10 @@ const FILTER_COLUMNS = ["team_id", "org_id", "user_id", "key_hash"] as const;
 type FilterColumn = (typeof FILTER_COLUMNS)[number];
 
 const FILTER_LABELS: Record<FilterColumn, string> = {
-  team_id: "Team",
-  org_id: "Organization",
-  user_id: "User ID",
-  key_hash: "Key ID",
+  team_id: "keys.team",
+  org_id: "keys.organization",
+  user_id: "keys.userId",
+  key_hash: "keys.keyId",
 };
 
 const DEFAULT_SORT_BY = "created_at";
@@ -75,6 +76,7 @@ const filterValue = (filters: ColumnFiltersState, column: FilterColumn): string 
 };
 
 export function VirtualKeysTable({ headerActions }: VirtualKeysTableProps) {
+  const { t } = useTranslation();
   const { data: fetchedOrganizations } = useOrganizations();
   const organizations = useMemo(() => fetchedOrganizations ?? [], [fetchedOrganizations]);
   const { data: fetchedTeams } = useAllTeams();
@@ -179,8 +181,8 @@ export function VirtualKeysTable({ headerActions }: VirtualKeysTableProps) {
   );
 
   const columns = useMemo(
-    () => getKeyTableColumns({ allTeams, organizations, onSelectKey: (key) => void setSelectedKeyId(key.token) }),
-    [allTeams, organizations, setSelectedKeyId],
+    () => getKeyTableColumns({ allTeams, organizations, onSelectKey: (key) => void setSelectedKeyId(key.token) }, t),
+    [t, allTeams, organizations, setSelectedKeyId],
   );
 
   const selectedKeyFromList = useMemo(
@@ -239,7 +241,7 @@ export function VirtualKeysTable({ headerActions }: VirtualKeysTableProps) {
 
   if (selectedKeyId) {
     if (!selectedKey && !selectedKeyLoadFailed) {
-      return <div className="p-4 text-sm text-muted-foreground">Loading key...</div>;
+      return <div className="p-4 text-sm text-muted-foreground">{t("keys.loadingKey")}</div>;
     }
     return (
       <div className="w-full h-full overflow-hidden">
@@ -259,7 +261,7 @@ export function VirtualKeysTable({ headerActions }: VirtualKeysTableProps) {
     <div className="flex min-h-0 flex-1 flex-col gap-6">
       <PageHeader
         icon={<KeyRound />}
-        title="Virtual Keys"
+        title={t("keys.virtualKeys")}
         subtitle="Every key that authenticates requests to the gateway."
         primaryAction={headerActions}
       />
@@ -291,52 +293,52 @@ export function VirtualKeysTable({ headerActions }: VirtualKeysTableProps) {
               table={table}
               searchValue={searchInput}
               onSearchChange={handleSearchChange}
-              searchPlaceholder="Search by key alias or ID…"
+              searchPlaceholder={t("keys.searchByKeyAliasOrId")}
               onRefresh={() => refetch?.()}
               isRefreshing={isFetching}
               onOpenFilters={() => setFiltersOpen(true)}
-              filterLabels={FILTER_LABELS}
+              filterLabels={Object.fromEntries(Object.entries(FILTER_LABELS).map(([id, key]) => [id, t(key)]))}
               formatFilterValue={formatFilterValue}
             />
             <DataTableFilterDrawer
               table={table}
               open={filtersOpen}
               onOpenChange={setFiltersOpen}
-              title="Filters"
-              description="Narrow down virtual keys"
+              title={t("keys.filters")}
+              description={t("keys.narrowDownVirtualKeys")}
             >
               {({ get, set }) => (
                 <>
-                  <DataTableFilterField label="Team">
+                  <DataTableFilterField label={t("keys.team")}>
                     <SearchSelect
                       options={teamOptions}
                       value={(get("team_id") as string) || undefined}
                       onValueChange={(value) => set("team_id", value)}
-                      placeholder="Select a team…"
-                      emptyText="No teams found"
+                      placeholder={t("keys.selectATeam")}
+                      emptyText={t("keys.noTeamsFound")}
                     />
                   </DataTableFilterField>
-                  <DataTableFilterField label="Organization">
+                  <DataTableFilterField label={t("keys.organization")}>
                     <SearchSelect
                       options={orgOptions}
                       value={(get("org_id") as string) || undefined}
                       onValueChange={(value) => set("org_id", value)}
-                      placeholder="Select an organization…"
-                      emptyText="No organizations found"
+                      placeholder={t("keys.selectAnOrganization")}
+                      emptyText={t("keys.noOrganizationsFound")}
                     />
                   </DataTableFilterField>
-                  <DataTableFilterField label="User ID">
+                  <DataTableFilterField label={t("keys.userId")}>
                     <Input
                       value={(get("user_id") as string) ?? ""}
                       onChange={(event) => set("user_id", event.target.value)}
-                      placeholder="Enter User ID…"
+                      placeholder={t("keys.enterUserId")}
                     />
                   </DataTableFilterField>
-                  <DataTableFilterField label="Key ID">
+                  <DataTableFilterField label={t("keys.keyId")}>
                     <Input
                       value={(get("key_hash") as string) ?? ""}
                       onChange={(event) => set("key_hash", event.target.value)}
-                      placeholder="Enter Key ID…"
+                      placeholder={t("keys.enterKeyId")}
                     />
                   </DataTableFilterField>
                 </>

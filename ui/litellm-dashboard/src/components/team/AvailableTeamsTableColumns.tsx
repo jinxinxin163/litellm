@@ -1,4 +1,5 @@
 "use client";
+import { translate, useTranslation } from "@/i18n/useTranslation";
 
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal, UserPlus } from "lucide-react";
@@ -23,10 +24,11 @@ export interface AvailableTeam {
 }
 
 function AvailableTeamRowActions({ team, onJoinTeam }: { team: AvailableTeam; onJoinTeam: (teamId: string) => void }) {
+  const { t } = useTranslation();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        aria-label="Open team actions"
+        aria-label={t("people.openTeamActions")}
         data-testid={`available-team-actions-${team.team_id}`}
         className={cn(buttonVariants({ variant: "ghost", size: "icon-sm" }), "text-muted-foreground")}
       >
@@ -35,7 +37,7 @@ function AvailableTeamRowActions({ team, onJoinTeam }: { team: AvailableTeam; on
       <DropdownMenuContent align="end" className="w-44">
         <DropdownMenuItem data-testid="available-team-action-join" onClick={() => onJoinTeam(team.team_id)}>
           <UserPlus />
-          Join team
+          {t("people.joinTeam")}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -46,14 +48,15 @@ interface AvailableTeamsTableColumnsDeps {
   onJoinTeam: (teamId: string) => void;
 }
 
-export const getAvailableTeamsTableColumns = ({
-  onJoinTeam,
-}: AvailableTeamsTableColumnsDeps): ColumnDef<AvailableTeam>[] => [
+export const getAvailableTeamsTableColumns = (
+  { onJoinTeam }: AvailableTeamsTableColumnsDeps,
+  t: (key: string) => string = translate,
+): ColumnDef<AvailableTeam>[] => [
   {
     id: "team_alias",
     accessorKey: "team_alias",
-    meta: { title: "Team Name" },
-    header: ({ column }) => <DataTableSortHeader column={column} title="Team Name" />,
+    meta: { title: t("people.teamName") },
+    header: ({ column }) => <DataTableSortHeader column={column} title={t("people.teamName")} />,
     size: 220,
     enableSorting: true,
     cell: ({ row }) => (
@@ -63,15 +66,15 @@ export const getAvailableTeamsTableColumns = ({
   {
     id: "description",
     accessorKey: "description",
-    meta: { title: "Description" },
-    header: "Description",
+    meta: { title: t("people.description") },
+    header: t("people.description"),
     size: 280,
     enableSorting: false,
     cell: ({ row }) => {
       const description = row.original.description;
       return (
         <span className="block max-w-72 truncate text-sm text-muted-foreground" title={description || undefined}>
-          {description || "No description available"}
+          {description || t("people.noDescriptionAvailable")}
         </span>
       );
     },
@@ -79,18 +82,20 @@ export const getAvailableTeamsTableColumns = ({
   {
     id: "members",
     accessorFn: (team) => team.members_with_roles.length,
-    meta: { title: "Members" },
-    header: ({ column }) => <DataTableSortHeader column={column} title="Members" />,
+    meta: { title: t("people.members") },
+    header: ({ column }) => <DataTableSortHeader column={column} title={t("people.members")} />,
     size: 120,
     enableSorting: true,
     cell: ({ row }) => (
-      <span className="text-sm text-muted-foreground">{row.original.members_with_roles.length} members</span>
+      <span className="text-sm text-muted-foreground">
+        {row.original.members_with_roles.length} {t("people.members")}
+      </span>
     ),
   },
   {
     id: "models",
-    meta: { title: "Models" },
-    header: "Models",
+    meta: { title: t("people.models") },
+    header: t("people.models"),
     size: 260,
     enableSorting: false,
     cell: ({ row }) => <ModelsCell models={row.original.models} />,
@@ -98,7 +103,7 @@ export const getAvailableTeamsTableColumns = ({
   {
     id: "actions",
     meta: { className: "text-right", headerClassName: "text-right" },
-    header: () => <span className="sr-only">Actions</span>,
+    header: () => <span className="sr-only">{t("people.actions")}</span>,
     size: 64,
     enableSorting: false,
     enableHiding: false,

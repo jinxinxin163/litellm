@@ -1,3 +1,4 @@
+import { translate } from "@/i18n/useTranslation";
 import { formatNumberWithCommas } from "@/utils/dataUtils";
 
 export interface SummaryTile {
@@ -28,39 +29,39 @@ export const FLAT_COST_TOOLTIP =
 
 export const hasFlatCost = (metadata: SpendSummaryMetadata): boolean => (metadata.total_flat_cost ?? 0) > 0;
 
-export const buildSummaryTiles = (metadata: SpendSummaryMetadata, showFlatCost: boolean): SummaryTile[] => {
+export const buildSummaryTiles = (metadata: SpendSummaryMetadata, showFlatCost: boolean, t: (key: string) => string = translate): SummaryTile[] => {
   const flatCost = metadata.total_flat_cost ?? 0;
   return [
     showFlatCost
       ? {
-          title: "Total Cost",
+          title: t("usage.totalCost2"),
           value: `$${formatNumberWithCommas(metadata.total_spend + flatCost, 2)}`,
-          tooltip: TOTAL_COST_TOOLTIP,
+          tooltip: t("usage.requestCostPlusFlatCostForReservedCapacitySelectThisTileToSeeTheBreakdown"),
           expandable: true,
         }
-      : { title: "Total Spend", value: `$${formatNumberWithCommas(metadata.total_spend, 2)}` },
-    { title: "Total Requests", value: metadata.total_api_requests.toLocaleString() },
+      : { title: t("usage.totalSpend2"), value: `$${formatNumberWithCommas(metadata.total_spend, 2)}` },
+    { title: t("usage.totalRequests"), value: metadata.total_api_requests.toLocaleString() },
     {
-      title: "Successful Requests",
+      title: t("usage.successfulRequests"),
       value: metadata.total_successful_requests.toLocaleString(),
       className: "text-success",
     },
-    { title: "Failed Requests", value: metadata.total_failed_requests.toLocaleString(), className: "text-destructive" },
-    { title: "Total Tokens", value: metadata.total_tokens.toLocaleString() },
+    { title: t("usage.failedRequests"), value: metadata.total_failed_requests.toLocaleString(), className: "text-destructive" },
+    { title: t("usage.totalTokens"), value: metadata.total_tokens.toLocaleString() },
   ];
 };
 
-export const buildCostBreakdownTiles = (metadata: SpendSummaryMetadata): SummaryTile[] => [
+export const buildCostBreakdownTiles = (metadata: SpendSummaryMetadata, t: (key: string) => string = translate): SummaryTile[] => [
   {
-    title: "Request Cost",
+    title: t("usage.requestCost2"),
     value: `$${formatNumberWithCommas(metadata.total_spend, 2)}`,
     className: "text-info",
-    tooltip: REQUEST_COST_TOOLTIP,
+    tooltip: t("usage.usageBasedCostOfTheRequestsThisEntitySentDuringTheSelectedPeriodPricedPerToken"),
   },
   {
-    title: "Flat Cost",
+    title: t("usage.flatCost2"),
     value: `$${formatNumberWithCommas(metadata.total_flat_cost ?? 0, 2)}`,
     className: "text-violet-600",
-    tooltip: FLAT_COST_TOOLTIP,
+    tooltip: t("usage.reservedProvisionedThroughputBilledPerHourWhetherOrNotRequestsAreSentReportedHereOnlyItDoesNotCountTowardTeamK"),
   },
 ];

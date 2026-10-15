@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n/useTranslation";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SimpleTooltip } from "@/components/ui/tooltip";
 import { Info } from "lucide-react";
@@ -52,12 +53,13 @@ const TierModelEffortRows: React.FC<TierModelEffortRowsProps> = ({
   paramsByModel,
   onEffortChange,
 }) => {
+  const { t } = useTranslation();
   const rows = tierEffortRows({ models, effortOptionsByModel, paramsByModel });
   if (rows.length === 0) return null;
   return (
     <div className="mt-2 space-y-1">
       <div className="flex items-center gap-1">
-        <span className="text-xs font-medium text-muted-foreground">Reasoning effort</span>
+        <span className="text-xs font-medium text-muted-foreground">{t("models.reasoningEffort2")}</span>
         <SimpleTooltip
           content={`Sent as reasoning_effort on requests this tier routes to the model, overriding the caller's value. Default leaves the request untouched.`}
         >
@@ -69,7 +71,7 @@ const TierModelEffortRows: React.FC<TierModelEffortRowsProps> = ({
           <span className="truncate text-xs">{model}</span>
           <Select
             items={[
-              { value: PROVIDER_DEFAULT, label: "Default" },
+              { value: PROVIDER_DEFAULT, label: t("models.default") },
               ...options.map((option) => ({ value: option, label: option })),
             ]}
             value={effort ?? PROVIDER_DEFAULT}
@@ -85,7 +87,7 @@ const TierModelEffortRows: React.FC<TierModelEffortRowsProps> = ({
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value={PROVIDER_DEFAULT}>Default</SelectItem>
+              <SelectItem value={PROVIDER_DEFAULT}>{t("models.default")}</SelectItem>
               {options.map((option) => (
                 <SelectItem key={option} value={option}>
                   {option}

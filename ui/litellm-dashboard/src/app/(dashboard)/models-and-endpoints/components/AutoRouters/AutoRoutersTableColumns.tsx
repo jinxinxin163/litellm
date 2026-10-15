@@ -1,4 +1,5 @@
 "use client";
+import { useTranslation, translate } from "@/i18n/useTranslation";
 
 import { ColumnDef } from "@tanstack/react-table";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -71,10 +72,11 @@ function AutoRouterRowActions({
   row: AutoRouterRow;
   onDeleteClick: (row: AutoRouterRow) => void;
 }) {
+  const { t } = useTranslation();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        aria-label={`Open actions for ${row.name}`}
+        aria-label={t("models.openRouterActions", { name: row.name })}
         data-testid={`auto-router-actions-${row.id}`}
         className={cn(buttonVariants({ variant: "ghost", size: "icon-sm" }), "text-muted-foreground")}
       >
@@ -87,7 +89,7 @@ function AutoRouterRowActions({
           onClick={() => onDeleteClick(row)}
         >
           <Trash2 />
-          Delete auto router
+          {t("models.deleteAutoRouterAction")}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -100,16 +102,15 @@ interface AutoRoutersTableColumnsDeps {
   onDeleteClick: (row: AutoRouterRow) => void;
 }
 
-export const getAutoRoutersTableColumns = ({
-  canModify,
-  onRouterClick,
-  onDeleteClick,
-}: AutoRoutersTableColumnsDeps): ColumnDef<AutoRouterRow>[] => [
+export const getAutoRoutersTableColumns = (
+  { canModify, onRouterClick, onDeleteClick }: AutoRoutersTableColumnsDeps,
+  t: typeof translate = translate,
+): ColumnDef<AutoRouterRow>[] => [
   {
     id: "name",
     accessorKey: "name",
-    meta: { title: "Name" },
-    header: ({ column }) => <DataTableSortHeader column={column} title="Name" />,
+    meta: { title: t("models.name") },
+    header: ({ column }) => <DataTableSortHeader column={column} title={t("models.name")} />,
     size: 260,
     enableSorting: true,
     cell: ({ row }) => <IdentityCell title={row.original.name || "-"} onClick={() => onRouterClick(row.original)} />,
@@ -117,16 +118,16 @@ export const getAutoRoutersTableColumns = ({
   {
     id: "kind",
     accessorKey: "kind",
-    meta: { title: "Type" },
-    header: "Type",
+    meta: { title: t("models.type") },
+    header: t("models.type"),
     size: 180,
     enableSorting: false,
     cell: ({ row }) => <TypeCell row={row.original} />,
   },
   {
     id: "targets",
-    meta: { title: "Routes to" },
-    header: "Routes to",
+    meta: { title: t("models.routesTo") },
+    header: t("models.routesTo"),
     size: 320,
     enableSorting: false,
     cell: ({ row }) => <TargetsCell targets={row.original.targets} />,
@@ -134,8 +135,8 @@ export const getAutoRoutersTableColumns = ({
   {
     id: "defaultModel",
     accessorKey: "defaultModel",
-    meta: { title: "Default model" },
-    header: "Default model",
+    meta: { title: t("models.defaultModel2") },
+    header: t("models.defaultModel2"),
     size: 200,
     enableSorting: false,
     cell: ({ row }) =>
@@ -150,8 +151,8 @@ export const getAutoRoutersTableColumns = ({
   {
     id: "createdAt",
     accessorKey: "createdAt",
-    meta: { title: "Created" },
-    header: ({ column }) => <DataTableSortHeader column={column} title="Created" />,
+    meta: { title: t("models.created") },
+    header: ({ column }) => <DataTableSortHeader column={column} title={t("models.created")} />,
     size: 150,
     enableSorting: true,
     sortingFn: "datetime",

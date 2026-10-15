@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n/useTranslation";
 import { useTheme } from "next-themes";
 import { JsonView, darkStyles, defaultStyles } from "react-json-view-lite";
 import "react-json-view-lite/dist/index.css";
@@ -13,9 +14,10 @@ interface JsonViewerProps {
  * Uses an interactive tree component for easy navigation.
  */
 export function JsonViewer({ data }: JsonViewerProps) {
+  const { t } = useTranslation();
   const { resolvedTheme } = useTheme();
 
-  if (!data) return <span className="text-muted-foreground">No data</span>;
+  if (!data) return <span className="text-muted-foreground">{t("logs.noData")}</span>;
 
   return (
     <div

@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n/useTranslation";
 import React, { useEffect, useState } from "react";
 import { ChevronDown, CircleHelp, Plus, Trash2, X } from "lucide-react";
 
@@ -46,6 +47,7 @@ interface UtteranceInputProps {
 }
 
 const UtteranceInput = ({ value, onChange }: UtteranceInputProps) => {
+  const { t } = useTranslation();
   const [draft, setDraft] = useState("");
 
   const addUtterances = (input: string) => {
@@ -77,7 +79,7 @@ const UtteranceInput = ({ value, onChange }: UtteranceInputProps) => {
         </Badge>
       ))}
       <input
-        aria-label="Example Utterances"
+        aria-label={t("models.exampleUtterances")}
         value={draft}
         onChange={(event) => setDraft(event.target.value)}
         onBlur={() => draft.trim() && addUtterances(draft)}
@@ -96,7 +98,7 @@ const UtteranceInput = ({ value, onChange }: UtteranceInputProps) => {
             addUtterances(pastedText);
           }
         }}
-        placeholder={value.length === 0 ? "Type an utterance and press Enter..." : undefined}
+        placeholder={value.length === 0 ? t("models.typeAnUtteranceAndPressEnter") : undefined}
         className="min-w-48 flex-1 bg-transparent py-0.5 text-sm outline-none placeholder:text-muted-foreground"
       />
     </div>
@@ -121,6 +123,7 @@ const HelpTooltip = ({ content }: { content: string }) => (
 );
 
 const RouterConfigBuilder: React.FC<RouterConfigBuilderProps> = ({ modelInfo, value, onChange }) => {
+  const { t } = useTranslation();
   const [routes, setRoutes] = useState<Route[]>([]);
   const [showJsonPreview, setShowJsonPreview] = useState(false);
   const [expandedRoutes, setExpandedRoutes] = useState<string[]>([]);
@@ -200,19 +203,19 @@ const RouterConfigBuilder: React.FC<RouterConfigBuilderProps> = ({ modelInfo, va
       <div className="w-full space-y-6">
         <div className="flex w-full flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <h3 className="text-lg font-semibold">Routes Configuration</h3>
-            <HelpTooltip content="Configure routing logic to automatically select the best model based on user input patterns" />
+            <h3 className="text-lg font-semibold">{t("models.routesConfiguration")}</h3>
+            <HelpTooltip content={t("models.configureRoutingLogicToAutomaticallySelectTheBest")} />
           </div>
           <Button type="button" onClick={addRoute}>
             <Plus data-icon="inline-start" />
-            Add Route
+            {t("models.addRoute")}
           </Button>
         </div>
 
         {routes.length === 0 ? (
           <Card>
             <CardContent className="py-8 text-center text-muted-foreground">
-              No routes configured. Click &quot;Add Route&quot; to get started.
+              {t("models.noRoutesConfiguredClickAddRouteToGet")}
             </CardContent>
           </Card>
         ) : (
@@ -238,7 +241,7 @@ const RouterConfigBuilder: React.FC<RouterConfigBuilderProps> = ({ modelInfo, va
                         className={`size-4 shrink-0 text-muted-foreground transition-transform ${isExpanded ? "rotate-180" : ""}`}
                       />
                       <span className="truncate text-base font-medium">
-                        Route {index + 1}: {route.model || "Unnamed"}
+                        {t("models.route")} {index + 1}: {route.model || t("models.unnamed")}
                       </span>
                     </CollapsibleTrigger>
                     <Button
@@ -255,30 +258,30 @@ const RouterConfigBuilder: React.FC<RouterConfigBuilderProps> = ({ modelInfo, va
                     <Separator />
                     <div className="space-y-4 p-4">
                       <div className="space-y-2">
-                        <Label>Model</Label>
+                        <Label>{t("models.model")}</Label>
                         <SearchSelect
                           value={route.model}
                           onValueChange={(model) => updateRoute(route.id, "model", model)}
-                          placeholder="Select model"
+                          placeholder={t("models.selectModel")}
                           options={modelOptions}
                         />
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor={`${route.id}-description`}>Description</Label>
+                        <Label htmlFor={`${route.id}-description`}>{t("models.description")}</Label>
                         <Textarea
                           id={`${route.id}-description`}
                           value={route.description}
                           onChange={(event) => updateRoute(route.id, "description", event.target.value)}
-                          placeholder="Describe when this route should be used..."
+                          placeholder={t("models.describeWhenThisRouteShouldBeUsed")}
                           rows={2}
                         />
                       </div>
 
                       <div className="space-y-2">
                         <div className="flex items-center gap-2">
-                          <Label htmlFor={`${route.id}-threshold`}>Score Threshold</Label>
-                          <HelpTooltip content="Minimum similarity score to route to this model (0-1)" />
+                          <Label htmlFor={`${route.id}-threshold`}>{t("models.scoreThreshold")}</Label>
+                          <HelpTooltip content={t("models.minimumSimilarityScoreToRouteToThisModel")} />
                         </div>
                         <Input
                           id={`${route.id}-threshold`}
@@ -296,12 +299,10 @@ const RouterConfigBuilder: React.FC<RouterConfigBuilderProps> = ({ modelInfo, va
 
                       <div className="space-y-2">
                         <div className="flex items-center gap-2">
-                          <Label>Example Utterances</Label>
-                          <HelpTooltip content="Training examples for this route. Type an utterance and press Enter to add it." />
+                          <Label>{t("models.exampleUtterances")}</Label>
+                          <HelpTooltip content={t("models.trainingExamplesForThisRouteTypeAnUtterance")} />
                         </div>
-                        <p className="text-xs text-muted-foreground">
-                          Type an utterance and press Enter to add it. You can also paste multiple lines.
-                        </p>
+                        <p className="text-xs text-muted-foreground">{t("models.typeAnUtteranceAndPressEnterToAdd")}</p>
                         <UtteranceInput
                           value={route.utterances}
                           onChange={(utterances) => updateRoute(route.id, "utterances", utterances)}
@@ -317,9 +318,9 @@ const RouterConfigBuilder: React.FC<RouterConfigBuilderProps> = ({ modelInfo, va
 
         <Separator />
         <div className="flex w-full items-center justify-between gap-3">
-          <h3 className="text-lg font-semibold">JSON Preview</h3>
+          <h3 className="text-lg font-semibold">{t("models.jsonPreview")}</h3>
           <Button type="button" variant="link" onClick={() => setShowJsonPreview((visible) => !visible)}>
-            {showJsonPreview ? "Hide" : "Show"}
+            {showJsonPreview ? t("models.hide") : t("models.show")}
           </Button>
         </div>
 

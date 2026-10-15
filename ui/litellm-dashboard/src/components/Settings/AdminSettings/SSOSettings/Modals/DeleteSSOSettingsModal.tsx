@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n/useTranslation";
 import { useEditSSOSettings } from "@/app/(dashboard)/hooks/sso/useEditSSOSettings";
 import { useSSOSettings } from "@/app/(dashboard)/hooks/sso/useSSOSettings";
 import React from "react";
@@ -13,6 +14,7 @@ interface DeleteSSOSettingsModalProps {
 }
 
 const DeleteSSOSettingsModal: React.FC<DeleteSSOSettingsModalProps> = ({ isVisible, onCancel, onSuccess }) => {
+  const { t } = useTranslation();
   const { data: ssoSettings } = useSSOSettings();
   const { mutateAsync: editSSOSettings, isPending: isEditingSSOSettings } = useEditSSOSettings();
 
@@ -42,7 +44,7 @@ const DeleteSSOSettingsModal: React.FC<DeleteSSOSettingsModalProps> = ({ isVisib
 
     await editSSOSettings(clearSettings, {
       onSuccess: () => {
-        toast.success("SSO settings cleared successfully");
+        toast.success(t("admin.ssoSettingsClearedSuccessfully"));
         onCancel();
         onSuccess();
       },
@@ -55,12 +57,15 @@ const DeleteSSOSettingsModal: React.FC<DeleteSSOSettingsModalProps> = ({ isVisib
   return (
     <DeleteResourceModal
       isOpen={isVisible}
-      title="Confirm Clear SSO Settings"
-      alertMessage="This action cannot be undone."
-      message="Are you sure you want to clear all SSO settings? Users will no longer be able to login using SSO after this change."
-      resourceInformationTitle="SSO Settings"
+      title={t("admin.confirmClearSsoSettings")}
+      alertMessage={t("admin.thisActionCannotBeUndone")}
+      message={t("admin.areYouSureYouWantToClearAllSso")}
+      resourceInformationTitle={t("admin.ssoSettings")}
       resourceInformation={[
-        { label: "Provider", value: (ssoSettings?.values && detectSSOProvider(ssoSettings?.values)) || "Generic" },
+        {
+          label: t("admin.provider"),
+          value: (ssoSettings?.values && detectSSOProvider(ssoSettings?.values)) || "Generic",
+        },
       ]}
       onCancel={onCancel}
       onOk={handleClearSSO}

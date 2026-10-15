@@ -1,4 +1,5 @@
 "use client";
+import { translate, useTranslation } from "@/i18n/useTranslation";
 
 import React from "react";
 import { FormProvider, useFormContext, useWatch, type UseFormReturn } from "react-hook-form";
@@ -213,23 +214,23 @@ export const submitMountedSSOValues =
   () =>
     void form.handleSubmit((values) => onFormSubmit(pickMountedSSOValues(values, variant)))();
 
-const REQUIRED_MESSAGES: Record<string, string> = {
-  sso_provider: "Please select an SSO provider",
-  user_email: "Please enter the email of the proxy admin",
-  proxy_base_url: "Please enter the proxy base url",
-  group_claim: "Please enter the group claim",
-  team_ids_jwt_field: "Please enter the team IDs JWT field",
-};
+const requiredMessages = (t: (key: string) => string): Record<string, string> => ({
+  sso_provider: t("admin.selectProvider"),
+  user_email: t("admin.adminEmailRequired"),
+  proxy_base_url: t("admin.baseUrlRequired"),
+  group_claim: t("admin.groupClaimRequired"),
+  team_ids_jwt_field: t("admin.jwtFieldRequired"),
+});
 
 const isBlank = (value: unknown): boolean => value === undefined || value === null || value === "";
 
-export const buildSSOSettingsSchema = (variant: SSOFormVariant) =>
+export const buildSSOSettingsSchema = (variant: SSOFormVariant, t: typeof translate = translate) =>
   z.custom<SSOSettingsFormValues>().superRefine((values, ctx) => {
     const mounted = new Set(mountedSSOFieldNames(values, variant));
 
     const requireField = (name: string) => {
       if (mounted.has(name) && isBlank(values[name as keyof SSOSettingsFormValues])) {
-        ctx.addIssue({ code: "custom", path: [name], message: REQUIRED_MESSAGES[name] });
+        ctx.addIssue({ code: "custom", path: [name], message: requiredMessages(t)[name] });
       }
     };
 
@@ -245,20 +246,22 @@ export const buildSSOSettingsSchema = (variant: SSOFormVariant) =>
       ctx.addIssue({
         code: "custom",
         path: [field.name],
-        message: `Please enter the ${field.label.toLowerCase()}`,
+        message: t("admin.fieldRequired", {
+          field: t(`admin.ssoFieldLabels.${field.name}`, { defaultValue: field.label }).toLowerCase(),
+        }),
       });
     });
 
     const proxyBaseUrl = values.proxy_base_url;
     if (isBlank(proxyBaseUrl)) {
-      ctx.addIssue({ code: "custom", path: ["proxy_base_url"], message: REQUIRED_MESSAGES.proxy_base_url });
+      ctx.addIssue({ code: "custom", path: ["proxy_base_url"], message: requiredMessages(t).proxy_base_url });
       return;
     }
     if (!/^https?:\/\/.+/.test(proxyBaseUrl as string)) {
       ctx.addIssue({
         code: "custom",
         path: ["proxy_base_url"],
-        message: "URL must start with http:// or https://",
+        message: t("admin.urlProtocol"),
       });
       return;
     }
@@ -266,7 +269,7 @@ export const buildSSOSettingsSchema = (variant: SSOFormVariant) =>
       ctx.addIssue({
         code: "custom",
         path: ["proxy_base_url"],
-        message: "URL must not end with a trailing slash",
+        message: t("admin.urlTrailingSlash"),
       });
     }
   });
@@ -291,19 +294,23 @@ export const emptySSOSettingsFormValues: SSOSettingsFormValues = {
 export const useSSOSettingsForm = (
   variant: SSOFormVariant,
   values?: SSOSettingsFormValues,
-): UseFormReturn<SSOSettingsFormValues> =>
-  useZodForm(buildSSOSettingsSchema(variant), {
+): UseFormReturn<SSOSettingsFormValues> => {
+  const { t } = useTranslation();
+  return useZodForm(buildSSOSettingsSchema(variant, t), {
     mode: "onChange",
     defaultValues: emptySSOSettingsFormValues,
     ...(values ? { values } : {}),
   });
+};
 
 const SSOProviderField = ({ field }: { field: SSOProviderConfig["fields"][number] }) => {
+  const { t } = useTranslation();
+  const label = t(`admin.ssoFieldLabels.${field.name}`, { defaultValue: field.label });
   const { control } = useFormContext<SSOSettingsFormValues>();
 
   if (field.type === "checkbox") {
     return (
-      <FormField control={control} name={field.name} label={field.label} orientation="horizontal">
+      <FormField control={control} name={field.name} label={label} orientation="horizontal">
         {({ value, onChange, onBlur, id, ...rest }) => (
           <Checkbox
             id={id}
@@ -319,7 +326,7 @@ const SSOProviderField = ({ field }: { field: SSOProviderConfig["fields"][number
   }
 
   return (
-    <FormField control={control} name={field.name} label={field.label}>
+    <FormField control={control} name={field.name} label={label}>
       {({ ref, value, ...rest }) => {
         const shared = { placeholder: field.placeholder, value: (value as string) ?? "", ...rest };
         if (field.type === "textarea") return <Textarea ref={ref} rows={4} {...shared} />;
@@ -338,10 +345,11 @@ export const renderProviderFields = (provider: string) => {
 };
 
 export const SSOProviderSelectField = () => {
+  const { t } = useTranslation();
   const { control } = useFormContext<SSOSettingsFormValues>();
 
   return (
-    <FormField control={control} name="sso_provider" label="SSO Provider">
+    <FormField control={control} name="sso_provider" label={t("admin.ssoProvider")}>
       {({ value, onChange, onBlur, id, ...rest }) => (
         <Select value={(value as string) ?? ""} onValueChange={onChange}>
           <SelectTrigger
@@ -376,20 +384,22 @@ export const SSOProviderSelectField = () => {
 };
 
 export const ProxyAdminEmailField = () => {
+  const { t } = useTranslation();
   const { control } = useFormContext<SSOSettingsFormValues>();
 
   return (
-    <FormField control={control} name="user_email" label="Proxy Admin Email">
+    <FormField control={control} name="user_email" label={t("admin.proxyAdminEmail")}>
       {({ ref, value, ...rest }) => <Input ref={ref} value={(value as string) ?? ""} {...rest} />}
     </FormField>
   );
 };
 
 export const ProxyBaseUrlField = () => {
+  const { t } = useTranslation();
   const { control } = useFormContext<SSOSettingsFormValues>();
 
   return (
-    <FormField control={control} name="proxy_base_url" label="Proxy Base URL">
+    <FormField control={control} name="proxy_base_url" label={t("admin.proxyBaseUrl")}>
       {({ ref, value, onChange, ...rest }) => (
         <Input
           ref={ref}
@@ -429,10 +439,11 @@ export const MappingToggleField = ({
 };
 
 export const GroupClaimField = () => {
+  const { t } = useTranslation();
   const { control } = useFormContext<SSOSettingsFormValues>();
 
   return (
-    <FormField control={control} name="group_claim" label="Group Claim">
+    <FormField control={control} name="group_claim" label={t("admin.groupClaim")}>
       {({ ref, value, ...rest }) => <Input ref={ref} value={(value as string) ?? ""} {...rest} />}
     </FormField>
   );
@@ -449,11 +460,12 @@ const providerOptionLabel = (value: string) =>
   ssoProviderDisplayNames[value] || value.charAt(0).toUpperCase() + value.slice(1) + " SSO";
 
 export const RoleMappingTeamFields = () => {
+  const { t } = useTranslation();
   const { control } = useFormContext<SSOSettingsFormValues>();
 
   return (
     <>
-      <FormField control={control} name="default_role" label="Default Role">
+      <FormField control={control} name="default_role" label={t("admin.defaultRole")}>
         {({ value, onChange, onBlur, id, ...rest }) => (
           <Select value={(value as string) ?? ""} onValueChange={onChange}>
             <SelectTrigger
@@ -478,19 +490,19 @@ export const RoleMappingTeamFields = () => {
         )}
       </FormField>
 
-      <FormField control={control} name="proxy_admin_teams" label="Proxy Admin Teams">
+      <FormField control={control} name="proxy_admin_teams" label={t("admin.proxyAdminTeams")}>
         {({ ref, value, ...rest }) => <Input ref={ref} value={(value as string) ?? ""} {...rest} />}
       </FormField>
 
-      <FormField control={control} name="admin_viewer_teams" label="Admin Viewer Teams">
+      <FormField control={control} name="admin_viewer_teams" label={t("admin.adminViewerTeams")}>
         {({ ref, value, ...rest }) => <Input ref={ref} value={(value as string) ?? ""} {...rest} />}
       </FormField>
 
-      <FormField control={control} name="internal_user_teams" label="Internal User Teams">
+      <FormField control={control} name="internal_user_teams" label={t("admin.internalUserTeams")}>
         {({ ref, value, ...rest }) => <Input ref={ref} value={(value as string) ?? ""} {...rest} />}
       </FormField>
 
-      <FormField control={control} name="internal_viewer_teams" label="Internal Viewer Teams">
+      <FormField control={control} name="internal_viewer_teams" label={t("admin.internalViewerTeams")}>
         {({ ref, value, ...rest }) => <Input ref={ref} value={(value as string) ?? ""} {...rest} />}
       </FormField>
     </>
@@ -498,16 +510,18 @@ export const RoleMappingTeamFields = () => {
 };
 
 export const TeamIdsJwtFieldField = () => {
+  const { t } = useTranslation();
   const { control } = useFormContext<SSOSettingsFormValues>();
 
   return (
-    <FormField control={control} name="team_ids_jwt_field" label="Team IDs JWT Field">
+    <FormField control={control} name="team_ids_jwt_field" label={t("admin.teamIdsJwtField")}>
       {({ ref, value, ...rest }) => <Input ref={ref} value={(value as string) ?? ""} {...rest} />}
     </FormField>
   );
 };
 
 const BaseSSOSettingsForm: React.FC<BaseSSOSettingsFormProps> = ({ form, onFormSubmit }) => {
+  const { t } = useTranslation();
   const provider = useWatch({ control: form.control, name: "sso_provider" });
   const useRoleMappings = useWatch({ control: form.control, name: "use_role_mappings" });
   const useTeamMappings = useWatch({ control: form.control, name: "use_team_mappings" });
@@ -527,14 +541,14 @@ const BaseSSOSettingsForm: React.FC<BaseSSOSettingsFormProps> = ({ form, onFormS
             {provider ? renderProviderFields(provider) : null}
             <ProxyAdminEmailField />
             <ProxyBaseUrlField />
-            {showMappingToggles && <MappingToggleField name="use_role_mappings" label="Use Role Mappings" />}
+            {showMappingToggles && <MappingToggleField name="use_role_mappings" label={t("admin.useRoleMappings")} />}
             {useRoleMappings && showMappingToggles && (
               <>
                 <GroupClaimField />
                 <RoleMappingTeamFields />
               </>
             )}
-            {showMappingToggles && <MappingToggleField name="use_team_mappings" label="Use Team Mappings" />}
+            {showMappingToggles && <MappingToggleField name="use_team_mappings" label={t("admin.useTeamMappings")} />}
             {useTeamMappings && showMappingToggles && <TeamIdsJwtFieldField />}
           </FieldGroup>
         </form>

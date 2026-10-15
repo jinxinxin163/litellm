@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslation } from "@/i18n/useTranslation";
+
 import {
   type Cell,
   type Column,
@@ -320,13 +322,14 @@ function MessageRow({ colSpan, children }: { colSpan: number; children: React.Re
 }
 
 function DefaultEmptyState() {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-col items-center gap-1 py-6">
       <div className="mb-1 flex size-10 items-center justify-center rounded-lg bg-muted">
         <SearchX className="size-5 text-muted-foreground" />
       </div>
-      <div className="text-sm font-medium text-foreground">No results</div>
-      <div className="text-sm text-muted-foreground">No rows match your search or filters.</div>
+      <div className="text-sm font-medium text-foreground">{t("table.noResults")}</div>
+      <div className="text-sm text-muted-foreground">{t("table.noMatchingRows")}</div>
     </div>
   );
 }
@@ -527,11 +530,12 @@ function useDataTableInstance<TData extends RowData, TValue>(
 }
 
 export function DataTable<TData extends RowData, TValue>(props: DataTableProps<TData, TValue>) {
+  const { t } = useTranslation();
   const resolved: DataTableResolvedProps<TData, TValue> = props;
 
   const {
     isLoading = false,
-    loadingMessage = "Loading…",
+    loadingMessage = t("common.loadingEllipsis"),
     skeletonRowCount = 8,
     noDataMessage,
     paginationMode = "none",

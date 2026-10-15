@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n/useTranslation";
 import { useModelCostMap } from "@/app/(dashboard)/hooks/models/useModelCostMap";
 import { ArrowRight, Pencil, Play, Trash2 } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -120,6 +121,7 @@ async function testFallbackModelResponse(selectedModel: string, accessToken: str
 }
 
 const Fallbacks: React.FC<FallbacksProps> = ({ accessToken, userRole, userID }) => {
+  const { t } = useTranslation();
   const [routerSettings, setRouterSettings] = useState<{ [key: string]: any }>({});
   const [isDeleting, setIsDeleting] = useState(false);
   const [fallbackToDelete, setFallbackToDelete] = useState<FallbackEntry | null>(null);
@@ -193,7 +195,7 @@ const Fallbacks: React.FC<FallbacksProps> = ({ accessToken, userRole, userID }) 
     try {
       await setCallbacksCall(accessToken, payload);
       setRouterSettings(updatedSettings);
-      toast.success("Router settings updated successfully");
+      toast.success(t("router.routerSettingsUpdatedSuccessfully2"));
     } catch (error) {
       toast.fromError("Failed to update router settings: " + error);
     } finally {
@@ -263,16 +265,16 @@ const Fallbacks: React.FC<FallbacksProps> = ({ accessToken, userRole, userID }) 
       {!hasFallbacks ? (
         <div className="rounded-lg border border-border bg-muted px-4 py-6 text-center">
           <span className="text-muted-foreground">
-            No fallbacks configured. Add fallbacks to automatically try another model when the primary fails.
+            {t("router.noFallbacksConfiguredAddFallbacksToAutomaticallyTryAnother")}
           </span>
         </div>
       ) : (
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Model Name</TableHead>
-              <TableHead>Fallbacks</TableHead>
-              <TableHead>Actions</TableHead>
+              <TableHead>{t("router.modelName")}</TableHead>
+              <TableHead>{t("router.fallbacks")}</TableHead>
+              <TableHead>{t("router.actions")}</TableHead>
             </TableRow>
           </TableHeader>
 
@@ -300,7 +302,7 @@ const Fallbacks: React.FC<FallbacksProps> = ({ accessToken, userRole, userID }) 
                           >
                             <Play className="h-5 w-5 shrink-0" />
                           </TooltipTrigger>
-                          <TooltipContent>Test fallback</TooltipContent>
+                          <TooltipContent>{t("router.testFallback")}</TooltipContent>
                         </Tooltip>
                         <Tooltip>
                           <TooltipTrigger
@@ -317,7 +319,7 @@ const Fallbacks: React.FC<FallbacksProps> = ({ accessToken, userRole, userID }) 
                           >
                             <Pencil className="h-5 w-5 shrink-0" />
                           </TooltipTrigger>
-                          <TooltipContent>Edit fallback</TooltipContent>
+                          <TooltipContent>{t("router.editFallback")}</TooltipContent>
                         </Tooltip>
                         <Tooltip>
                           <TooltipTrigger
@@ -334,7 +336,7 @@ const Fallbacks: React.FC<FallbacksProps> = ({ accessToken, userRole, userID }) 
                           >
                             <Trash2 className="h-5 w-5 shrink-0" />
                           </TooltipTrigger>
-                          <TooltipContent>Delete fallback</TooltipContent>
+                          <TooltipContent>{t("router.deleteFallback")}</TooltipContent>
                         </Tooltip>
                       </>
                     )}
@@ -357,12 +359,12 @@ const Fallbacks: React.FC<FallbacksProps> = ({ accessToken, userRole, userID }) 
       )}
       <DeleteResourceModal
         isOpen={isDeleteModalOpen}
-        title="Delete Fallback?"
-        message="Are you sure you want to delete this fallback? This action cannot be undone."
-        resourceInformationTitle="Fallback Information"
+        title={t("router.deleteFallback2")}
+        message={t("router.areYouSureYouWantToDeleteThisFallback")}
+        resourceInformationTitle={t("router.fallbackInformation")}
         resourceInformation={[
           {
-            label: "Model Name",
+            label: t("router.modelName"),
             value: fallbackToDelete ? Object.keys(fallbackToDelete)[0] : "",
             code: true,
           },

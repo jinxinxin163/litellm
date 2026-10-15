@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n/useTranslation";
 import React, { useEffect, useMemo, useState } from "react";
 import { z } from "zod/v4";
 import { toast } from "@/lib/toast";
@@ -441,6 +442,7 @@ const EditAutoRouterModal: React.FC<EditAutoRouterModalProps> = ({
   accessToken,
   userRole,
 }) => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [modelAccessGroups, setModelAccessGroups] = useState<string[]>([]);
   const [modelInfo, setModelInfo] = useState<ModelGroup[]>([]);
@@ -740,7 +742,7 @@ const EditAutoRouterModal: React.FC<EditAutoRouterModalProps> = ({
 
   const modelChoices: ModelChoice[] = [
     ...modelInfo.map((model) => ({ value: model.model_group, label: model.model_group })),
-    { value: "custom", label: "Enter custom model name" },
+    { value: "custom", label: t("models.enterCustomModelName") },
   ];
 
   return (
@@ -748,15 +750,13 @@ const EditAutoRouterModal: React.FC<EditAutoRouterModalProps> = ({
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-4xl">
         <TooltipProvider>
           <DialogHeader>
-            <DialogTitle>Edit Auto Router Configuration</DialogTitle>
-            <DialogDescription>
-              Edit the auto router configuration including routing logic, default models, and access settings.
-            </DialogDescription>
+            <DialogTitle>{t("models.editAutoRouterConfiguration")}</DialogTitle>
+            <DialogDescription>{t("models.editTheAutoRouterConfigurationIncludingRoutingLogic")}</DialogDescription>
           </DialogHeader>
 
           <form onSubmit={(event) => event.preventDefault()} noValidate>
             <FieldGroup>
-              <FormField control={form.control} name="auto_router_name" label="Auto Router Name">
+              <FormField control={form.control} name="auto_router_name" label={t("models.autoRouterName")}>
                 {({ ref, ...field }) => <Input {...field} ref={ref} placeholder="e.g., auto_router_1, smart_routing" />}
               </FormField>
 
@@ -805,28 +805,32 @@ const EditAutoRouterModal: React.FC<EditAutoRouterModalProps> = ({
                     />
                   </div>
 
-                  <FormField control={form.control} name="auto_router_default_model" label="Default Model">
+                  <FormField control={form.control} name="auto_router_default_model" label={t("models.defaultModel")}>
                     {({ id, value, onChange, "aria-invalid": ariaInvalid, "aria-describedby": ariaDescribedBy }) => (
                       <ModelChoiceCombobox
                         id={id}
                         value={value}
                         onChange={onChange}
                         choices={modelChoices}
-                        placeholder="Select a default model"
+                        placeholder={t("models.selectADefaultModel")}
                         ariaInvalid={ariaInvalid}
                         ariaDescribedBy={ariaDescribedBy}
                       />
                     )}
                   </FormField>
 
-                  <FormField control={form.control} name="auto_router_embedding_model" label="Embedding Model">
+                  <FormField
+                    control={form.control}
+                    name="auto_router_embedding_model"
+                    label={t("models.embeddingModel2")}
+                  >
                     {({ id, value, onChange, "aria-invalid": ariaInvalid, "aria-describedby": ariaDescribedBy }) => (
                       <ModelChoiceCombobox
                         id={id}
                         value={value}
                         onChange={onChange}
                         choices={modelChoices}
-                        placeholder="Select an embedding model"
+                        placeholder={t("models.selectAnEmbeddingModel")}
                         ariaInvalid={ariaInvalid}
                         ariaDescribedBy={ariaDescribedBy}
                       />
@@ -839,7 +843,7 @@ const EditAutoRouterModal: React.FC<EditAutoRouterModalProps> = ({
                 <FormField
                   control={form.control}
                   name="model_access_group"
-                  label={labelWithHint("Model Access Groups", "Control who can access this auto router")}
+                  label={labelWithHint(t("models.modelAccessGroups"), t("models.controlWhoCanAccessThisAutoRouter"))}
                 >
                   {({ id, value, onChange, "aria-invalid": ariaInvalid, "aria-describedby": ariaDescribedBy }) => (
                     <AccessGroupTagsCombobox
@@ -858,19 +862,19 @@ const EditAutoRouterModal: React.FC<EditAutoRouterModalProps> = ({
 
           <DialogFooter>
             <Button variant="outline" onClick={onCancel}>
-              Cancel
+              {t("models.cancel")}
             </Button>
             {submitBlockedReason === null ? (
               <Button disabled={loading} onClick={handleSubmit}>
                 {loading && <UiLoadingSpinner className="size-4" />}
-                Save Changes
+                {t("models.saveChanges")}
               </Button>
             ) : (
               <Tooltip>
                 <TooltipTrigger
                   render={
                     <Button disabled onClick={handleSubmit}>
-                      Save Changes
+                      {t("models.saveChanges")}
                     </Button>
                   }
                 />

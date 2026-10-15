@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n/useTranslation";
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
@@ -44,6 +45,7 @@ const SettingValueEditor: React.FC<{
   setting: generalSettingsItem;
   onChange: (fieldName: string, newValue: any) => void;
 }> = ({ setting, onChange }) => {
+  const { t } = useTranslation();
   if (setting.field_type === "Integer") {
     return (
       <Input
@@ -97,10 +99,10 @@ const SettingValueEditor: React.FC<{
         onValueChange={(newValue) => onChange(setting.field_name, newValue ?? "")}
       >
         <SelectTrigger className="min-w-32">
-          <SelectValue placeholder="Default" />
+          <SelectValue placeholder={t("router.default")} />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value={null}>Default</SelectItem>
+          <SelectItem value={null}>{t("router.default")}</SelectItem>
           {(setting.field_options ?? []).map((option) => (
             <SelectItem key={option} value={option}>
               {option}
@@ -184,6 +186,7 @@ export const PromptCachingPanel: React.FC<{
 };
 
 const GeneralSettings: React.FC<GeneralSettingsPageProps> = ({ accessToken, userRole, userID }) => {
+  const { t } = useTranslation();
   const [generalSettings, setGeneralSettings] = useState<generalSettingsItem[]>([]);
 
   useEffect(() => {
@@ -255,10 +258,10 @@ const GeneralSettings: React.FC<GeneralSettingsPageProps> = ({ accessToken, user
     <div className="w-full">
       <Tabs defaultValue="loadbalancing" className="h-[75vh] w-full">
         <TabsList variant="line" className="mx-8 mt-4">
-          <TabsTrigger value="loadbalancing">Loadbalancing</TabsTrigger>
-          <TabsTrigger value="routing-groups">Routing Groups</TabsTrigger>
-          <TabsTrigger value="fallbacks">Fallbacks</TabsTrigger>
-          <TabsTrigger value="general">General</TabsTrigger>
+          <TabsTrigger value="loadbalancing">{t("router.loadbalancing")}</TabsTrigger>
+          <TabsTrigger value="routing-groups">{t("router.routingGroups")}</TabsTrigger>
+          <TabsTrigger value="fallbacks">{t("router.fallbacks")}</TabsTrigger>
+          <TabsTrigger value="general">{t("router.general")}</TabsTrigger>
         </TabsList>
         <TabsContent value="loadbalancing" className="px-8 py-6" keepMounted>
           <RouterSettings accessToken={accessToken} userRole={userRole} userID={userID} />
@@ -278,10 +281,10 @@ const GeneralSettings: React.FC<GeneralSettingsPageProps> = ({ accessToken, user
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Setting</TableHead>
-                    <TableHead>Value</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Action</TableHead>
+                    <TableHead>{t("router.setting")}</TableHead>
+                    <TableHead>{t("router.value")}</TableHead>
+                    <TableHead>{t("router.status")}</TableHead>
+                    <TableHead>{t("router.action")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -307,15 +310,15 @@ const GeneralSettings: React.FC<GeneralSettingsPageProps> = ({ accessToken, user
                         </TableCell>
                         <TableCell>
                           {value.stored_in_db == true ? (
-                            <StatusBadge tone="success" label="In DB" />
+                            <StatusBadge tone="success" label={t("router.inDb")} />
                           ) : value.stored_in_db == false ? (
-                            <StatusBadge tone="neutral" label="In Config" />
+                            <StatusBadge tone="neutral" label={t("router.inConfig")} />
                           ) : (
-                            <StatusBadge tone="neutral" label="Not Set" />
+                            <StatusBadge tone="neutral" label={t("router.notSet")} />
                           )}
                         </TableCell>
                         <TableCell>
-                          <Button onClick={() => handleUpdateField(value.field_name)}>Update</Button>
+                          <Button onClick={() => handleUpdateField(value.field_name)}>{t("router.update")}</Button>
                           <span
                             onClick={() => handleResetField(value.field_name)}
                             className="inline-flex shrink-0 cursor-pointer items-center justify-center px-1.5 py-1.5 text-destructive"

@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n/useTranslation";
 import { useUISettings } from "@/app/(dashboard)/hooks/uiSettings/useUISettings";
 import useAuthorized from "@/app/(dashboard)/hooks/useAuthorized";
 import { SimpleTooltip } from "@/components/ui/tooltip";
@@ -27,6 +28,7 @@ export default function TeamMemberTab({
   setIsEditMemberModalVisible,
   setIsAddMemberModalVisible,
 }: TeamMemberTabProps) {
+  const { t } = useTranslation();
   const formatNumber = (value: number | null): string => {
     if (value === null || value === undefined) return "0";
 
@@ -101,9 +103,9 @@ export default function TeamMemberTab({
     {
       title: (
         <span className="flex items-center gap-1">
-          Model Scope
+          {t("people.modelScope")}
           <SimpleTooltip content="Models this member can access. Empty means they inherit all team models.">
-            <CircleHelp className="size-4" aria-label="Model scope information" />
+            <CircleHelp className="size-4" aria-label={t("people.modelScopeInformation")} />
           </SimpleTooltip>
         </span>
       ),
@@ -111,7 +113,7 @@ export default function TeamMemberTab({
       render: (_: unknown, record: Member) => {
         const models = getUserAllowedModels(record.user_id);
         if (!models) {
-          return <span className="text-muted-foreground">(all team models)</span>;
+          return <span className="text-muted-foreground">{t("people.allTeamModels2")}</span>;
         }
         const displayed = models.slice(0, 2);
         const remaining = models.length - displayed.length;
@@ -134,9 +136,9 @@ export default function TeamMemberTab({
     {
       title: (
         <span className="flex items-center gap-1">
-          Current Cycle Spend (USD)
+          {t("people.currentCycleSpendUsd")}
           <SimpleTooltip content="Spend for the current budget cycle. Resets to $0 when the member's budget window rolls over. This is the value checked against the member's budget.">
-            <CircleHelp className="size-4" aria-label="Current cycle spend information" />
+            <CircleHelp className="size-4" aria-label={t("people.currentCycleSpendInformation")} />
           </SimpleTooltip>
         </span>
       ),
@@ -148,9 +150,9 @@ export default function TeamMemberTab({
     {
       title: (
         <span className="flex items-center gap-1">
-          Total Spend (USD)
+          {t("people.totalSpendUsd")}
           <SimpleTooltip content="Cumulative spend by this member within this team, across all budget cycles. Tracking began 2026-04-21; spend from before that date is not included.">
-            <CircleHelp className="size-4" aria-label="Total spend information" />
+            <CircleHelp className="size-4" aria-label={t("people.totalSpendInformation")} />
           </SimpleTooltip>
         </span>
       ),
@@ -158,23 +160,23 @@ export default function TeamMemberTab({
       render: (_: unknown, record: Member) => <MoneyCell value={getUserTotalSpend(record.user_id)} decimals={2} />,
     },
     {
-      title: "Team Member Budget (USD)",
+      title: t("people.teamMemberBudgetUsd"),
       key: "budget",
       render: (_: unknown, record: Member) => (
         <MoneyCell value={getUserBudget(record.user_id)} decimals={2} emptyText="Unlimited" showZero />
       ),
     },
     {
-      title: "Budget Reset",
+      title: t("people.budgetReset2"),
       key: "budget_reset",
       render: (_: unknown, record: Member) => <DateCell value={getUserBudgetReset(record.user_id)} precision="date" />,
     },
     {
       title: (
         <span className="flex items-center gap-1">
-          Team Member Rate Limits
+          {t("people.teamMemberRateLimits")}
           <SimpleTooltip content="Rate limits for this member's usage within this team.">
-            <CircleHelp className="size-4" aria-label="Team member rate limits information" />
+            <CircleHelp className="size-4" aria-label={t("people.teamMemberRateLimitsInformation")} />
           </SimpleTooltip>
         </span>
       ),
