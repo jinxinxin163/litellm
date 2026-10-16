@@ -1043,6 +1043,7 @@
     "keyActivity": "Key Activity",
     "exportData": "Export Data",
     "projectSpend": "Project Spend",
+    "maxBudget": "Max Budget",
     "usageMetrics": "Usage Metrics",
     "totalRequests": "Total Requests",
     "successfulRequests": "Successful Requests",

@@ -1043,6 +1043,7 @@
     "keyActivity": "密钥活动",
     "exportData": "导出数据",
     "projectSpend": "项目费用",
+    "maxBudget": "预算上限",
     "usageMetrics": "用量指标",
     "totalRequests": "请求总数",
     "successfulRequests": "成功请求",
