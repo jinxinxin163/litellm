@@ -374,18 +374,19 @@ const SettingsForm = ({ initialValues, roleOptions, updateSettings, onCancel, on
   );
 };
 
-const SettingsCard = ({ action, children }: { action?: React.ReactNode; children: React.ReactNode }) => (
-  <Card>
-    <CardHeader>
-      <CardTitle>Default User Settings</CardTitle>
-      <CardDescription>
-        Applied to every new internal user created through SSO or the user management APIs.
-      </CardDescription>
-      {action !== undefined && <CardAction>{action}</CardAction>}
-    </CardHeader>
-    <CardContent>{children}</CardContent>
-  </Card>
-);
+const SettingsCard = ({ action, children }: { action?: React.ReactNode; children: React.ReactNode }) => {
+  const { t } = useTranslation();
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>{t("people.defaultUserSettings")}</CardTitle>
+        <CardDescription>{t("people.defaultUserSettingsDescription")}</CardDescription>
+        {action !== undefined && <CardAction>{action}</CardAction>}
+      </CardHeader>
+      <CardContent>{children}</CardContent>
+    </Card>
+  );
+};
 
 export interface DefaultUserSettingsFormProps {
   possibleUIRoles?: Record<string, Record<string, string>> | null;

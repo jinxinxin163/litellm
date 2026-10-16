@@ -1,4 +1,14 @@
 {
+  "onboarding": {
+    "invitationLink": "Invitation Link",
+    "resetPasswordLink": "Reset Password Link",
+    "invitationDescription": "Copy and send the generated link to onboard this user to the proxy.",
+    "resetPasswordDescription": "Copy and send the generated link to the user to reset their password.",
+    "userId": "User ID",
+    "copyInvitationLink": "Copy invitation link",
+    "copyPasswordResetLink": "Copy password reset link",
+    "copied": "Copied!"
+  },
   "createdKeyDisplay": {
     "saveWarning": "Please save this secret key somewhere safe and accessible. For security reasons, <bold>you will not be able to view it again</bold> through your LiteLLM account. If you lose this secret key, you will need to generate a new one.",
     "virtualKeyLabel": "Virtual Key:",
@@ -1713,6 +1723,7 @@
     "selected": "selected)",
     "users": "Users",
     "defaultUserSettings": "Default User Settings",
+    "defaultUserSettingsDescription": "Applied to every new internal user created through SSO or the user management APIs.",
     "loadingDefaultUserSettings": "Loading default user settings",
     "resources": "Resources",
     "spendBudget": "Spend / Budget",

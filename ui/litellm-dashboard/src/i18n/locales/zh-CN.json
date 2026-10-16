@@ -1,4 +1,14 @@
 {
+  "onboarding": {
+    "invitationLink": "邀请链接",
+    "resetPasswordLink": "密码重置链接",
+    "invitationDescription": "请复制生成的链接并发送给此用户，邀请其加入网关。",
+    "resetPasswordDescription": "请复制生成的链接并发送给此用户，以重置其密码。",
+    "userId": "用户 ID",
+    "copyInvitationLink": "复制邀请链接",
+    "copyPasswordResetLink": "复制密码重置链接",
+    "copied": "已复制！"
+  },
   "createdKeyDisplay": {
     "saveWarning": "请将此密钥保存在安全且方便访问的地方。出于安全考虑，<bold>你将无法通过 LiteLLM 账户再次查看此密钥</bold>。如果丢失此密钥，你需要重新生成一个。",
     "virtualKeyLabel": "虚拟密钥：",
@@ -1713,6 +1723,7 @@
     "selected": "已选择）",
     "users": "用户",
     "defaultUserSettings": "默认用户设置",
+    "defaultUserSettingsDescription": "应用于所有通过 SSO 或用户管理 API 创建的新内部用户。",
     "loadingDefaultUserSettings": "正在加载默认用户设置",
     "resources": "资源",
     "spendBudget": "支出 / 预算",
