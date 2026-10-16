@@ -48,7 +48,7 @@ export function DashboardHeader({ page }: DashboardHeaderProps) {
       </Breadcrumb>
 
       <div className="flex flex-none items-center gap-1">
-        <LanguageSwitcher />
+        <LanguageSwitcher iconOnly />
         <SidebarAccountMenu onLogout={logout} placement="header" />
       </div>
     </header>

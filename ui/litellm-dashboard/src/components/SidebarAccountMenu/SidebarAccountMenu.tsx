@@ -12,11 +12,11 @@ import { navAccountDisplayName } from "@/components/Navbar/navDisplayName";
 import CopyButton from "@/components/shared/CopyButton";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/cva.config";
-import { ChevronsUpDown, IdCard, LogOut, Mail, ShieldCheck } from "lucide-react";
+import { ChevronsUpDown, IdCard, LogOut, Mail, ShieldCheck, UserRound } from "lucide-react";
 import React from "react";
 
 const RELEASE_NOTES_URL = "https://docs.litellm.ai/release_notes";
@@ -83,7 +83,11 @@ interface SidebarAccountMenuProps {
   placement?: "sidebar" | "header";
 }
 
-const SidebarAccountMenu: React.FC<SidebarAccountMenuProps> = ({ onLogout, collapsed = false, placement = "sidebar" }) => {
+const SidebarAccountMenu: React.FC<SidebarAccountMenuProps> = ({
+  onLogout,
+  collapsed = false,
+  placement = "sidebar",
+}) => {
   const isHeader = placement === "header";
   const { t } = useTranslation();
   const { userId, userEmail, userRoleLabel: userRole, premiumUser, accessToken } = useAuthorized();
@@ -142,35 +146,38 @@ const SidebarAccountMenu: React.FC<SidebarAccountMenuProps> = ({ onLogout, colla
     role: userRole ?? t("shell.unknownRole"),
     identity: userEmail || userId || t("shell.unknownIdentity"),
   });
+  const triggerTitle = isHeader ? triggerLabel : displayName;
 
   return (
     <Popover>
       <PopoverTrigger
-        className={cn(
-          "flex items-center rounded-lg border border-transparent transition-colors hover:bg-sidebar-accent",
-          isHeader ? "w-auto shrink-0" : "w-full",
-          collapsed ? "justify-center px-0 py-1" : "gap-2.5 px-2 py-1.5 text-left",
-        )}
+        className={
+          isHeader
+            ? buttonVariants({ variant: "ghost", size: "icon-sm", className: "text-muted-foreground" })
+            : cn(
+                "flex w-full items-center rounded-lg border border-transparent transition-colors hover:bg-sidebar-accent",
+                collapsed ? "justify-center px-0 py-1" : "gap-2.5 px-2 py-1.5 text-left",
+              )
+        }
         aria-label={triggerLabel}
-        title={collapsed ? displayName : undefined}
+        title={isHeader || collapsed ? triggerTitle : undefined}
       >
-        <Avatar className="size-[30px] shadow-inner ring-1 ring-black/5" aria-hidden>
-          <AvatarFallback className="font-semibold text-white" style={{ backgroundColor: `hsl(${hue} 46% 38%)` }}>
-            {initials}
-          </AvatarFallback>
-        </Avatar>
-        {!collapsed && (
+        {isHeader ? (
+          <UserRound className="size-4" aria-hidden />
+        ) : (
+          <Avatar className="size-[30px] shadow-inner ring-1 ring-black/5" aria-hidden>
+            <AvatarFallback className="font-semibold text-white" style={{ backgroundColor: `hsl(${hue} 46% 38%)` }}>
+              {initials}
+            </AvatarFallback>
+          </Avatar>
+        )}
+        {!isHeader && !collapsed && (
           <>
-            <span className={cn("min-w-0 flex-1 leading-tight", isHeader && "hidden max-w-40 sm:block")}>
+            <span className="min-w-0 flex-1 leading-tight">
               <span className="block truncate text-[13px] font-medium text-sidebar-foreground">{displayName}</span>
               {userRole && <span className="block truncate text-[11px] text-muted-foreground">{userRole}</span>}
             </span>
-            <ChevronsUpDown
-              size={16}
-              strokeWidth={1.75}
-              className={cn("shrink-0 text-muted-foreground", isHeader && "hidden sm:block")}
-              aria-hidden
-            />
+            <ChevronsUpDown size={16} strokeWidth={1.75} className="shrink-0 text-muted-foreground" aria-hidden />
           </>
         )}
       </PopoverTrigger>
@@ -188,7 +195,6 @@ const SidebarAccountMenu: React.FC<SidebarAccountMenuProps> = ({ onLogout, colla
         </div>
 
         <div className="flex flex-col px-3 py-2">
-          
           <InfoRow icon={<ShieldCheck className="size-[17px]" />} label={t("shell.role")}>
             <Badge variant="secondary">{userRole}</Badge>
           </InfoRow>
@@ -201,7 +207,6 @@ const SidebarAccountMenu: React.FC<SidebarAccountMenuProps> = ({ onLogout, colla
         </div>
 
         <Separator />
-
 
         <Separator />
 
