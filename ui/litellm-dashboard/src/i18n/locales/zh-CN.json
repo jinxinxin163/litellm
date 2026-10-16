@@ -1,4 +1,11 @@
 {
+  "createdKeyDisplay": {
+    "saveWarning": "请将此密钥保存在安全且方便访问的地方。出于安全考虑，<bold>你将无法通过 LiteLLM 账户再次查看此密钥</bold>。如果丢失此密钥，你需要重新生成一个。",
+    "virtualKeyLabel": "虚拟密钥：",
+    "copied": "已复制！",
+    "copyVirtualKey": "复制虚拟密钥",
+    "copySuccess": "密钥已复制到剪贴板"
+  },
   "language": {
     "switchToEnglish": "切换为英文",
     "switchToChinese": "切换为中文"
