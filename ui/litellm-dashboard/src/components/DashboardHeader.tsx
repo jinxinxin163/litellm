@@ -44,7 +44,6 @@ export function DashboardHeader({ page }: DashboardHeaderProps) {
       </Breadcrumb>
 
       <div className="flex flex-none items-center gap-1">
-        <ThemeToggle />
         <LanguageSwitcher />
       </div>
     </header>

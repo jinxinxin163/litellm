@@ -176,43 +176,12 @@ const SidebarAccountMenu: React.FC<SidebarAccountMenuProps> = ({ onLogout, colla
         data-testid="sidebar-account-menu-panel"
       >
         <div className="flex items-center gap-2 border-b border-border px-3 py-3">
-          <span className="text-[15px] font-bold tracking-tight text-foreground">LiteLLM</span>
-          {!disableBouncingIcon && (
-            <span
-              className="animate-bounce text-lg leading-none"
-              style={{ animationDuration: "2s" }}
-              title={t("shell.thanks")}
-              aria-hidden
-            >
-              🌴
-            </span>
-          )}
+          <span className="text-[15px] font-bold tracking-tight text-foreground">MindGate</span>
           <span className="flex-1" />
-          {version && (
-            <Badge
-              variant="outline"
-              render={<a href={RELEASE_NOTES_URL} target="_blank" rel="noopener noreferrer" />}
-              className="px-1.5 py-0 font-mono text-[10px] font-medium text-muted-foreground"
-            >
-              v{version}
-            </Badge>
-          )}
         </div>
 
         <div className="flex flex-col px-3 py-2">
-          <InfoRow icon={<Crown className="size-[17px]" />} label={t("shell.tier")}>
-            {premiumUser ? (
-              <Badge variant="outline" className="gap-1 border-warning/30 bg-warning/10 text-warning">
-                <Crown />
-                {t("shell.premium")}
-              </Badge>
-            ) : (
-              <Badge variant="secondary" className="gap-1" title={t("shell.upgradeHint")}>
-                <Crown />
-                {t("shell.standard")}
-              </Badge>
-            )}
-          </InfoRow>
+          
           <InfoRow icon={<ShieldCheck className="size-[17px]" />} label={t("shell.role")}>
             <Badge variant="secondary">{userRole}</Badge>
           </InfoRow>
@@ -226,19 +195,6 @@ const SidebarAccountMenu: React.FC<SidebarAccountMenuProps> = ({ onLogout, colla
 
         <Separator />
 
-        <div className="py-1">
-          {toggles.map((toggle) => (
-            <div key={toggle.key} className="flex h-[38px] items-center justify-between gap-3 px-3">
-              <span className="text-[13px] text-foreground">{toggle.label}</span>
-              <Switch
-                size="sm"
-                checked={toggle.checked}
-                onCheckedChange={toggle.onCheckedChange}
-                aria-label={toggle.ariaLabel}
-              />
-            </div>
-          ))}
-        </div>
 
         <Separator />
 
