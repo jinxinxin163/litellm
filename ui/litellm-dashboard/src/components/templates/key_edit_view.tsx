@@ -446,26 +446,6 @@ export function KeyEditView({
             <BudgetWindowsEditor value={budgetLimits} onChange={setBudgetLimits} />
           </Field>
 
-          <ModelMaxBudgetField
-            key={keyData.token}
-            premiumUser={premiumUser}
-            value={modelBudget.value}
-            onChange={modelBudget.setValue}
-            availableModels={availableModels}
-            usage={keyData.model_max_budget_usage}
-            hint={t("keys.modelBudgetHint")}
-          />
-
-          <Field>
-            <FieldLabel>
-              {labelWithHint(t("keys.budgetFallbacks"), t("keys.whenAModelExceedsItsPerModelBudgetRequestsAutomaticallyReroute"))}
-            </FieldLabel>
-            <BudgetFallbacksEditor
-              value={budgetFallbacks}
-              onChange={setBudgetFallbacks}
-              availableModels={availableModels}
-            />
-          </Field>
 
           <FormField control={form.control} name="tpm_limit" label={t("keys.tpmLimit")}>
             {({ ref: _ref, ...field }) => <NumericalInput {...field} value={field.value ?? ""} min={0} />}
@@ -580,51 +560,9 @@ export function KeyEditView({
             <TagRateLimitEditor value={tagRateLimits} onChange={setTagRateLimits} />
           </Field>
 
-          <FormField control={form.control} name="guardrails" label={t("keys.guardrails")}>
-            {({ value, onChange }) =>
-              accessToken ? (
-                <GuardrailSelector
-                  onChange={onChange}
-                  value={value as string[] | undefined}
-                  accessToken={accessToken}
-                  disabled={!canEditGuardrails}
-                />
-              ) : (
-                <div />
-              )
-            }
-          </FormField>
+          
 
-          <FormField
-            control={form.control}
-            name="disable_global_guardrails"
-            label={labelWithHint(t("keys.disableGlobalGuardrails"), t("keys.whenEnabledThisKeyWillBypassAnyGuardrailsConfiguredToRun"))}
-          >
-            {({ value, onChange, ref: _ref, ...field }) => (
-              <Switch {...field} checked={Boolean(value)} onCheckedChange={onChange} disabled={!canEditGuardrails} />
-            )}
-          </FormField>
-
-          {canViewPolicies && (
-            <FormField
-              control={form.control}
-              name="policies"
-              label={labelWithHint(t("keys.policies"), t("keys.applyPoliciesToThisKeyToControlGuardrailsAndOtherSettings"))}
-            >
-              {({ value, onChange }) =>
-                accessToken ? (
-                  <PolicySelector
-                    onChange={onChange}
-                    value={value as string[] | undefined}
-                    accessToken={accessToken}
-                    disabled={!premiumUser}
-                  />
-                ) : (
-                  <div />
-                )
-              }
-            </FormField>
-          )}
+          
 
           <FormField control={form.control} name="tags" label={t("keys.tags")}>
             {({ value, onChange, id }) => (
@@ -638,33 +576,7 @@ export function KeyEditView({
             )}
           </FormField>
 
-          {canViewPrompts && (
-            <FormField
-              control={form.control}
-              name="prompts"
-              label={
-                premiumUser
-                  ? t("keys.prompts")
-                  : labelWithHint(t("keys.prompts"), t("keys.settingPromptsByKeyIsAPremiumFeature"))
-              }
-            >
-              {({ value, onChange, id }) => (
-                <TagsInput
-                  id={id}
-                  value={(value as string[] | undefined) ?? []}
-                  onValueChange={onChange}
-                  options={promptsList.map((name) => ({ value: name, label: name }))}
-                  disabled={!premiumUser}
-                  placeholder={currentValuePlaceholder(
-                    premiumUser,
-                    keyData.metadata?.prompts,
-                    t("keys.premiumFeatureUpgradeToSetPromptsByKey"),
-                    { text: t("keys.selectOrEnterPrompts"), t },
-                  )}
-                />
-              )}
-            </FormField>
-          )}
+          
 
           <FormField
             control={form.control}
@@ -680,92 +592,6 @@ export function KeyEditView({
             )}
           </FormField>
 
-          <FormField
-            control={form.control}
-            name="allowed_passthrough_routes"
-            label={
-              premiumUser
-                ? "Allowed Pass Through Routes"
-                : labelWithHint(t("keys.allowedPassThroughRoutes"), t("keys.settingAllowedPassThroughRoutesByKeyIsAPremiumFeature"))
-            }
-          >
-            {({ value, onChange }) => (
-              <PassThroughRoutesSelector
-                value={value as string[] | undefined}
-                onChange={onChange}
-                accessToken={accessToken || ""}
-                placeholder={currentValuePlaceholder(
-                  premiumUser,
-                  keyData.metadata?.allowed_passthrough_routes,
-                  t("keys.premiumFeatureUpgradeToSetAllowedPassThroughRoutesByKey"),
-                  { text: t("keys.selectOrEnterAllowedPassThroughRoutes"), t },
-                )}
-                disabled={!premiumUser}
-              />
-            )}
-          </FormField>
-
-          <FormField control={form.control} name="vector_stores" label={t("keys.vectorStores")}>
-            {({ value, onChange }) => (
-              <VectorStoreSelector
-                onChange={onChange}
-                value={value as string[] | undefined}
-                accessToken={accessToken || ""}
-                placeholder={t("keys.selectVectorStores")}
-              />
-            )}
-          </FormField>
-
-          <FormField control={form.control} name="mcp_servers_and_groups" label={t("keys.mcpServersAccessGroups")}>
-            {({ value, onChange }) => (
-              <MCPServerSelector
-                onChange={onChange}
-                value={value as McpServersAndGroups | undefined}
-                accessToken={accessToken || ""}
-                placeholder={t("keys.selectMcpServersOrAccessGroupsOptional")}
-                allowNoMcpServers
-              />
-            )}
-          </FormField>
-
-          <div className="mb-6">
-            <MCPToolPermissions
-              accessToken={accessToken || ""}
-              selectedServers={mcpSelection?.servers || []}
-              selectedAccessGroups={mcpSelection?.accessGroups || []}
-              selectedToolsets={mcpSelection?.toolsets || []}
-              toolPermissions={(mcpToolPermissions as Record<string, string[]> | undefined) || {}}
-              onChange={(toolPerms) => form.setValue("mcp_tool_permissions", toolPerms)}
-            />
-          </div>
-
-          <FormField control={form.control} name="agents_and_groups" label={t("keys.agentsAccessGroups")}>
-            {({ value, onChange }) => (
-              <AgentSelector
-                onChange={onChange}
-                value={value as AgentsAndGroups | undefined}
-                accessToken={accessToken || ""}
-                placeholder={t("keys.selectAgentsOrAccessGroupsOptional")}
-              />
-            )}
-          </FormField>
-
-          <FormField
-            control={form.control}
-            name="organization_id"
-            label={labelWithHint(t("keys.organization"), t("keys.theOrganizationThisKeyBelongsToSelectingAnOrganizationFiltersThe"))}
-          >
-            {({ value, onChange, id }) => (
-              <OrganizationDropdown
-                id={id}
-                value={(value as string | undefined) ?? undefined}
-                organizations={organizations}
-                loading={isOrganizationsLoading}
-                disabled={userRole !== "Admin"}
-                onChange={(orgId) => handleOrganizationChange(onChange, orgId)}
-              />
-            )}
-          </FormField>
 
           <FormField
             control={form.control}

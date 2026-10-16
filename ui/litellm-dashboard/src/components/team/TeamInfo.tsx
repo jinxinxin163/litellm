@@ -1942,10 +1942,7 @@ const TeamInfoView: React.FC<TeamInfoProps> = ({
                   <div className="text-muted-foreground">{t("people.noRouterSettingsConfigured")}</div>
                 )}
               </div>
-              <div>
-                <p className="font-medium">{t("people.organizationId")}</p>
-                <div>{info.organization_id}</div>
-              </div>
+              
               <div>
                 <p className="font-medium">{t("people.status")}</p>
                 <Badge variant={info.blocked ? "destructive" : "secondary"}>

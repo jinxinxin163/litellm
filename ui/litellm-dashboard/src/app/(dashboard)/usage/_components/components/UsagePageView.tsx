@@ -518,10 +518,6 @@ const UsagePage: React.FC<UsagePageProps> = ({ teams, organizations }) => {
               
                   </TabsList>
                   <div className="flex items-center gap-2">
-                    <Button variant="outline" onClick={() => setIsAiChatOpen(true)}>
-                      <Sparkles />
-                      {t("usage.askAI")}
-                    </Button>
                     <Button variant="outline" onClick={() => setIsGlobalExportModalOpen(true)}>
                       <Download />
                       {t("usage.exportData")}
