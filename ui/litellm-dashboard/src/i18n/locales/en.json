@@ -1,4 +1,11 @@
 {
+  "createdKeyDisplay": {
+    "saveWarning": "Please save this secret key somewhere safe and accessible. For security reasons, <bold>you will not be able to view it again</bold> through your LiteLLM account. If you lose this secret key, you will need to generate a new one.",
+    "virtualKeyLabel": "Virtual Key:",
+    "copied": "Copied!",
+    "copyVirtualKey": "Copy Virtual Key",
+    "copySuccess": "Key copied to clipboard"
+  },
   "language": {
     "switchToEnglish": "Switch to English",
     "switchToChinese": "Switch to Chinese"
