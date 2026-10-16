@@ -35,7 +35,6 @@ import { useTeamMetadataSchema } from "@/app/(dashboard)/hooks/teams/useTeamMeta
 import PassThroughRoutesSelector from "./common_components/PassThroughRoutesSelector";
 import AgentSelector from "./agent_management/AgentSelector";
 import ModelAliasManager from "./common_components/ModelAliasManager";
-import PremiumLoggingSettings from "./common_components/PremiumLoggingSettings";
 import RouterSettingsAccordion, { RouterSettingsAccordionValue } from "./common_components/RouterSettingsAccordion";
 import { fetchAvailableModelsForTeamOrKey } from "./key_team_helpers/fetch_available_models_team_key";
 import type { Team } from "./key_team_helpers/key_list";
@@ -871,22 +870,6 @@ const Teams: React.FC<TeamProps> = ({ accessToken, userID, userRole, premiumUser
                           )}
                         </FormField>
                       </FieldGroup>
-                    </CollapsibleContent>
-                  </Collapsible>
-
-                  <Collapsible className="mt-8 mb-8 overflow-hidden rounded-lg border">
-                    <CollapsibleTrigger className="group/section flex w-full items-center justify-between px-4 py-3 text-left">
-                      <b>{t("people.loggingSettings")}</b>
-                      <ChevronDown className="size-5 shrink-0 text-muted-foreground transition-transform group-data-[panel-open]/section:rotate-180" />
-                    </CollapsibleTrigger>
-                    <CollapsibleContent className="px-4 pb-3">
-                      <div className="mt-4">
-                        <PremiumLoggingSettings
-                          value={loggingSettings}
-                          onChange={setLoggingSettings}
-                          premiumUser={premiumUser}
-                        />
-                      </div>
                     </CollapsibleContent>
                   </Collapsible>
 
