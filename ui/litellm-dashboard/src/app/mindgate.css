@@ -1,6 +1,6 @@
 :root:not(.dark):has(.mindgate-dashboard) {
   --radius: 0.375rem;
-  --primary: #1890ff;
+  --primary: #008CD6;
   --primary-foreground: #ffffff;
   --secondary: #edf5fb;
   --secondary-foreground: #176aab;
@@ -9,14 +9,14 @@
   --accent-foreground: #176aab;
   --border: #d5e4ef;
   --input: #d5dce3;
-  --ring: #1890ff;
+  --ring: #008CD6;
   --sidebar: #f3f8fc;
   --sidebar-primary: #1098d3;
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: #e8f3f9;
   --sidebar-accent-foreground: #176aab;
   --sidebar-border: #d5e4ef;
-  --sidebar-ring: #1890ff;
+  --sidebar-ring: #008CD6;
 }
 
 @layer utilities {

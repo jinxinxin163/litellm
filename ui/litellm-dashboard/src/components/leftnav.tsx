@@ -393,8 +393,19 @@ const Sidebar_: React.FC<SidebarProps> = ({
 
   return (
     <Sidebar collapsed={collapsed}>
-      <SidebarHeader className="h-16 justify-center border-b border-sidebar-border bg-card group-data-[collapsed=true]/sidebar:h-auto">
+      <SidebarHeader className="h-14 justify-center border-b border-sidebar-border bg-card group-data-[collapsed=true]/sidebar:h-auto">
         <div className="flex items-center justify-between gap-2 group-data-[collapsed=true]/sidebar:flex-col">
+          {onToggleCollapsed && (
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              onClick={onToggleCollapsed}
+              aria-label={collapsed ? t("shell.expandSidebar") : t("shell.collapseSidebar")}
+              className="flex-none text-muted-foreground"
+            >
+              {collapsed ? <PanelLeftOpen /> : <PanelLeftClose />}
+            </Button>
+          )}
           <div className="flex min-w-0 items-center gap-2">
             <Link href={migratedHref("")} className="flex min-w-0 items-center" aria-label={t("shell.home")}>
               {logoUrl || logoUrlDark ? (
@@ -410,7 +421,7 @@ const Sidebar_: React.FC<SidebarProps> = ({
                 </>
               ) : (
                 <span className="flex min-w-0 flex-col">
-                  <span className="text-2xl leading-7 font-bold tracking-tight text-primary group-data-[collapsed=true]/sidebar:hidden">
+                  <span className="relative -left-[80px] text-[28px] leading-7 font-bold tracking-tight text-primary group-data-[collapsed=true]/sidebar:hidden">
                     MindGate
                   </span>
                   <span
@@ -419,33 +430,12 @@ const Sidebar_: React.FC<SidebarProps> = ({
                   >
                     MG
                   </span>
-                  <span className="mt-0.5 truncate text-xs text-muted-foreground group-data-[collapsed=true]/sidebar:hidden">
-                    {t("shell.brandDescription")}
-                  </span>
                 </span>
               )}
             </Link>
-            {version && (
-              <Badge
-                variant="outline"
-                render={<a href="https://docs.litellm.ai/release_notes" target="_blank" rel="noopener noreferrer" />}
-                className="px-1.5 py-0 font-mono text-[10px] font-medium text-muted-foreground group-data-[collapsed=true]/sidebar:hidden"
-              >
-                v{version}
-              </Badge>
-            )}
+            
           </div>
-          {onToggleCollapsed && (
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              onClick={onToggleCollapsed}
-              aria-label={collapsed ? t("shell.expandSidebar") : t("shell.collapseSidebar")}
-              className="flex-none text-muted-foreground"
-            >
-              {collapsed ? <PanelLeftOpen /> : <PanelLeftClose />}
-            </Button>
-          )}
+          
         </div>
       </SidebarHeader>
 

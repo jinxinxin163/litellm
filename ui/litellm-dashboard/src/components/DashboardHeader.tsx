@@ -31,7 +31,7 @@ export function DashboardHeader({ page }: DashboardHeaderProps) {
   };
 
   return (
-    <header className="flex h-16 flex-none items-center justify-between gap-4 border-b border-border bg-card px-6">
+    <header className="flex h-14 flex-none items-center justify-between gap-4 border-b border-border bg-card px-6">
       <Breadcrumb className="min-w-0">
         <BreadcrumbList className="flex-nowrap">
           <BreadcrumbItem className="min-w-0">
