@@ -141,7 +141,6 @@ const sidebarMenuButtonVariants = cva(
   [
     "group/menu-btn relative flex w-full items-center gap-2.5 overflow-hidden rounded-md px-2.5 text-left text-[13px] font-medium no-underline",
     "text-sidebar-foreground/70 outline-none transition-colors",
-    "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
     "focus-visible:ring-2 focus-visible:ring-sidebar-ring",
     "disabled:pointer-events-none disabled:opacity-50",
     "[&>svg]:size-[18px] [&>svg]:shrink-0",
@@ -150,8 +149,8 @@ const sidebarMenuButtonVariants = cva(
   {
     variants: {
       isActive: {
-        true: "bg-sidebar-accent text-sidebar-accent-foreground before:absolute before:inset-y-1.5 before:left-0 before:w-[3px] before:rounded-r-full before:bg-sidebar-primary group-data-[collapsed=true]/sidebar:before:hidden",
-        false: "",
+        true: "bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary/90",
+        false: "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
       },
       size: {
         default: "h-[34px]",

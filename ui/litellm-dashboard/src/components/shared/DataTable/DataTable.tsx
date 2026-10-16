@@ -616,7 +616,10 @@ export function DataTable<TData extends RowData, TValue>(props: DataTableProps<T
 
   return (
     <div data-testid="data-table-root" className={cn("w-full", fill.outer)}>
-      <div data-testid="data-table-frame" className={cn("overflow-hidden rounded-lg border border-border", fill.frame)}>
+      <div
+        data-testid="data-table-frame"
+        className={cn("overflow-hidden rounded-lg border border-border bg-card shadow-xs", fill.frame)}
+      >
         {toolbar !== undefined && <div className="shrink-0 border-b border-border px-4 py-3">{toolbar(table)}</div>}
         <div
           data-testid="data-table-scroller"

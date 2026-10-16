@@ -135,7 +135,7 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
   // sidebar owns its own scroll and the content column scrolls independently,
   // so the page can't be dragged past the end of the nav.
   return (
-    <div className="flex h-screen overflow-hidden bg-background">
+    <div className="mindgate-dashboard flex h-screen overflow-hidden border-t-[5px] border-primary bg-background">
       <SidebarProvider
         setPage={navigateToPage}
         defaultSelectedKey={page}
@@ -148,7 +148,7 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
         <NoRedisWarningBanner accessToken={accessToken} />
         <LicenseExpiryBanner accessToken={accessToken} />
         <UserBanner accessToken={accessToken} />
-        <main className="min-w-0 flex-1 overflow-y-auto">{children}</main>
+        <main className="min-w-0 flex-1 overflow-y-auto bg-[#e8f3f9] dark:bg-background">{children}</main>
       </div>
     </div>
   );

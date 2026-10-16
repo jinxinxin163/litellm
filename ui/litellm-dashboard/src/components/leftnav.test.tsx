@@ -115,19 +115,11 @@ describe("Sidebar (leftnav)", () => {
     expect(screen.getByRole("link", { name: /litellm home/i })).toHaveAttribute("href", "/ui");
   });
 
-  it("pairs the logo with a dark-mode variant that swaps on the dark class", () => {
+  it("shows the MindGate name and gateway description when no custom logo is configured", () => {
     renderWithProviders(<Sidebar {...defaultProps} />);
 
-    const [light, dark] = Array.from(screen.getByRole("link", { name: /litellm home/i }).querySelectorAll("img"));
-    const classesOf = (el: Element) => new Set(el.className.split(/\s+/));
-
-    const lightSrc = light.getAttribute("src") ?? "";
-    expect(light).toHaveAttribute("src", expect.stringMatching(/\/get_image$/));
-    expect(dark).toHaveAttribute("src", `${lightSrc}?theme=dark`);
-    expect(classesOf(light).has("dark:hidden")).toBe(true);
-    expect(classesOf(light).has("hidden")).toBe(false);
-    expect(classesOf(dark).has("hidden")).toBe(true);
-    expect(classesOf(dark).has("dark:block")).toBe(true);
+    expect(screen.getByRole("link", { name: /litellm home/i })).toHaveTextContent("MindGate");
+    expect(screen.getByText("AI Gateway", { exact: true })).toBeInTheDocument();
   });
 
   it("prefers a configured dark logo over the light one in dark mode", () => {

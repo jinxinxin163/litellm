@@ -2,7 +2,6 @@
 
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from "@/components/ui/breadcrumb";
 import { getBreadcrumb } from "@/components/leftnav";
-import ThemeToggle from "@/components/ThemeToggle/ThemeToggle";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useTranslation } from "@/i18n/useTranslation";
 import { useWorker } from "@/hooks/useWorker";
@@ -32,7 +31,7 @@ export function DashboardHeader({ page }: DashboardHeaderProps) {
   };
 
   return (
-    <header className="flex h-14 flex-none items-center justify-between gap-4 border-b border-border bg-background px-4">
+    <header className="flex h-16 flex-none items-center justify-between gap-4 border-b border-border bg-card px-6">
       <Breadcrumb className="min-w-0">
         <BreadcrumbList className="flex-nowrap">
           <BreadcrumbItem className="min-w-0">

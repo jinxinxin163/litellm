@@ -21,6 +21,7 @@
     "switchToChinese": "切换为中文"
   },
   "shell": {
+    "brandDescription": "大语言模型网关",
     "lightMode": "切换为浅色模式",
     "darkMode": "切换为深色模式（测试版）",
     "expandSidebar": "展开侧边栏",

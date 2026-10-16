@@ -21,6 +21,7 @@
     "switchToChinese": "Switch to Chinese"
   },
   "shell": {
+    "brandDescription": "AI Gateway",
     "lightMode": "Switch to light mode",
     "darkMode": "Switch to dark mode (beta)",
     "expandSidebar": "Expand sidebar",

@@ -393,18 +393,37 @@ const Sidebar_: React.FC<SidebarProps> = ({
 
   return (
     <Sidebar collapsed={collapsed}>
-      <SidebarHeader className="h-14 border-b border-border group-data-[collapsed=true]/sidebar:h-auto">
+      <SidebarHeader className="h-16 justify-center border-b border-sidebar-border bg-card group-data-[collapsed=true]/sidebar:h-auto">
         <div className="flex items-center justify-between gap-2 group-data-[collapsed=true]/sidebar:flex-col">
           <div className="flex min-w-0 items-center gap-2">
             <Link href={migratedHref("")} className="flex min-w-0 items-center" aria-label={t("shell.home")}>
-              <img src={logoSrc} alt="LiteLLM" className={cn(LOGO_CLASS_NAME, "dark:hidden")} />
-              <img
-                src={darkLogoSrc}
-                alt=""
-                aria-hidden
-                onError={() => setErroredDarkLogo(logoUrlDark)}
-                className={cn(LOGO_CLASS_NAME, "hidden dark:block")}
-              />
+              {logoUrl || logoUrlDark ? (
+                <>
+                  <img src={logoSrc} alt="LiteLLM" className={cn(LOGO_CLASS_NAME, "dark:hidden")} />
+                  <img
+                    src={darkLogoSrc}
+                    alt=""
+                    aria-hidden
+                    onError={() => setErroredDarkLogo(logoUrlDark)}
+                    className={cn(LOGO_CLASS_NAME, "hidden dark:block")}
+                  />
+                </>
+              ) : (
+                <span className="flex min-w-0 flex-col">
+                  <span className="text-2xl leading-7 font-bold tracking-tight text-primary group-data-[collapsed=true]/sidebar:hidden">
+                    MindGate
+                  </span>
+                  <span
+                    className="hidden text-lg font-bold text-primary group-data-[collapsed=true]/sidebar:block"
+                    aria-hidden
+                  >
+                    MG
+                  </span>
+                  <span className="mt-0.5 truncate text-xs text-muted-foreground group-data-[collapsed=true]/sidebar:hidden">
+                    {t("shell.brandDescription")}
+                  </span>
+                </span>
+              )}
             </Link>
             {version && (
               <Badge
