@@ -273,11 +273,10 @@ const ProviderSpecificFields: React.FC<ProviderSpecificFieldsProps> = ({ selecte
       return (
         <Textarea
           id={control.id}
-          value={control.value as string | undefined}
+          value={(control.value as string | undefined) ?? field.defaultValue ?? ""}
           onChange={control.onChange}
           onBlur={control.onBlur}
           placeholder={field.placeholder}
-          defaultValue={field.defaultValue}
           rows={6}
           className="font-mono text-xs"
         />
@@ -288,11 +287,10 @@ const ProviderSpecificFields: React.FC<ProviderSpecificFieldsProps> = ({ selecte
       return (
         <PasswordInput
           id={control.id}
-          value={control.value as string | undefined}
+          value={(control.value as string | undefined) ?? field.defaultValue ?? ""}
           onChange={control.onChange}
           onBlur={control.onBlur}
           placeholder={field.placeholder}
-          defaultValue={field.defaultValue}
         />
       );
     }
@@ -300,11 +298,10 @@ const ProviderSpecificFields: React.FC<ProviderSpecificFieldsProps> = ({ selecte
     return (
       <Input
         id={control.id}
-        value={(control.value as string | undefined) ?? undefined}
+        value={(control.value as string | undefined) ?? field.defaultValue ?? ""}
         onBlur={control.onBlur}
         placeholder={field.placeholder}
         type="text"
-        defaultValue={field.defaultValue}
         onChange={(event) => {
           control.onChange(event);
           if (field.key === "api_base") {
