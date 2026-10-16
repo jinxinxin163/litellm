@@ -15,9 +15,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
-import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/cva.config";
-import { ChevronsUpDown, Crown, IdCard, LogOut, Mail, ShieldCheck } from "lucide-react";
+import { ChevronsUpDown, IdCard, LogOut, Mail, ShieldCheck } from "lucide-react";
 import React from "react";
 
 const RELEASE_NOTES_URL = "https://docs.litellm.ai/release_notes";
@@ -81,9 +80,11 @@ const MonoValue: React.FC<{ value: string | null; copyLabel: string }> = ({ valu
 interface SidebarAccountMenuProps {
   onLogout: () => void;
   collapsed?: boolean;
+  placement?: "sidebar" | "header";
 }
 
-const SidebarAccountMenu: React.FC<SidebarAccountMenuProps> = ({ onLogout, collapsed = false }) => {
+const SidebarAccountMenu: React.FC<SidebarAccountMenuProps> = ({ onLogout, collapsed = false, placement = "sidebar" }) => {
+  const isHeader = placement === "header";
   const { t } = useTranslation();
   const { userId, userEmail, userRoleLabel: userRole, premiumUser, accessToken } = useAuthorized();
   const { data: healthData } = useHealthReadinessDetails(accessToken);
@@ -146,7 +147,8 @@ const SidebarAccountMenu: React.FC<SidebarAccountMenuProps> = ({ onLogout, colla
     <Popover>
       <PopoverTrigger
         className={cn(
-          "flex w-full items-center rounded-lg border border-transparent transition-colors hover:bg-sidebar-accent",
+          "flex items-center rounded-lg border border-transparent transition-colors hover:bg-sidebar-accent",
+          isHeader ? "w-auto shrink-0" : "w-full",
           collapsed ? "justify-center px-0 py-1" : "gap-2.5 px-2 py-1.5 text-left",
         )}
         aria-label={triggerLabel}
@@ -159,20 +161,25 @@ const SidebarAccountMenu: React.FC<SidebarAccountMenuProps> = ({ onLogout, colla
         </Avatar>
         {!collapsed && (
           <>
-            <span className="min-w-0 flex-1 leading-tight">
+            <span className={cn("min-w-0 flex-1 leading-tight", isHeader && "hidden max-w-40 sm:block")}>
               <span className="block truncate text-[13px] font-medium text-sidebar-foreground">{displayName}</span>
               {userRole && <span className="block truncate text-[11px] text-muted-foreground">{userRole}</span>}
             </span>
-            <ChevronsUpDown size={16} strokeWidth={1.75} className="shrink-0 text-muted-foreground" aria-hidden />
+            <ChevronsUpDown
+              size={16}
+              strokeWidth={1.75}
+              className={cn("shrink-0 text-muted-foreground", isHeader && "hidden sm:block")}
+              aria-hidden
+            />
           </>
         )}
       </PopoverTrigger>
 
       <PopoverContent
-        side="top"
-        align="start"
+        side={isHeader ? "bottom" : "top"}
+        align={isHeader ? "end" : "start"}
         sideOffset={8}
-        className="w-[268px] gap-0 overflow-hidden p-0"
+        className="w-[268px] max-w-[calc(100vw-1rem)] gap-0 overflow-hidden p-0"
         data-testid="sidebar-account-menu-panel"
       >
         <div className="flex items-center gap-2 border-b border-border px-3 py-3">

@@ -2,10 +2,8 @@ import { useTranslation } from "@/i18n/useTranslation";
 import useAuthorized from "@/app/(dashboard)/hooks/useAuthorized";
 import useIsOrgAdmin from "@/app/(dashboard)/hooks/useIsOrgAdmin";
 import { useHealthReadinessDetails } from "@/app/(dashboard)/hooks/healthReadiness/useHealthReadinessDetails";
-import { useLogout } from "@/app/(dashboard)/hooks/useLogout";
 import { getProxyBaseUrl } from "@/components/networking";
 import { useTheme } from "@/contexts/ThemeContext";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -42,7 +40,6 @@ import { useState } from "react";
 import { cn } from "@/lib/cva.config";
 import { all_admin_roles, internalUserRoles, isAdminRole, rolesAllowedToViewWriteScopedPages } from "../utils/roles";
 import BetaBadge from "./BetaBadge";
-import SidebarAccountMenu from "./SidebarAccountMenu/SidebarAccountMenu";
 import SidebarUsageCard from "./SidebarUsageCard";
 import { MIGRATED_PAGES, migratedHref, legacyPageHref } from "@/utils/migratedPages";
 
@@ -230,7 +227,6 @@ const Sidebar_: React.FC<SidebarProps> = ({
   const { logoUrl, logoUrlDark } = useTheme();
   const [erroredDarkLogo, setErroredDarkLogo] = useState<string | null>(null);
   const { data: healthData } = useHealthReadinessDetails(accessToken);
-  const logout = useLogout(accessToken);
 
   const baseUrl = getProxyBaseUrl();
   const version = healthData?.litellm_version;
@@ -461,7 +457,6 @@ const Sidebar_: React.FC<SidebarProps> = ({
             onExpandRail={() => onToggleCollapsed?.()}
           />
         )}
-        <SidebarAccountMenu onLogout={logout} collapsed={collapsed} />
       </SidebarFooter>
     </Sidebar>
   );

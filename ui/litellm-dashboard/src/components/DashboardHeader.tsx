@@ -3,6 +3,9 @@
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from "@/components/ui/breadcrumb";
 import { getBreadcrumb } from "@/components/leftnav";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import SidebarAccountMenu from "@/components/SidebarAccountMenu/SidebarAccountMenu";
+import useAuthorized from "@/app/(dashboard)/hooks/useAuthorized";
+import { useLogout } from "@/app/(dashboard)/hooks/useLogout";
 import { useTranslation } from "@/i18n/useTranslation";
 import { useWorker } from "@/hooks/useWorker";
 import { useDisableShowPrompts } from "@/app/(dashboard)/hooks/useDisableShowPrompts";
@@ -18,6 +21,8 @@ interface DashboardHeaderProps {
 export function DashboardHeader({ page }: DashboardHeaderProps) {
   const { t } = useTranslation();
   const { title } = getBreadcrumb(page);
+  const { accessToken } = useAuthorized();
+  const logout = useLogout(accessToken);
   const { isControlPlane, selectedWorker } = useWorker();
   const showWorkerSwitch = isControlPlane && selectedWorker !== null;
   const hideCommunityLinks = useDisableShowPrompts();
@@ -44,6 +49,7 @@ export function DashboardHeader({ page }: DashboardHeaderProps) {
 
       <div className="flex flex-none items-center gap-1">
         <LanguageSwitcher />
+        <SidebarAccountMenu onLogout={logout} placement="header" />
       </div>
     </header>
   );
