@@ -531,58 +531,9 @@ const ModelInfoEditForm: React.FC<ModelInfoEditFormProps> = ({
               )}
             </div>
 
-            <div>
-              <FieldLabel>
-                {t("models.guardrails")}
-                <DocsHint
-                  text={t("models.applySafetyGuardrailsToThisModelToFilter")}
-                  href="https://docs.litellm.ai/docs/proxy/guardrails/quick_start"
-                />
-              </FieldLabel>
-              {isEditing ? (
-                tagsField(
-                  "guardrails",
-                  guardrailsList.map((name) => ({ value: name, label: name })),
-                  t("models.selectExistingGuardrailsOrTypeToCreateNewOnes"),
-                )
-              ) : (
-                <Display>
-                  <ChipList
-                    values={localModelData.litellm_params?.guardrails}
-                    emptyLabel={t("models.noGuardrailsAssigned")}
-                  />
-                </Display>
-              )}
-            </div>
+            
 
-            <div>
-              <FieldLabel>
-                {t("models.attachedKnowledgeBasesRag")}
-                <DocsHint
-                  text={t("models.vectorStoresUsedForRagEveryRequestTo")}
-                  href="https://docs.litellm.ai/docs/completion/knowledgebase"
-                />
-              </FieldLabel>
-              {isEditing ? (
-                <FormField control={form.control} name="vector_store_ids">
-                  {({ value, onChange }) => (
-                    <VectorStoreSelector
-                      value={value as string[] | undefined}
-                      onChange={onChange}
-                      accessToken={accessToken || ""}
-                      placeholder={t("models.selectKnowledgeBasesOptional")}
-                    />
-                  )}
-                </FormField>
-              ) : (
-                <Display>
-                  <ChipList
-                    values={localModelData.litellm_params?.vector_store_ids}
-                    emptyLabel={t("models.noKnowledgeBasesAttached")}
-                  />
-                </Display>
-              )}
-            </div>
+            
 
             <div>
               <FieldLabel>{t("models.tags")}</FieldLabel>

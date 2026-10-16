@@ -392,14 +392,6 @@ const AddModelForm: React.FC<AddModelFormProps> = ({
                     </>
                   )}
                   <div className="flex justify-between items-center mb-4">
-                    <SimpleTooltip content={t("models.getHelpOnOurGithub")}>
-                      <a
-                        href="https://github.com/BerriAI/litellm/issues"
-                        className="text-sm text-primary hover:underline"
-                      >
-                        {t("models.needHelp")}
-                      </a>
-                    </SimpleTooltip>
                     <div className="space-x-2">
                       <Button
                         variant="outline"

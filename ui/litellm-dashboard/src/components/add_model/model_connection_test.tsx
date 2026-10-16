@@ -206,16 +206,6 @@ ${formattedBody}
       )}
 
       <Separator className="my-6" />
-      <Button
-        variant="link"
-        className="px-0"
-        nativeButton={false}
-        render={<a href="https://docs.litellm.ai/docs/providers" target="_blank" rel="noopener noreferrer" />}
-      >
-        <Info data-icon="inline-start" />
-        {t("models.viewDocumentation")}
-        <ExternalLink data-icon="inline-end" />
-      </Button>
     </div>
   );
 };

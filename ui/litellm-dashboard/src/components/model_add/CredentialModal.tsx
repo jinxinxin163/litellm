@@ -145,11 +145,6 @@ export default function CredentialModal({
               <ProviderSpecificFields selectedProvider={selectedProvider} />
 
               <div className="flex justify-between items-center">
-                <SimpleTooltip content={t("models.getHelpOnOurGithub")}>
-                  <a href="https://github.com/BerriAI/litellm/issues" className="text-sm text-primary hover:underline">
-                    {t("models.needHelp")}
-                  </a>
-                </SimpleTooltip>
 
                 <div>
                   <Button variant="outline" className="mr-2.5" onClick={closeAndReset}>

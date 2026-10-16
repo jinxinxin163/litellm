@@ -255,13 +255,6 @@ function LoginPageContent() {
                       {t("auth.defaultPasswordPrefix")}{" "}
                       <code className="bg-muted px-1 py-0.5 rounded-sm text-xs">MASTER_KEY</code>.
                     </p>
-                    <p className="mt-2 text-sm">
-                      {t("auth.credentialsHelp")}{" "}
-                      <a href="https://docs.litellm.ai/docs/proxy/ui" target="_blank" rel="noopener noreferrer">
-                        {t("auth.checkDocs")}
-                      </a>
-                      .
-                    </p>
                   </AlertDescription>
                 </Alert>
               )}
