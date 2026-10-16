@@ -218,7 +218,7 @@
     "createCustomAliasesForModelsThatCanBeUsedInApi": "Create custom aliases for models that can be used in API calls. This allows you to create shortcuts for specific models.",
     "keyLifecycle": "Key Lifecycle",
     "advancedSettings": "Advanced Settings",
-    "learnMoreAboutAdvancedSettingsInOur": "Learn more about advanced settings in our",
+    "learnMoreAboutAdvancedSettingsInOur": "more advanced settings",
     "documentation": "documentation",
     "createKey": "Create Key",
     "createNewUser": "Create New User",

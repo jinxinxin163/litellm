@@ -1219,61 +1219,7 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                         )}
                       </MountedFormField>
 
-                      {premiumUser ? (
-                        <Collapsible className="mt-4 mb-4 overflow-hidden rounded-lg border">
-                          <CollapsibleTrigger className={SECTION_HEADER_CLASS}>
-                            <b>{t("keys.loggingSettings")}</b>
-                            <ChevronDown className={SECTION_CHEVRON_CLASS} />
-                          </CollapsibleTrigger>
-                          <CollapsibleContent className="px-4 pb-3">
-                            <div className="mt-4">
-                              <PremiumLoggingSettings
-                                value={loggingSettings}
-                                onChange={setLoggingSettings}
-                                premiumUser={true}
-                                disabledCallbacks={disabledCallbacks}
-                                onDisabledCallbacksChange={setDisabledCallbacks}
-                              />
-                            </div>
-                          </CollapsibleContent>
-                        </Collapsible>
-                      ) : (
-                        <SimpleTooltip
-                          className="w-full"
-                          content={
-                            <span>
-                              {t("keys.keyLevelLoggingSettingsIsAnEnterpriseFeatureGetInTouch")}
-                              <a href="https://www.litellm.ai/enterprise" target="_blank">
-                                https://www.litellm.ai/enterprise
-                              </a>
-                            </span>
-                          }
-                          side="top"
-                        >
-                          <div style={{ position: "relative" }}>
-                            <div style={{ opacity: 0.5 }}>
-                              <Collapsible className="mt-4 mb-4 overflow-hidden rounded-lg border">
-                                <CollapsibleTrigger className={SECTION_HEADER_CLASS}>
-                                  <b>{t("keys.loggingSettings")}</b>
-                                  <ChevronDown className={SECTION_CHEVRON_CLASS} />
-                                </CollapsibleTrigger>
-                                <CollapsibleContent className="px-4 pb-3">
-                                  <div className="mt-4">
-                                    <PremiumLoggingSettings
-                                      value={loggingSettings}
-                                      onChange={setLoggingSettings}
-                                      premiumUser={false}
-                                      disabledCallbacks={disabledCallbacks}
-                                      onDisabledCallbacksChange={setDisabledCallbacks}
-                                    />
-                                  </div>
-                                </CollapsibleContent>
-                              </Collapsible>
-                            </div>
-                            <div style={{ position: "absolute", inset: 0, cursor: "not-allowed" }} />
-                          </div>
-                        </SimpleTooltip>
-                      )}
+                    
 
                       <Collapsible
                         key={`router-settings-accordion-${routerSettingsKey}`}
@@ -1353,18 +1299,6 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                               content={
                                 <span>
                                   {t("keys.learnMoreAboutAdvancedSettingsInOur")}{" "}
-                                  <a
-                                    href={
-                                      proxyBaseUrl
-                                        ? `${proxyBaseUrl}/#/key%20management/generate_key_fn_key_generate_post`
-                                        : `/#/key%20management/generate_key_fn_key_generate_post`
-                                    }
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-info hover:text-info/80"
-                                  >
-                                    {t("keys.documentation")}
-                                  </a>
                                 </span>
                               }
                             >
