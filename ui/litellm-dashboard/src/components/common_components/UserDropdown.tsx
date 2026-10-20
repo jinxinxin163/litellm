@@ -3,6 +3,7 @@ import { PaginatedSearchSelect } from "@/components/shared/PaginatedSearchSelect
 import type { SearchSelectOption } from "@/components/shared/SearchSelect";
 import { useInfiniteUsers, useUserLookup } from "@/app/(dashboard)/hooks/users/useUsers";
 import type { UserInfo } from "@/components/networking";
+import { useTranslation } from "@/i18n/useTranslation";
 
 interface UserDropdownProps {
   value?: string | null;
@@ -19,6 +20,7 @@ export const userOptionLabel = (user: Pick<UserInfo, "user_id" | "user_alias" | 
 };
 
 const UserDropdown: React.FC<UserDropdownProps> = ({ value, onChange, disabled, pageSize = 50, id }) => {
+  const { t } = useTranslation();
   const [search, setSearch] = useState("");
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteUsers(
@@ -54,7 +56,7 @@ const UserDropdown: React.FC<UserDropdownProps> = ({ value, onChange, disabled, 
         hasNextPage={hasNextPage}
         isLoading={isLoading}
         isFetchingNextPage={isFetchingNextPage}
-        placeholder="Search users by email…"
+        placeholder={t("people.searchUsersByEmail")}
         emptyText="No users found"
         loadingText="Loading users…"
         disabled={disabled}
