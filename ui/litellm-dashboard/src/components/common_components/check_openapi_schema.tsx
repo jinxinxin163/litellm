@@ -209,7 +209,7 @@ const SchemaFormFields: React.FC<SchemaFormFieldsProps> = ({
         required={isRequired}
         rules={Object.keys(validate).length > 0 ? { validate } : undefined}
         defaultValue={defaultValues[key]}
-        help={<div className="text-xs text-muted-foreground">{getFieldHelp(key, property, type, t)}</div>}
+        help={<span className="text-xs text-muted-foreground">{getFieldHelp(key, property, type, t)}</span>}
       >
         {(control) => {
           if (isJSONField(key, property)) {
