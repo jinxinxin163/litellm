@@ -27,14 +27,6 @@ function EmptyState() {
       <div className="text-sm font-medium text-foreground">{t("people.noAvailableTeamsToJoin")}</div>
       <div className="text-sm text-muted-foreground">
         {t("people.seeHowToSetAvailableTeams")}{" "}
-        <a
-          href="https://docs.litellm.ai/docs/proxy/self_serve#all-settings-for-self-serve--sso-flow"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-primary underline-offset-4 hover:underline"
-        >
-          {t("people.here")}
-        </a>
       </div>
     </div>
   );
