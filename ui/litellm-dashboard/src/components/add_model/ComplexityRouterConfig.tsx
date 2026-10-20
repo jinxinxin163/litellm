@@ -492,22 +492,22 @@ export const TIER_DESCRIPTIONS: Record<
 > = {
   SIMPLE: {
     label: "Simple",
-    description: "Basic questions, greetings, simple factual queries",
+    description: "models.complexityTierDescriptions.SIMPLE",
     examples: '"Hello!", "What is Python?", "Thanks!"',
   },
   MEDIUM: {
     label: "Medium",
-    description: "Standard queries requiring some reasoning or explanation",
+    description: "models.complexityTierDescriptions.MEDIUM",
     examples: '"Explain how REST APIs work", "Debug this error"',
   },
   COMPLEX: {
     label: "Complex",
-    description: "Technical, multi-part requests requiring deep knowledge",
+    description: "models.complexityTierDescriptions.COMPLEX",
     examples: '"Design a microservices architecture", "Implement a rate limiter"',
   },
   REASONING: {
     label: "Reasoning",
-    description: "Chain-of-thought, analysis, explicit reasoning requests",
+    description: "models.complexityTierDescriptions.REASONING",
     examples: '"Think step by step...", "Analyze the pros and cons..."',
   },
 };
@@ -677,7 +677,7 @@ const ComplexityRouterConfig: React.FC<ComplexityRouterConfigProps> = ({
                     index={index}
                     rowCount={tierRows.length}
                     label={label}
-                    description={tierInfo?.description}
+                    description={tierInfo ? t(tierInfo.description) : undefined}
                     editing={editingTiers}
                     isCustomSet={Boolean(customTierSet)}
                     onRemove={() => removeTierRow(row.id)}

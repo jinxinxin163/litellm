@@ -409,6 +409,12 @@
     "modelBudgetHint": "限制各个模型的花费，每个模型可设置独立的重置周期。此限制适用于该密钥发起的每个请求。"
   },
   "models": {
+    "complexityTierDescriptions": {
+      "SIMPLE": "基础问题、问候和简单的事实查询",
+      "MEDIUM": "需要一定推理或解释的常规问题",
+      "COMPLEX": "需要深入专业知识的技术性、多部分请求",
+      "REASONING": "思维链、分析及明确要求推理的请求"
+    },
     "modelManagement": "模型管理",
     "addAndManageModelsForTheProxy": "添加和管理代理的模型",
     "addModelsForTeamsYouAreAnAdminFor": "为您管理的团队添加模型。",

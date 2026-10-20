@@ -409,6 +409,12 @@
     "modelBudgetHint": "Cap spend on individual models, each with its own reset window. Enforced across every request this key makes."
   },
   "models": {
+    "complexityTierDescriptions": {
+      "SIMPLE": "Basic questions, greetings, simple factual queries",
+      "MEDIUM": "Standard queries requiring some reasoning or explanation",
+      "COMPLEX": "Technical, multi-part requests requiring deep knowledge",
+      "REASONING": "Chain-of-thought, analysis, explicit reasoning requests"
+    },
     "modelManagement": "Model Management",
     "addAndManageModelsForTheProxy": "Add and manage models for the proxy",
     "addModelsForTeamsYouAreAnAdminFor": "Add models for teams you are an admin for.",
