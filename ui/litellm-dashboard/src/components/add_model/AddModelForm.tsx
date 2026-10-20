@@ -277,14 +277,6 @@ const AddModelForm: React.FC<AddModelFormProps> = ({
                           <p className="text-sm mb-5 mt-1">
                             <strong>{t("models.optional")}</strong>{" "}
                             {t("models.litellmEndpointToUseWhenHealthCheckingThisModel")}{" "}
-                            <a
-                              href="https://docs.litellm.ai/docs/proxy/health#health"
-                              target="_blank"
-                              rel="noreferrer"
-                              className="text-primary hover:underline"
-                            >
-                              {t("models.learnMore")}
-                            </a>
                           </p>
                         </div>
                       </div>

@@ -359,14 +359,6 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                 t("models.useInPassThroughRoutes"),
                 <span>
                   {t("models.allowUsingTheseCredentialsInPassThroughRoutes")}{" "}
-                  <a
-                    href="https://docs.litellm.ai/docs/pass_through/vertex_ai"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary underline-offset-4 hover:underline"
-                  >
-                    {t("models.learnMore")}
-                  </a>
                 </span>,
               )}
               className="mb-4 mt-4"
@@ -430,14 +422,6 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
             <div className="grid grid-cols-24 mb-4">
               <p className="col-start-11 col-span-10 text-muted-foreground text-sm">
                 {t("models.passJsonOfLitellmSupportedParams")}{" "}
-                <a
-                  href="https://docs.litellm.ai/docs/completion/input"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-primary underline-offset-4 hover:underline"
-                >
-                  {t("models.litellmCompletionCall")}
-                </a>
               </p>
             </div>
             <MountedFormField
