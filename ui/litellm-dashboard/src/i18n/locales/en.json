@@ -1344,6 +1344,7 @@
     "historyMessages_other": "HISTORY ({{count}} messages)"
   },
   "people": {
+    "searchUsersByEmail": "Search users by email…",
     "teamDeletedSuccessfully": "Team deleted successfully",
     "creatingTeam": "Creating Team",
     "teamCreated": "Team created",
