@@ -650,15 +650,11 @@ const EntityUsage: React.FC<EntityUsageProps> = ({
         </>
       ),
     },
-    ...(showAgentBreakdown
-      ? [{ key: "agents", label: t("usage.agentActivity"), content: <ActivityMetrics modelMetrics={agentMetrics} /> }]
-      : []),
     {
       key: "keys",
       label: t("usage.keyActivity"),
       content: <ActivityMetrics modelMetrics={keyMetrics} hidePromptCachingMetrics={entityType === "agent"} />,
     },
-    { key: "endpoints", label: t("usage.endpointActivity"), content: <EndpointUsage userSpendData={spendData} /> },
   ];
 
   return (
