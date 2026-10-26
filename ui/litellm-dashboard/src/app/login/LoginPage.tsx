@@ -1,15 +1,15 @@
 "use client";
 
+import "./login.css";
+import loginBackground from "../../../public/assets/mindgate-login-background.png";
 import { useTranslation } from "@/i18n/useTranslation";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
-import ThemeToggle from "@/components/ThemeToggle/ThemeToggle";
 import type { TFunction } from "i18next";
 
 import { useLogin } from "@/app/(dashboard)/hooks/login/useLogin";
 import { useUIConfig } from "@/app/(dashboard)/hooks/uiConfig/useUIConfig";
-import LoadingScreen from "@/components/common_components/LoadingScreen";
 import { exchangeLoginCode, getProxyBaseUrl, switchToWorkerUrl } from "@/components/networking";
-import { Alert, AlertAction, AlertDescription, AlertTitle } from "@/components/shared/Alert";
+import { Alert, AlertDescription, AlertTitle } from "@/components/shared/Alert";
 import { PasswordInput } from "@/components/shared/PasswordInput";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { FormField } from "@/components/shared/form/FormField";
@@ -17,13 +17,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { UiLoadingSpinner } from "@/components/ui/ui-loading-spinner";
 import { useZodForm } from "@/lib/forms/useZodForm";
 import { clearTokenCookies, getCookieFromDocument } from "@/utils/cookieUtils";
 import { isJwtExpired } from "@/utils/jwtUtils";
-import { consumeReturnUrl, getLoginUrl, getReturnUrl, isValidReturnUrl } from "@/utils/returnUrlUtils";
-import { CircleAlert, Info, TriangleAlert, X } from "lucide-react";
+import { consumeReturnUrl, getReturnUrl, isValidReturnUrl } from "@/utils/returnUrlUtils";
+import { CircleAlert, TriangleAlert } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useMemo, useState } from "react";
 import { z } from "zod/v4";
@@ -37,35 +36,11 @@ const createLoginSchema = (t: TFunction) =>
 
 type LoginFormValues = z.infer<ReturnType<typeof createLoginSchema>>;
 
-function SsoEnabledNotice() {
-  const { t } = useTranslation();
-  const [dismissed, setDismissed] = useState(false);
-
-  if (dismissed) {
-    return null;
-  }
-
-  return (
-    <Alert variant="info" className="mt-4">
-      <Info />
-      <AlertTitle>
-        {t("auth.ssoNoticePrefix")}{" "}
-        <code className="bg-muted px-1 py-0.5 rounded-sm text-xs">AUTO_REDIRECT_UI_LOGIN_TO_SSO=true</code>{" "}
-        {t("auth.ssoNoticeSuffix")}
-      </AlertTitle>
-      <AlertAction>
-        <Button variant="ghost" size="icon-sm" aria-label={t("common.close")} onClick={() => setDismissed(true)}>
-          <X className="size-4" />
-        </Button>
-      </AlertAction>
-    </Alert>
-  );
-}
-
 function LoginPageContent() {
   const { t } = useTranslation();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isResolvingSession, setIsResolvingSession] = useState(true);
   const { data: uiConfig, isLoading: isConfigLoading } = useUIConfig();
+  const isLoginReady = !isConfigLoading && !isResolvingSession && !uiConfig?.admin_ui_disabled;
   const loginMutation = useLogin();
   const router = useRouter();
   const { workers, selectWorker } = useWorker();
@@ -95,7 +70,7 @@ function LoginPageContent() {
 
     // Check if admin UI is disabled
     if (uiConfig && uiConfig.admin_ui_disabled) {
-      setIsLoading(false);
+      setIsResolvingSession(false);
       return;
     }
 
@@ -124,7 +99,7 @@ function LoginPageContent() {
     const switchingWorker = params.has("worker");
     if (switchingWorker && uiConfig?.is_control_plane) {
       clearTokenCookies();
-      setIsLoading(false);
+      setIsResolvingSession(false);
       return;
     }
 
@@ -151,10 +126,11 @@ function LoginPageContent() {
       return;
     }
 
-    setIsLoading(false);
+    setIsResolvingSession(false);
   }, [isConfigLoading, router, uiConfig]);
 
   const handleSubmit = ({ username, password }: LoginFormValues) => {
+    if (!isLoginReady) return;
     // If a worker is selected, point proxyBaseUrl at it before login
     const selectedWorker = workers.find((w) => w.worker_id === selectedWorkerId);
     if (selectedWorker) {
@@ -193,10 +169,6 @@ function LoginPageContent() {
   const error = loginMutation.error instanceof Error ? loginMutation.error.message : null;
   const isLoginLoading = loginMutation.isPending;
 
-  if (isConfigLoading || isLoading) {
-    return <LoadingScreen />;
-  }
-
   // Show disabled message if admin UI is disabled
   if (uiConfig && uiConfig.admin_ui_disabled) {
     return (
@@ -226,38 +198,18 @@ function LoginPageContent() {
   }
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center bg-muted">
-      <div className="absolute top-4 right-4 flex items-center gap-1">
-        <ThemeToggle />
+    <div className="mindgate-login">
+      <div className="mindgate-login-art" style={{ backgroundImage: `url(${loginBackground.src})` }} aria-hidden />
+      <div className="mindgate-login-tools">
         <LanguageSwitcher />
       </div>
-      <Card className="w-full max-w-lg shadow-md">
-        <CardContent>
-          <TooltipProvider>
+      <div className="mindgate-login-panel">
+        <Card className="mindgate-login-card">
+          <CardContent className="mindgate-login-content">
             <div className="flex w-full flex-col gap-4">
-              <div className="text-center">
-                <h2 className="text-3xl font-semibold text-foreground"> MindGate </h2>
+              <div className="mindgate-login-brand">
+                <h2>MindGate</h2>
               </div>
-
-              <div className="text-center">
-                <h3 className="text-2xl font-semibold text-foreground">{t("auth.login")}</h3>
-                <p className="text-sm text-muted-foreground">{t("auth.description")}</p>
-              </div>
-
-              {!uiConfig?.hide_default_credentials_hint && (
-                <Alert variant="info">
-                  <Info />
-                  <AlertTitle>{t("auth.defaultCredentials")}</AlertTitle>
-                  <AlertDescription>
-                    <p className="text-sm">
-                      {t("auth.defaultUsernamePrefix")}{" "}
-                      <code className="bg-muted px-1 py-0.5 rounded-sm text-xs">admin</code>{" "}
-                      {t("auth.defaultPasswordPrefix")}{" "}
-                      <code className="bg-muted px-1 py-0.5 rounded-sm text-xs">MASTER_KEY</code>.
-                    </p>
-                  </AlertDescription>
-                </Alert>
-              )}
 
               {error && (
                 <Alert variant="error">
@@ -267,9 +219,10 @@ function LoginPageContent() {
               )}
 
               <form onSubmit={form.handleSubmit(handleSubmit)}>
-                <FieldGroup>
+                <h3 className="mindgate-login-heading">{t("auth.login")} MindGate</h3>
+                <FieldGroup className="gap-0">
                   {uiConfig?.is_control_plane && workers.length > 0 && (
-                    <Field>
+                    <Field className="mb-4">
                       <FieldLabel htmlFor={workerFieldId}>{t("shell.worker")}</FieldLabel>
                       <Select
                         items={workers.map((worker) => ({ label: worker.name, value: worker.worker_id }))}
@@ -290,11 +243,12 @@ function LoginPageContent() {
                     </Field>
                   )}
 
-                  <FormField control={form.control} name="username" label={t("auth.username")}>
+                  <FormField control={form.control} name="username">
                     {({ ref, ...field }) => (
                       <Input
                         {...field}
                         ref={ref}
+                        aria-label={t("auth.username")}
                         placeholder={t("auth.usernamePlaceholder")}
                         autoComplete="username"
                         disabled={isLoginLoading}
@@ -303,11 +257,12 @@ function LoginPageContent() {
                     )}
                   </FormField>
 
-                  <FormField control={form.control} name="password" label={t("auth.password")}>
+                  <FormField control={form.control} name="password">
                     {({ ref, ...field }) => (
                       <PasswordInput
                         {...field}
                         ref={ref}
+                        aria-label={t("auth.password")}
                         placeholder={t("auth.passwordPlaceholder")}
                         autoComplete="current-password"
                         disabled={isLoginLoading}
@@ -316,53 +271,24 @@ function LoginPageContent() {
                     )}
                   </FormField>
 
-                  <Button type="submit" size="lg" disabled={isLoginLoading} className="w-full">
+                  <Button
+                    type="submit"
+                    size="lg"
+                    disabled={isLoginLoading || !isLoginReady}
+                    className="mindgate-login-submit"
+                  >
                     {isLoginLoading && (
                       <UiLoadingSpinner className="size-4" role="img" aria-label={t("common.loadingAria")} />
                     )}
                     {isLoginLoading ? t("auth.loggingIn") : t("auth.login")}
                   </Button>
-
-                  {!uiConfig?.sso_configured ? (
-                    <Tooltip>
-                      <TooltipTrigger render={<span className="block w-full" />}>
-                        <Button type="button" variant="outline" size="lg" disabled className="w-full">
-                          {t("auth.ssoLogin")}
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>{t("auth.configureSso")}</TooltipContent>
-                    </Tooltip>
-                  ) : (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="lg"
-                      disabled={isLoginLoading || (!!selectedWorkerId && workers.length === 0)}
-                      onClick={() => {
-                        const selectedWorker = workers.find((w) => w.worker_id === selectedWorkerId);
-                        if (selectedWorker) {
-                          // Store worker selection so useWorker hook restores it after redirect
-                          localStorage.setItem("litellm_selected_worker_id", selectedWorkerId!);
-                          switchToWorkerUrl(selectedWorker.url);
-                        }
-                        // SSO on the worker (or this instance if no worker), always
-                        // include return_to so the callback redirects back here
-                        const ssoBase = selectedWorker?.url ?? getProxyBaseUrl();
-                        const returnTo = encodeURIComponent(getLoginUrl(window.location.origin));
-                        router.push(`${ssoBase}/sso/key/generate?return_to=${returnTo}`);
-                      }}
-                      className="w-full"
-                    >
-                      {t("auth.ssoLogin")}
-                    </Button>
-                  )}
                 </FieldGroup>
               </form>
             </div>
-            {uiConfig?.sso_configured && <SsoEnabledNotice />}
-          </TooltipProvider>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </div>
+      <footer className="mindgate-login-footer">© 1983-2026 Vision Studio Co., Ltd.</footer>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import LoginPage from "./LoginPage";
 
@@ -74,6 +74,35 @@ describe("LoginPage", () => {
     mockReplace.mockClear();
   });
 
+  it("shows the login form while configuration loads and preserves input when it becomes ready", async () => {
+    (useUIConfig as ReturnType<typeof vi.fn>).mockReturnValue({ data: undefined, isLoading: true });
+    (getCookieFromDocument as ReturnType<typeof vi.fn>).mockReturnValue(null);
+    const queryClient = createQueryClient();
+    const page = (
+      <QueryClientProvider client={queryClient}>
+        <LoginPage />
+      </QueryClientProvider>
+    );
+    const { rerender } = render(page);
+
+    expect(screen.getByRole("heading", { name: "Login MindGate" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Login", exact: true })).toBeDisabled();
+    fireEvent.change(screen.getByLabelText("Username"), { target: { value: "preview-user" } });
+
+    (useUIConfig as ReturnType<typeof vi.fn>).mockReturnValue({
+      data: { auto_redirect_to_sso: false, sso_configured: false },
+      isLoading: false,
+    });
+    rerender(
+      <QueryClientProvider client={queryClient}>
+        <LoginPage />
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => expect(screen.getByRole("button", { name: "Login", exact: true })).toBeEnabled());
+    expect(screen.getByLabelText("Username")).toHaveValue("preview-user");
+  });
+
   it("should render", async () => {
     (useUIConfig as ReturnType<typeof vi.fn>).mockReturnValue({
       data: {
@@ -94,8 +123,13 @@ describe("LoginPage", () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByRole("heading", { name: "Login" })).toBeInTheDocument();
+      expect(screen.getByRole("heading", { name: "Login MindGate" })).toBeInTheDocument();
     });
+    expect(screen.getByText("© 1983-2026 Vision Studio Co., Ltd.")).toBeInTheDocument();
+    expect(screen.queryByText("Username", { exact: true })).not.toBeInTheDocument();
+    expect(screen.queryByText("Password", { exact: true })).not.toBeInTheDocument();
+    expect(screen.queryByText("Default Credentials")).not.toBeInTheDocument();
+    expect(screen.queryByText("MASTER_KEY")).not.toBeInTheDocument();
   });
 
   it("should call router.replace to dashboard when jwt is valid", async () => {
@@ -172,7 +206,7 @@ describe("LoginPage", () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByRole("heading", { name: "Login" })).toBeInTheDocument();
+      expect(screen.getByRole("heading", { name: "Login MindGate" })).toBeInTheDocument();
     });
 
     expect(mockPush).not.toHaveBeenCalled();
@@ -235,7 +269,7 @@ describe("LoginPage", () => {
     expect(mockReplace).not.toHaveBeenCalled();
   });
 
-  it("should show Login with SSO button when sso_configured is true", async () => {
+  it("does not show the SSO entry when SSO is configured", async () => {
     (useUIConfig as ReturnType<typeof vi.fn>).mockReturnValue({
       data: {
         auto_redirect_to_sso: false,
@@ -256,13 +290,13 @@ describe("LoginPage", () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByRole("heading", { name: "Login" })).toBeInTheDocument();
+      expect(screen.getByRole("heading", { name: "Login MindGate" })).toBeInTheDocument();
     });
 
-    expect(screen.getByRole("button", { name: "Login with SSO" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Login with SSO" })).not.toBeInTheDocument();
   });
 
-  it("should show disabled Login with SSO button with popover when sso_configured is false", async () => {
+  it("does not show the SSO entry when SSO is not configured", async () => {
     (useUIConfig as ReturnType<typeof vi.fn>).mockReturnValue({
       data: {
         auto_redirect_to_sso: false,
@@ -283,12 +317,10 @@ describe("LoginPage", () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByRole("heading", { name: "Login" })).toBeInTheDocument();
+      expect(screen.getByRole("heading", { name: "Login MindGate" })).toBeInTheDocument();
     });
 
-    const ssoButton = screen.getByRole("button", { name: "Login with SSO" });
-    expect(ssoButton).toBeInTheDocument();
-    expect(ssoButton).toBeDisabled();
+    expect(screen.queryByRole("button", { name: "Login with SSO" })).not.toBeInTheDocument();
   });
 
   describe("URL ?token= legacy path is rejected (security regression test)", () => {
@@ -335,7 +367,7 @@ describe("LoginPage", () => {
       );
 
       await waitFor(() => {
-        expect(screen.getByRole("heading", { name: "Login" })).toBeInTheDocument();
+        expect(screen.getByRole("heading", { name: "Login MindGate" })).toBeInTheDocument();
       });
 
       expect(document.cookie).not.toContain("token=attacker.jwt.value");

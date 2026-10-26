@@ -97,7 +97,7 @@ describe("LoginPage submit payload", () => {
   it("sends exactly {username, password, useV3:false} when the Login button is clicked", async () => {
     const user = userEvent.setup();
     renderLoginPage();
-    await screen.findByRole("heading", { name: "Login" });
+    await screen.findByRole("heading", { name: "Login MindGate" });
 
     fireEvent.change(screen.getByLabelText("Username"), { target: { value: "admin" } });
     fireEvent.change(screen.getByLabelText("Password"), { target: { value: "sk-1234" } });
@@ -111,7 +111,7 @@ describe("LoginPage submit payload", () => {
   it("submits on Enter from the password field", async () => {
     const user = userEvent.setup();
     renderLoginPage();
-    await screen.findByRole("heading", { name: "Login" });
+    await screen.findByRole("heading", { name: "Login MindGate" });
 
     fireEvent.change(screen.getByLabelText("Username"), { target: { value: "admin" } });
     await user.type(screen.getByLabelText("Password"), "sk-1234{Enter}");
@@ -123,7 +123,7 @@ describe("LoginPage submit payload", () => {
   it("blocks submit and shows both required messages when the fields are empty", async () => {
     const user = userEvent.setup();
     renderLoginPage();
-    await screen.findByRole("heading", { name: "Login" });
+    await screen.findByRole("heading", { name: "Login MindGate" });
 
     await user.click(screen.getByRole("button", { name: "Login" }));
 
@@ -150,7 +150,7 @@ describe("LoginPage submit payload", () => {
     });
 
     renderLoginPage();
-    await screen.findByRole("heading", { name: "Login" });
+    await screen.findByRole("heading", { name: "Login MindGate" });
 
     await user.click(screen.getAllByRole("combobox")[0]);
     await user.click(await screen.findByText("Worker B"));
@@ -179,7 +179,7 @@ describe("LoginPage submit payload", () => {
     });
 
     renderLoginPage();
-    await screen.findByRole("heading", { name: "Login" });
+    await screen.findByRole("heading", { name: "Login MindGate" });
 
     fireEvent.change(screen.getByLabelText("Username"), { target: { value: "admin" } });
     fireEvent.change(screen.getByLabelText("Password"), { target: { value: "sk-1234" } });
