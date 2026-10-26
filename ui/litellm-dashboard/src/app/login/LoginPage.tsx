@@ -39,6 +39,7 @@ type LoginFormValues = z.infer<ReturnType<typeof createLoginSchema>>;
 function LoginPageContent() {
   const { t } = useTranslation();
   const [isResolvingSession, setIsResolvingSession] = useState(true);
+  const [isRedirecting, setIsRedirecting] = useState(false);
   const { data: uiConfig, isLoading: isConfigLoading } = useUIConfig();
   const isLoginReady = !isConfigLoading && !isResolvingSession && !uiConfig?.admin_ui_disabled;
   const loginMutation = useLogin();
@@ -130,7 +131,7 @@ function LoginPageContent() {
   }, [isConfigLoading, router, uiConfig]);
 
   const handleSubmit = ({ username, password }: LoginFormValues) => {
-    if (!isLoginReady) return;
+    if (!isLoginReady || isRedirecting || loginMutation.isPending) return;
     // If a worker is selected, point proxyBaseUrl at it before login
     const selectedWorker = workers.find((w) => w.worker_id === selectedWorkerId);
     if (selectedWorker) {
@@ -141,18 +142,19 @@ function LoginPageContent() {
       { username, password, useV3: !!selectedWorker },
       {
         onSuccess: (data) => {
+          setIsRedirecting(true);
           // Update the worker context with the selected worker
           if (selectedWorker) {
             selectWorker(selectedWorker.worker_id);
             // Stay on the CP's UI — proxyBaseUrl already points at the worker
-            router.push("/ui/?login=success");
+            window.location.replace("/ui/?login=success");
           } else {
             // Normal (non-control-plane) login — follow the server's redirect
             const returnUrl = consumeReturnUrl();
             if (returnUrl) {
-              router.push(returnUrl);
+              window.location.replace(returnUrl);
             } else {
-              router.push(data.redirect_url);
+              window.location.replace(data.redirect_url);
             }
           }
         },
@@ -167,7 +169,7 @@ function LoginPageContent() {
   };
 
   const error = loginMutation.error instanceof Error ? loginMutation.error.message : null;
-  const isLoginLoading = loginMutation.isPending;
+  const isLoginLoading = loginMutation.isPending || isRedirecting;
 
   // Show disabled message if admin UI is disabled
   if (uiConfig && uiConfig.admin_ui_disabled) {

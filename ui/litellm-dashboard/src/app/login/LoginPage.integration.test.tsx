@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import LoginPage from "./LoginPage";
@@ -8,6 +8,7 @@ const mockPush = vi.fn();
 const mockReplace = vi.fn();
 const mockMutate = vi.fn();
 const mockSelectWorker = vi.fn();
+const mockDocumentReplace = vi.fn();
 
 vi.mock("next/navigation", () => ({
   useRouter: vi.fn(() => ({ push: mockPush, replace: mockReplace })),
@@ -67,7 +68,13 @@ const renderLoginPage = () => {
 
 const setSearch = (search: string) => {
   Object.defineProperty(window, "location", {
-    value: { ...window.location, pathname: "/ui/login", search, href: `http://localhost:3000/ui/login${search}` },
+    value: {
+      ...window.location,
+      replace: mockDocumentReplace,
+      pathname: "/ui/login",
+      search,
+      href: `http://localhost:3000/ui/login${search}`,
+    },
     writable: true,
   });
 };
@@ -77,6 +84,7 @@ const originalLocation = window.location;
 describe("LoginPage submit payload", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockMutate.mockReset();
     WORKERS = [];
     setSearch("");
     (useUIConfig as ReturnType<typeof vi.fn>).mockReturnValue({
@@ -92,6 +100,68 @@ describe("LoginPage submit payload", () => {
 
   afterEach(() => {
     Object.defineProperty(window, "location", { value: originalLocation, writable: true });
+  });
+
+  it("reloads the destination with the new session and keeps the form busy until navigation", async () => {
+    renderLoginPage();
+    fireEvent.change(screen.getByLabelText("Username"), { target: { value: "admin" } });
+    fireEvent.change(screen.getByLabelText("Password"), { target: { value: "test-password" } });
+    fireEvent.click(screen.getByRole("button", { name: "Login" }));
+    await waitFor(() => expect(mockMutate).toHaveBeenCalledOnce());
+
+    act(() => mockMutate.mock.calls[0][1].onSuccess({ redirect_url: "/ui/?login=success" }));
+
+    expect(mockDocumentReplace).toHaveBeenCalledWith("/ui/?login=success");
+    expect(mockPush).not.toHaveBeenCalled();
+    expect(screen.getByRole("button", { name: /Logging in\.\.\./ })).toBeDisabled();
+    expect(screen.getByLabelText("Username")).toBeDisabled();
+    fireEvent.click(screen.getByRole("button", { name: /Logging in\.\.\./ }));
+    expect(mockMutate).toHaveBeenCalledOnce();
+  });
+
+  it("preserves the requested return URL when reloading after login", async () => {
+    setSearch("?redirect_to=%2Fui%2Flogs");
+    renderLoginPage();
+    fireEvent.change(screen.getByLabelText("Username"), { target: { value: "admin" } });
+    fireEvent.change(screen.getByLabelText("Password"), { target: { value: "test-password" } });
+    fireEvent.click(screen.getByRole("button", { name: "Login" }));
+    await waitFor(() => expect(mockMutate).toHaveBeenCalledOnce());
+
+    act(() => mockMutate.mock.calls[0][1].onSuccess({ redirect_url: "/ui/?login=success" }));
+
+    expect(mockDocumentReplace).toHaveBeenCalledWith("/ui/logs");
+  });
+
+  it("reloads the dashboard after a worker login and retains the selected worker", async () => {
+    WORKERS = [{ worker_id: "worker-a", name: "Worker A", url: "http://worker-a:4000" }];
+    setSearch("?worker=worker-a");
+    renderLoginPage();
+    fireEvent.change(screen.getByLabelText("Username"), { target: { value: "admin" } });
+    fireEvent.change(screen.getByLabelText("Password"), { target: { value: "test-password" } });
+    fireEvent.click(screen.getByRole("button", { name: "Login" }));
+    await waitFor(() => expect(mockMutate).toHaveBeenCalledOnce());
+
+    act(() => mockMutate.mock.calls[0][1].onSuccess({ redirect_url: "http://worker-a:4000/ui/" }));
+
+    expect(mockSelectWorker).toHaveBeenCalledWith("worker-a");
+    expect(mockDocumentReplace).toHaveBeenCalledWith("/ui/?login=success");
+    expect(mockPush).not.toHaveBeenCalled();
+  });
+
+  it("allows retry after failed login without navigating", async () => {
+    renderLoginPage();
+    fireEvent.change(screen.getByLabelText("Username"), { target: { value: "admin" } });
+    fireEvent.change(screen.getByLabelText("Password"), { target: { value: "test-password" } });
+    fireEvent.click(screen.getByRole("button", { name: "Login" }));
+    await waitFor(() => expect(mockMutate).toHaveBeenCalledOnce());
+
+    act(() => mockMutate.mock.calls[0][1].onError(new Error("Invalid credentials")));
+
+    expect(mockDocumentReplace).not.toHaveBeenCalled();
+    expect(screen.getByRole("button", { name: "Login" })).toBeEnabled();
+    expect(screen.getByLabelText("Username")).toBeEnabled();
+    fireEvent.click(screen.getByRole("button", { name: "Login" }));
+    await waitFor(() => expect(mockMutate).toHaveBeenCalledTimes(2));
   });
 
   it("sends exactly {username, password, useV3:false} when the Login button is clicked", async () => {
