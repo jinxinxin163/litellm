@@ -3,7 +3,6 @@ import GuardrailSelector from "@/components/guardrails/GuardrailSelector";
 import { useOrganizations } from "@/app/(dashboard)/hooks/organizations/useOrganizations";
 import { useProjects } from "@/app/(dashboard)/hooks/projects/useProjects";
 import { useUISettings } from "@/app/(dashboard)/hooks/uiSettings/useUISettings";
-import PolicySelector from "@/components/policies/PolicySelector";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -563,6 +562,35 @@ export function KeyEditView({
           
 
           
+
+          <FormField control={form.control} name="guardrails" label={t("keys.guardrails")}>
+            {({ value, onChange }) =>
+              accessToken ? (
+                <GuardrailSelector
+                  onChange={onChange}
+                  value={value as string[] | undefined}
+                  accessToken={accessToken}
+                  disabled={!canEditGuardrails}
+                />
+              ) : (
+                <div />
+              )
+            }
+          </FormField>
+
+          <FormField
+            control={form.control}
+            name="disable_global_guardrails"
+            label={labelWithHint(
+              t("keys.disableGlobalGuardrails"),
+              t("keys.whenEnabledThisKeyWillBypassAnyGuardrailsConfiguredToRun"),
+            )}
+          >
+            {({ value, onChange, ref: _ref, ...field }) => (
+              <Switch {...field} checked={Boolean(value)} onCheckedChange={onChange} disabled={!canEditGuardrails} />
+            )}
+          </FormField>
+
 
           <FormField control={form.control} name="tags" label={t("keys.tags")}>
             {({ value, onChange, id }) => (

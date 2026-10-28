@@ -853,6 +853,50 @@ const Teams: React.FC<TeamProps> = ({ accessToken, userID, userRole, premiumUser
 
                         <FormField
                           control={form.control}
+                          name="guardrails"
+                          className="mt-8"
+                          label={labelWithDocsHint(
+                            t("keys.guardrails"),
+                            t("restoredSafety.setupGuardrail"),
+                            "https://docs.litellm.ai/docs/proxy/guardrails/quick_start",
+                          )}
+                          description={t("restoredSafety.selectGuardrailsHelp")}
+                        >
+                          {({ id, value, onChange }) => (
+                            <TagsInput
+                              id={id}
+                              value={value ?? []}
+                              onValueChange={onChange}
+                              options={guardrailsList.map((name) => ({ value: name, label: name }))}
+                              placeholder={t("restoredSafety.selectOrEnterGuardrails")}
+                            />
+                          )}
+                        </FormField>
+                        {canViewPolicies && (
+                          <FormField
+                            control={form.control}
+                            name="policies"
+                            className="mt-8"
+                            label={labelWithDocsHint(
+                              t("people.policies"),
+                              t("restoredSafety.teamPoliciesHint"),
+                              "https://docs.litellm.ai/docs/proxy/guardrails/guardrail_policies",
+                            )}
+                            description={t("restoredSafety.selectPoliciesHelp")}
+                          >
+                            {({ id, value, onChange }) => (
+                              <TagsInput
+                                id={id}
+                                value={value ?? []}
+                                onValueChange={onChange}
+                                options={policiesList.map((name) => ({ value: name, label: name }))}
+                                placeholder={t("restoredSafety.selectOrEnterPolicies")}
+                              />
+                            )}
+                          </FormField>
+                        )}
+                        <FormField
+                          control={form.control}
                           name="access_group_ids"
                           className="mt-8"
                           label={labelWithHint(

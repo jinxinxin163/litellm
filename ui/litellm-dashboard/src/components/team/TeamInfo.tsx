@@ -620,12 +620,6 @@ const TeamInfoView: React.FC<TeamInfoProps> = ({
     setIsEditing(true);
   };
 
-  const applyKillSwitchToGuardrails = (checked: boolean) => {
-    const current = form.getValues("guardrails") ?? [];
-    const nonGlobals = current.filter((name) => !globalGuardrailNames.has(name));
-    form.setValue("guardrails", checked ? nonGlobals : [...Array.from(globalGuardrailNames), ...nonGlobals]);
-  };
-
   const mountedUpdateValues = (values: TeamUpdateFormValues): Record<string, unknown> => {
     const unmounted = new Set<string>([
       ...(teamMemberSettingsOpen ? [] : TEAM_MEMBER_SETTINGS_FIELDS),
@@ -1697,6 +1691,56 @@ const TeamInfoView: React.FC<TeamInfoProps> = ({
                       value={info.router_settings ? { router_settings: info.router_settings } : undefined}
                     />
                   </Field>
+
+                  <FormField
+                    control={form.control}
+                    name="guardrails"
+                    label={labelWithDocsHint(
+                      t("keys.guardrails"),
+                      t("restoredSafety.teamGuardrailsHint"),
+                      "https://docs.litellm.ai/docs/proxy/guardrails/quick_start",
+                    )}
+                  >
+                    {({ id, value, onChange }) => (
+                      <GuardrailsSelect
+                        id={id}
+                        value={value ?? []}
+                        onValueChange={onChange}
+                        globalGuardrails={globalGuardrails.map((g) => ({
+                          name: g.guardrail_name,
+                          disabled: Boolean(killSwitchOn),
+                        }))}
+                        otherGuardrails={otherGuardrails.map((g) => ({
+                          name: g.guardrail_name,
+                          disabled: false,
+                        }))}
+                        globalGuardrailNames={globalGuardrailNames}
+                      />
+                    )}
+                  </FormField>
+
+
+                  {canViewPolicies && (
+                    <FormField
+                      control={form.control}
+                      name="policies"
+                      label={labelWithDocsHint(
+                        t("people.policies"),
+                        t("restoredSafety.teamPoliciesHint"),
+                        "https://docs.litellm.ai/docs/proxy/guardrails/guardrail_policies",
+                      )}
+                    >
+                      {({ id, value, onChange }) => (
+                        <TagsInput
+                          id={id}
+                          value={value ?? []}
+                          onValueChange={onChange}
+                          options={policiesList.map((name) => ({ value: name, label: name }))}
+                          placeholder={t("restoredSafety.selectOrEnterPolicies")}
+                        />
+                      )}
+                    </FormField>
+                  )}
 
                   <FormField
                     control={form.control}

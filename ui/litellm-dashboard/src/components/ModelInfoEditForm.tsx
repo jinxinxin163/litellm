@@ -536,6 +536,27 @@ const ModelInfoEditForm: React.FC<ModelInfoEditFormProps> = ({
             
 
             <div>
+              <FieldLabel>
+                {t("models.guardrails")}
+                <DocsHint
+                  text={t("models.applySafetyGuardrailsToThisModelToFilter")}
+                  href="https://docs.litellm.ai/docs/proxy/guardrails/quick_start"
+                />
+              </FieldLabel>
+              {isEditing ? (
+                tagsField(
+                  "guardrails",
+                  guardrailsList.map((name) => ({ value: name, label: name })),
+                  t("models.selectExistingGuardrailsOrTypeToCreateNewOnes"),
+                )
+              ) : (
+                <Display>
+                  <ChipList values={localModelData.litellm_params?.guardrails} emptyLabel={t("models.noGuardrailsAssigned")} />
+                </Display>
+              )}
+            </div>
+
+            <div>
               <FieldLabel>{t("models.tags")}</FieldLabel>
               {isEditing ? (
                 tagsField(

@@ -1150,6 +1150,79 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                       <MountedFormField
                         label={
                           <span>
+                            {t("keys.guardrails")}{" "}
+                            <SimpleTooltip content={t("restoredSafety.keyGuardrailsHint")}>
+                              <a
+                                href="https://docs.litellm.ai/docs/proxy/guardrails/quick_start"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <Info className="ml-1 inline size-3.5 align-text-bottom" />
+                              </a>
+                            </SimpleTooltip>
+                          </span>
+                        }
+                        name="guardrails"
+                        className="mt-4"
+                        help={
+                          canEditGuardrails
+                            ? t("restoredSafety.selectGuardrailsHelp")
+                            : t("restoredSafety.premiumKeyGuardrails")
+                        }
+                      >
+                        {(control) => (
+                          <TagsInput
+                            id={control.id}
+                            value={(control.value as string[] | undefined) ?? []}
+                            onValueChange={control.onChange}
+                            disabled={!canEditGuardrails}
+                            placeholder={
+                              !canEditGuardrails
+                                ? t("restoredSafety.premiumKeyGuardrails")
+                                : t("restoredSafety.selectOrEnterGuardrails")
+                            }
+                            options={guardrailsList.map((name) => ({ value: name, label: name }))}
+                          />
+                        )}
+                      </MountedFormField>
+                      <MountedFormField
+                        label={
+                          <span>
+                            {t("keys.disableGlobalGuardrails")}{" "}
+                            <SimpleTooltip content={t("keys.whenEnabledThisKeyWillBypassAnyGuardrailsConfiguredToRun")}>
+                              <a
+                                href="https://docs.litellm.ai/docs/proxy/guardrails/quick_start"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <Info className="ml-1 inline size-3.5 align-text-bottom" />
+                              </a>
+                            </SimpleTooltip>
+                          </span>
+                        }
+                        name="disable_global_guardrails"
+                        className="mt-4"
+                        help={
+                          canEditGuardrails
+                            ? t("restoredSafety.bypassKeyGlobalGuardrails")
+                            : t("restoredSafety.premiumKeyGlobalGuardrails")
+                        }
+                      >
+                        {(control) => (
+                          <Switch
+                            id={control.id}
+                            checked={control.value === true}
+                            onCheckedChange={control.onChange}
+                            disabled={!canEditGuardrails}
+                            aria-describedby={control["aria-describedby"]}
+                          />
+                        )}
+                      </MountedFormField>
+                      <MountedFormField
+                        label={
+                          <span>
                             {t("keys.accessGroups")}{" "}
                             <SimpleTooltip
                               content={t("keys.assignAccessGroupsToThisKeyAccessGroupsControlWhichModels")}
@@ -1320,6 +1393,8 @@ const CreateKey: React.FC<CreateKeyProps> = ({ team, teams, data, addKey, autoOp
                               "metadata",
                               "tags",
                               "guardrails",
+                              "policies",
+                              "disable_global_guardrails",
                               "max_budget",
                               "budget_duration",
                               "tpm_limit",

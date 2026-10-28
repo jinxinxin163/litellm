@@ -1,4 +1,25 @@
 {
+  "restoredSafety": {
+    "keyGuardrailsHint": "Apply safety guardrails to this key to filter content or enforce policies",
+    "selectGuardrailsHelp": "Select existing guardrails or enter new ones",
+    "selectOrEnterGuardrails": "Select or enter guardrails",
+    "premiumKeyGuardrails": "Premium feature - Upgrade to set guardrails by key",
+    "bypassKeyGlobalGuardrails": "Bypass global guardrails for this key",
+    "premiumKeyGlobalGuardrails": "Premium feature - Upgrade to disable global guardrails by key",
+    "selectPoliciesHelp": "Select existing policies or enter new ones",
+    "selectOrEnterPolicies": "Select or enter policies",
+    "premiumKeyPolicies": "Premium feature - Upgrade to set policies by key",
+    "typeToAddGuardrail": "Type to add a guardrail",
+    "modelGuardrailsHelp": "Select existing guardrails. Go to 'Guardrails' tab to create new guardrails.",
+    "setupGuardrail": "Setup your first guardrail",
+    "teamGlobalGuardrailsHint": "When enabled, this team will bypass any guardrails configured to run on every request (global guardrails)",
+    "bypassTeamGlobalGuardrails": "Bypass global guardrails for this team",
+    "premiumTeamGlobalGuardrails": "Premium feature - Upgrade to disable global guardrails by team",
+    "teamPoliciesHint": "Apply policies to this team to control guardrails and other settings",
+    "teamGuardrailsHint": "Select which guardrails apply to this team. Global guardrails are enabled by default, uncheck to opt out. Other guardrails are opt-in.",
+    "disableAllGlobalGuardrails": "Disable all global guardrails",
+    "teamKillSwitchHint": "Kill switch: bypass every global guardrail for this team, including any added in the future. For per-guardrail opt-out instead, use the Guardrails dropdown above."
+  },
   "onboarding": {
     "invitationLink": "Invitation Link",
     "resetPasswordLink": "Reset Password Link",

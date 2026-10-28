@@ -1,4 +1,25 @@
 {
+  "restoredSafety": {
+    "keyGuardrailsHint": "为此密钥应用 Guardrails，以过滤内容或执行策略",
+    "selectGuardrailsHelp": "选择现有 Guardrails 或输入新的名称",
+    "selectOrEnterGuardrails": "选择或输入 Guardrails",
+    "premiumKeyGuardrails": "Premium 功能：升级后可为密钥设置 Guardrails",
+    "bypassKeyGlobalGuardrails": "为此密钥绕过全局 Guardrails",
+    "premiumKeyGlobalGuardrails": "Premium 功能：升级后可为密钥禁用全局 Guardrails",
+    "selectPoliciesHelp": "选择现有策略或输入新的名称",
+    "selectOrEnterPolicies": "选择或输入策略",
+    "premiumKeyPolicies": "Premium 功能：升级后可为密钥设置策略",
+    "typeToAddGuardrail": "输入以添加 Guardrail",
+    "modelGuardrailsHelp": "选择现有 Guardrails。前往“Guardrails”页面创建新的 Guardrails。",
+    "setupGuardrail": "配置你的第一个 Guardrail",
+    "teamGlobalGuardrailsHint": "启用后，此团队将绕过所有配置为在每次请求时运行的全局 Guardrails",
+    "bypassTeamGlobalGuardrails": "为此团队绕过全局 Guardrails",
+    "premiumTeamGlobalGuardrails": "Premium 功能：升级后可为团队禁用全局 Guardrails",
+    "teamPoliciesHint": "为此团队应用策略，以控制 Guardrails 和其他设置",
+    "teamGuardrailsHint": "选择应用于此团队的 Guardrails。全局 Guardrails 默认启用，可取消勾选以退出；其他 Guardrails 需主动勾选启用。",
+    "disableAllGlobalGuardrails": "禁用所有全局 Guardrails",
+    "teamKillSwitchHint": "总开关：为此团队绕过所有全局 Guardrails，包括将来新增的 Guardrails。如需逐项退出，请使用上方的 Guardrails 下拉框。"
+  },
   "onboarding": {
     "invitationLink": "邀请链接",
     "resetPasswordLink": "密码重置链接",

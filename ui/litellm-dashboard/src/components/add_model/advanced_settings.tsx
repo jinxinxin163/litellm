@@ -4,7 +4,8 @@ import { MultiSelect } from "@/components/shared/MultiSelect";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import type { Dayjs } from "dayjs";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Info } from "lucide-react";
+import { SimpleTooltip } from "@/components/ui/tooltip";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -112,6 +113,39 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
                     control.onChange(checked);
                     setCustomPricing(checked);
                   }}
+                />
+              )}
+            </MountedFormField>
+
+            <MountedFormField
+              name="guardrails"
+              label={
+                <span>
+                  {t("models.guardrails")}{" "}
+                  <SimpleTooltip content={t("restoredSafety.keyGuardrailsHint")}>
+                    <a
+                      href="https://docs.litellm.ai/docs/proxy/guardrails/quick_start"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <Info className="ml-1 inline size-3.5 align-text-bottom" />
+                    </a>
+                  </SimpleTooltip>
+                </span>
+              }
+              className="mt-4"
+              help={t("restoredSafety.modelGuardrailsHelp")}
+            >
+              {(control) => (
+                <MultiSelect
+                  id={control.id}
+                  placeholder={t("restoredSafety.selectOrEnterGuardrails")}
+                  emptyText={t("restoredSafety.typeToAddGuardrail")}
+                  value={(control.value as string[] | undefined) ?? []}
+                  onValueChange={control.onChange}
+                  options={guardrailsList.map((name) => ({ value: name, label: name }))}
+                  allowCustomValues
                 />
               )}
             </MountedFormField>
