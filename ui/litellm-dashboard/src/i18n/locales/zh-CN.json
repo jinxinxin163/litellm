@@ -141,6 +141,8 @@
     "pages": {
       "api-keys": "虚拟密钥",
       "models": "模型",
+      "guardrails": "Guardrails",
+      "policies": "策略",
       "new_usage": "用量",
       "logs": "日志",
       "teams": "团队",

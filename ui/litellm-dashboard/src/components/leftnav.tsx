@@ -31,7 +31,9 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   Route,
+  ScrollText,
   Settings as SettingsIcon,
+  Shield,
   User,
   Users,
 } from "lucide-react";
@@ -39,6 +41,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { cn } from "@/lib/cva.config";
 import { all_admin_roles, internalUserRoles, isAdminRole, rolesAllowedToViewWriteScopedPages } from "../utils/roles";
+import { rolesWithCapability } from "@/utils/capabilities";
 import BetaBadge from "./BetaBadge";
 import SidebarUsageCard from "./SidebarUsageCard";
 import { MIGRATED_PAGES, migratedHref, legacyPageHref } from "@/utils/migratedPages";
@@ -86,6 +89,14 @@ const menuGroups: MenuGroup[] = [
         label: "Models",
         icon: <Network {...ICON} />,
         roles: rolesAllowedToViewWriteScopedPages,
+      },
+      { key: "guardrails", page: "guardrails", label: "Guardrails", icon: <Shield {...ICON} /> },
+      {
+        key: "policies",
+        page: "policies",
+        label: "Policies",
+        icon: <ScrollText {...ICON} />,
+        roles: rolesWithCapability("viewPolicies"),
       },
     ],
   },

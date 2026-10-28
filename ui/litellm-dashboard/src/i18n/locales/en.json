@@ -141,6 +141,8 @@
     "pages": {
       "api-keys": "Virtual Keys",
       "models": "Models",
+      "guardrails": "Guardrails",
+      "policies": "Policies",
       "new_usage": "Usage",
       "logs": "Logs",
       "teams": "Teams",
