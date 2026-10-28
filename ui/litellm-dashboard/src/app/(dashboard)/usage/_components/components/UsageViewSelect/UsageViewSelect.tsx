@@ -1,5 +1,5 @@
 import { useTranslation } from "@/i18n/useTranslation";
-import { BarChart3, Globe, ShoppingCart, User, Users } from "lucide-react";
+import { BarChart3, Globe, ShoppingCart, Tags, User, Users } from "lucide-react";
 import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -78,15 +78,13 @@ const OPTIONS: OptionConfig[] = [
     icon: <ShoppingCart className="size-4" />,
     adminOnly: true,
   },
-  /*
   {
     value: "tag",
-    label: "Tag Usage",
-    description: "View usage grouped by tags",
+    label: "usage.tagUsage",
+    description: "usage.viewUsageGroupedByTags",
     icon: <Tags className="size-4" />,
     adminOnly: true,
   },
-  */
   /*
   {
     value: "agent",

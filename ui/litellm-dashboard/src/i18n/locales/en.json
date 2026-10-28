@@ -1183,6 +1183,8 @@
     "viewYourUsage": "View your usage",
     "viewYourOwnUsage": "View your own usage",
     "teamUsage": "Team Usage",
+    "tagUsage": "Tag Usage",
+    "viewUsageGroupedByTags": "View usage grouped by tags",
     "viewUsageByTeam": "View usage by team",
     "customerUsage": "Customer Usage",
     "viewUsageByCustomerAccounts": "View usage by customer accounts",

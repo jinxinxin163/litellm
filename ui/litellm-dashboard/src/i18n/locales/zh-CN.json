@@ -1183,6 +1183,8 @@
     "viewYourUsage": "查看我的用量",
     "viewYourOwnUsage": "查看自己的用量",
     "teamUsage": "团队用量",
+    "tagUsage": "标签用量",
+    "viewUsageGroupedByTags": "按标签分组查看用量",
     "viewUsageByTeam": "按团队查看用量",
     "customerUsage": "客户用量",
     "viewUsageByCustomerAccounts": "按客户账户查看用量",
