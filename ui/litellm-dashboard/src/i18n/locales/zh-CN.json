@@ -171,6 +171,7 @@
       "caching": "响应缓存",
       "settings": "设置",
       "router-settings": "路由设置",
+      "logging-and-alerts": "日志与告警",
       "admin-panel": "管理设置"
     },
     "groups": {

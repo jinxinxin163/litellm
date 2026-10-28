@@ -489,7 +489,6 @@ const Settings: React.FC<SettingsPageProps> = ({ accessToken, userRole, userID, 
         <Tabs defaultValue="logging-callbacks">
           <TabsList variant="line">
             <TabsTrigger value="logging-callbacks">Logging Callbacks</TabsTrigger>
-            <TabsTrigger value="cloudzero-cost-tracking">CloudZero Cost Tracking</TabsTrigger>
             <TabsTrigger value="alerting-types">Alerting Types</TabsTrigger>
             <TabsTrigger value="alerting-settings">Alerting Settings</TabsTrigger>
             <TabsTrigger value="email-alerts">Email Alerts</TabsTrigger>
@@ -623,15 +622,6 @@ const Settings: React.FC<SettingsPageProps> = ({ accessToken, userRole, userID, 
           <DialogHeader>
             <DialogTitle>Add Logging Callback</DialogTitle>
           </DialogHeader>
-          <a
-            href="https://docs.litellm.ai/docs/proxy/logging"
-            className="mb-8 mt-4"
-            target="_blank"
-            style={{ color: "blue" }}
-          >
-            {" "}
-            LiteLLM Docs: Logging
-          </a>
 
           <FormProvider {...addForm}>
             <form onSubmit={addForm.handleSubmit(addNewCallbackCall)}>

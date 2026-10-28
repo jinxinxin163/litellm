@@ -171,6 +171,7 @@
       "caching": "Response Cache",
       "settings": "Settings",
       "router-settings": "Router Settings",
+      "logging-and-alerts": "Logging & Alerts",
       "admin-panel": "Admin Settings"
     },
     "groups": {
