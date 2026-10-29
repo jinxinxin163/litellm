@@ -1,4 +1,6 @@
 import { CircleAlert } from "lucide-react";
+import { translate } from "@/i18n/useTranslation";
+import type { TFunction } from "i18next";
 import React, { useState, useEffect } from "react";
 import { Alert, AlertTitle } from "@/components/shared/Alert";
 import { Button } from "@/components/ui/button";
@@ -7,6 +9,7 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 
 interface DeleteResourceModalProps {
+  t?: TFunction;
   isOpen: boolean;
   title: string;
   alertMessage?: string;
@@ -24,6 +27,7 @@ interface DeleteResourceModalProps {
 }
 
 export default function DeleteResourceModal({
+  t = translate,
   isOpen,
   title,
   alertMessage,
@@ -78,7 +82,9 @@ export default function DeleteResourceModal({
           {requiredConfirmation && (
             <div className="mb-6 mt-4 pt-4 border-t border-border">
               <p className="block text-base font-medium text-foreground mb-2">
-                Type <span className="font-semibold text-destructive">{requiredConfirmation}</span> to confirm deletion:
+                {t("deleteResource.confirmationPrefix")}
+                <span className="font-semibold text-destructive">{requiredConfirmation}</span>
+                {t("deleteResource.confirmationSuffix")}
               </p>
               <InputGroup className="rounded-md">
                 <InputGroupAddon>
@@ -96,14 +102,14 @@ export default function DeleteResourceModal({
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={onCancel} disabled={confirmLoading}>
-            Cancel
+            {t("keys.cancel")}
           </Button>
           <Button
             variant="destructive"
             onClick={onOk}
             disabled={(!!requiredConfirmation && requiredConfirmationInput !== requiredConfirmation) || confirmLoading}
           >
-            {confirmLoading ? "Deleting..." : "Delete"}
+            {confirmLoading ? t("deleteResource.deleting") : t("models.delete")}
           </Button>
         </DialogFooter>
       </DialogContent>

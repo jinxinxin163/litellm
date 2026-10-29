@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "@/i18n/useTranslation";
 import * as React from "react";
 
 import {
@@ -48,10 +49,11 @@ export const TokenSelect: React.FC<TokenSelectProps> = ({
   options,
   allowCustomValues = false,
   tokenSeparators = [],
-  emptyText = "No options found",
+  emptyText,
   ariaInvalid,
   ariaDescribedBy,
 }) => {
+  const { t } = useTranslation();
   const anchor = useComboboxAnchor();
   const [query, setQuery] = React.useState("");
   const selected = value ?? [];
@@ -117,7 +119,7 @@ export const TokenSelect: React.FC<TokenSelectProps> = ({
       </ComboboxChips>
       {showDropdown && (
         <ComboboxContent anchor={anchor}>
-          <ComboboxEmpty>{emptyText}</ComboboxEmpty>
+          <ComboboxEmpty>{emptyText ?? t("policiesPage.noOptionsFound")}</ComboboxEmpty>
           <ComboboxList>
             {(item: string) => (
               <ComboboxItem key={item} value={item} title={item}>

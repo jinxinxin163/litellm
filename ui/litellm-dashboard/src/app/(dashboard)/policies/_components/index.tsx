@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n/useTranslation";
 import React, { useState, useEffect, useCallback } from "react";
 import { Alert, AlertDescription, AlertTitle, AlertAction } from "@/components/shared/Alert";
 import { Button } from "@/components/ui/button";
@@ -41,6 +42,7 @@ interface DismissibleAlertProps {
 }
 
 const DismissibleAlert: React.FC<DismissibleAlertProps> = ({ title, icon, children }) => {
+  const { t } = useTranslation();
   const [isDismissed, setIsDismissed] = useState(false);
 
   if (isDismissed) return null;
@@ -51,7 +53,12 @@ const DismissibleAlert: React.FC<DismissibleAlertProps> = ({ title, icon, childr
       <AlertTitle>{title}</AlertTitle>
       {children && <AlertDescription>{children}</AlertDescription>}
       <AlertAction>
-        <Button variant="ghost" size="icon-sm" onClick={() => setIsDismissed(true)} aria-label={`Dismiss ${title}`}>
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          onClick={() => setIsDismissed(true)}
+          aria-label={t("policiesPage.dismissTitle", { value1: title })}
+        >
           <X />
         </Button>
       </AlertAction>
@@ -59,27 +66,28 @@ const DismissibleAlert: React.FC<DismissibleAlertProps> = ({ title, icon, childr
   );
 };
 
-const AboutPoliciesAlert = () => (
-  <DismissibleAlert title="About Policies" icon={<Info />}>
-    <p className="mb-3">
-      Use policies to group guardrails and control which ones run for specific teams, keys, or models.
-    </p>
-    <p className="mb-2 font-semibold">Why use policies?</p>
-    <ul className="mb-3 ml-2 list-inside list-disc space-y-1">
-      <li>Enable/disable specific guardrails for teams, keys, or models</li>
-      <li>Group guardrails into a single policy</li>
-      <li>Inherit from existing policies and override what you need</li>
-    </ul>
-    <a
-      href="https://docs.litellm.ai/docs/proxy/guardrails/guardrail_policies"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="mt-1 inline-block text-primary underline underline-offset-4"
-    >
-      Learn more in the documentation -&gt;
-    </a>
-  </DismissibleAlert>
-);
+const AboutPoliciesAlert = () => {
+  const { t } = useTranslation();
+  return (
+    <DismissibleAlert title={t("policiesPage.aboutPolicies")} icon={<Info />}>
+      <p className="mb-3">{t("policiesPage.usePoliciesToGroupGuardrailsAndControl")} </p>
+      <p className="mb-2 font-semibold">{t("policiesPage.whyUsePolicies")}</p>
+      <ul className="mb-3 ml-2 list-inside list-disc space-y-1">
+        <li>{t("policiesPage.enableDisableSpecificGuardrailsForTeamsKeys")}</li>
+        <li>{t("policiesPage.groupGuardrailsIntoASinglePolicy")}</li>
+        <li>{t("policiesPage.inheritFromExistingPoliciesAndOverrideWhat")}</li>
+      </ul>
+      <a
+        href="https://docs.litellm.ai/docs/proxy/guardrails/guardrail_policies"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mt-1 inline-block text-primary underline underline-offset-4"
+      >
+        {t("policiesPage.learnMoreInTheDocumentationGt")}{" "}
+      </a>
+    </DismissibleAlert>
+  );
+};
 
 interface PoliciesPanelProps {
   accessToken: string | null;
@@ -87,6 +95,7 @@ interface PoliciesPanelProps {
 }
 
 const PoliciesPanel: React.FC<PoliciesPanelProps> = ({ accessToken, userRole }) => {
+  const { t } = useTranslation();
   const [policiesList, setPoliciesList] = useState<Policy[]>([]);
   const [attachmentsList, setAttachmentsList] = useState<PolicyAttachment[]>([]);
   const [guardrailsList, setGuardrailsList] = useState<Guardrail[]>([]);
@@ -126,11 +135,11 @@ const PoliciesPanel: React.FC<PoliciesPanelProps> = ({ accessToken, userRole }) 
       setPoliciesList(response.policies || []);
     } catch (error) {
       console.error("Error fetching policies:", error);
-      toast.error("Failed to fetch policies");
+      toast.error(t("policiesPage.failedToFetchPolicies"));
     } finally {
       setIsLoading(false);
     }
-  }, [accessToken]);
+  }, [accessToken, t]);
 
   const fetchAttachments = useCallback(async () => {
     if (!accessToken) return;
@@ -141,11 +150,11 @@ const PoliciesPanel: React.FC<PoliciesPanelProps> = ({ accessToken, userRole }) 
       setAttachmentsList(response.attachments || []);
     } catch (error) {
       console.error("Error fetching attachments:", error);
-      toast.error("Failed to fetch attachments");
+      toast.error(t("policiesPage.failedToFetchAttachments"));
     } finally {
       setIsAttachmentsLoading(false);
     }
-  }, [accessToken]);
+  }, [accessToken, t]);
 
   const fetchGuardrails = useCallback(async () => {
     if (!accessToken) return;
@@ -156,7 +165,7 @@ const PoliciesPanel: React.FC<PoliciesPanelProps> = ({ accessToken, userRole }) 
     } catch (error) {
       console.error("Error fetching guardrails:", error);
     }
-  }, [accessToken]);
+  }, [accessToken, t]);
 
   useEffect(() => {
     fetchPolicies();
@@ -194,11 +203,13 @@ const PoliciesPanel: React.FC<PoliciesPanelProps> = ({ accessToken, userRole }) 
     setIsDeleting(true);
     try {
       await deletePolicyCall(accessToken, policyToDelete.policy_id);
-      toast.success(`Policy "${policyToDelete.policy_name}" deleted successfully`);
+      toast.success(
+        t("policiesPage.policyPolicyToDeletePolicyNameDeletedSuccessfully", { value1: policyToDelete.policy_name }),
+      );
       await fetchPolicies();
     } catch (error) {
       console.error("Error deleting policy:", error);
-      toast.error("Failed to delete policy");
+      toast.error(t("policiesPage.failedToDeletePolicy"));
     } finally {
       setIsDeleting(false);
       setIsDeleteModalOpen(false);
@@ -243,7 +254,7 @@ const PoliciesPanel: React.FC<PoliciesPanelProps> = ({ accessToken, userRole }) 
 
   const handleUseTemplate = async (template: any) => {
     if (!accessToken) {
-      toast.error("Authentication required");
+      toast.error(t("policiesPage.authenticationRequired"));
       return;
     }
 
@@ -271,7 +282,7 @@ const PoliciesPanel: React.FC<PoliciesPanelProps> = ({ accessToken, userRole }) 
       setIsGuardrailSelectionModalOpen(true);
     } catch (error) {
       console.error("Error fetching guardrails:", error);
-      toast.error("Failed to load guardrails. Please try again.");
+      toast.error(t("policiesPage.failedToLoadGuardrailsPleaseTryAgain"));
     }
   };
 
@@ -321,7 +332,7 @@ const PoliciesPanel: React.FC<PoliciesPanelProps> = ({ accessToken, userRole }) 
       await proceedWithTemplate(enrichedTemplate);
     } catch (error) {
       console.error("Error enriching template:", error);
-      toast.error("Failed to configure template. Please try again.");
+      toast.error(t("policiesPage.failedToConfigureTemplatePleaseTryAgain"));
       setIsEnrichingTemplate(false);
     }
   };
@@ -368,15 +379,21 @@ const PoliciesPanel: React.FC<PoliciesPanelProps> = ({ accessToken, userRole }) 
       // Show success message
       if (createdGuardrails.length > 0) {
         toast.success(
-          `Created ${createdGuardrails.length} guardrail${createdGuardrails.length > 1 ? "s" : ""}! Complete the policy form to save.`,
+          t("policiesPage.createdCreatedGuardrailsLengthGuardrailCreatedGuardrailsLength1", {
+            value1: createdGuardrails.length,
+            value2: createdGuardrails.length !== 1 ? "s" : "",
+          }),
         );
       } else {
-        toast.success("Template ready! Complete the policy form to save.");
+        toast.success(t("policiesPage.templateReadyCompleteThePolicyFormTo"));
       }
 
       if (failedGuardrails.length > 0) {
         toast.warning(
-          `Failed to create ${failedGuardrails.length} guardrail(s): ${failedGuardrails.join(", ")}. You may need to create them manually.`,
+          t("policiesPage.failedToCreateFailedGuardrailsLengthGuardrailS", {
+            value1: failedGuardrails.length,
+            value2: failedGuardrails.join(", "),
+          }),
         );
       }
 
@@ -395,7 +412,7 @@ const PoliciesPanel: React.FC<PoliciesPanelProps> = ({ accessToken, userRole }) 
       setTemplateQueue([]);
       setTemplateQueueProgress(null);
       console.error("Error creating guardrails:", error);
-      toast.error("Failed to create guardrails. Please try again.");
+      toast.error(t("policiesPage.failedToCreateGuardrailsPleaseTryAgain"));
     }
   };
 
@@ -442,16 +459,16 @@ const PoliciesPanel: React.FC<PoliciesPanelProps> = ({ accessToken, userRole }) 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList variant="line" className="mb-4 h-auto w-full justify-start rounded-none border-b p-0">
           <TabsTrigger value="templates" className="flex-none rounded-none px-4 py-2">
-            Templates
+            {t("policiesPage.templates")}{" "}
           </TabsTrigger>
           <TabsTrigger value="policies" className="flex-none rounded-none px-4 py-2">
-            Policies
+            {t("policiesPage.policies")}{" "}
           </TabsTrigger>
           <TabsTrigger value="attachments" className="flex-none rounded-none px-4 py-2">
-            Attachments
+            {t("policiesPage.attachments")}{" "}
           </TabsTrigger>
           <TabsTrigger value="simulator" className="flex-none rounded-none px-4 py-2">
-            Policy Simulator
+            {t("policiesPage.policySimulator")}{" "}
           </TabsTrigger>
         </TabsList>
 
@@ -470,7 +487,7 @@ const PoliciesPanel: React.FC<PoliciesPanelProps> = ({ accessToken, userRole }) 
 
           <div className="mb-4 flex items-center justify-between">
             <Button onClick={handleAddPolicy} disabled={!accessToken}>
-              + Add New Policy
+              {t("policiesPage.addNewPolicy")}{" "}
             </Button>
           </div>
 
@@ -518,15 +535,16 @@ const PoliciesPanel: React.FC<PoliciesPanelProps> = ({ accessToken, userRole }) 
           />
 
           <DeleteResourceModal
+            t={t}
             isOpen={isDeleteModalOpen}
-            title="Delete Policy"
-            message={`Are you sure you want to delete policy: ${policyToDelete?.policy_name}? This action cannot be undone.`}
-            resourceInformationTitle="Policy Information"
+            title={t("policiesPage.deletePolicy")}
+            message={t("policiesPage.areYouSureYouWantToDelete", { value1: policyToDelete?.policy_name })}
+            resourceInformationTitle={t("policiesPage.policyInformation")}
             resourceInformation={[
-              { label: "Name", value: policyToDelete?.policy_name },
-              { label: "ID", value: policyToDelete?.policy_id, code: true },
-              { label: "Description", value: policyToDelete?.description || "-" },
-              { label: "Inherits From", value: policyToDelete?.inherit || "-" },
+              { label: t("policiesPage.name"), value: policyToDelete?.policy_name },
+              { label: t("policiesPage.id"), value: policyToDelete?.policy_id, code: true },
+              { label: t("policiesPage.description"), value: policyToDelete?.description || "-" },
+              { label: t("policiesPage.inheritsFrom"), value: policyToDelete?.inherit || "-" },
             ]}
             onCancel={handleDeleteCancel}
             onOk={handleDeleteConfirm}
@@ -535,30 +553,28 @@ const PoliciesPanel: React.FC<PoliciesPanelProps> = ({ accessToken, userRole }) 
         </TabsContent>
 
         <TabsContent value="attachments" keepMounted>
-          <DismissibleAlert title="About Policy Attachments" icon={<Info />}>
-            <p className="mb-3">
-              Policy attachments control where your policies apply. Policies don&apos;t do anything until you attach
-              them to specific teams, keys, models, tags, or globally.
-            </p>
-            <p className="mb-2 font-semibold">Attachment Scopes:</p>
+          <DismissibleAlert title={t("policiesPage.aboutPolicyAttachments")} icon={<Info />}>
+            <p className="mb-3">{t("policiesPage.policyAttachmentsControlWhereYourPoliciesApply")} </p>
+            <p className="mb-2 font-semibold">{t("policiesPage.attachmentScopes")}</p>
             <ul className="mb-3 ml-2 list-inside list-disc space-y-1">
               <li>
-                <strong>Global (*)</strong> - Applies to all requests
+                <strong>{t("policiesPage.global")}</strong> {t("policiesPage.appliesToAllRequests")}{" "}
               </li>
               <li>
-                <strong>Teams</strong> - Applies only to specific teams
+                <strong>{t("policiesPage.teams")}</strong> {t("policiesPage.appliesOnlyToSpecificTeams")}{" "}
               </li>
               <li>
-                <strong>Keys</strong> - Applies only to specific API keys (supports wildcards like dev-*)
+                <strong>{t("policiesPage.keys")}</strong> {t("policiesPage.appliesOnlyToSpecificAPIKeysSupports")}{" "}
               </li>
               <li>
-                <strong>Models</strong> - Applies only when specific models are used
+                <strong>{t("policiesPage.models")}</strong> {t("policiesPage.appliesOnlyWhenSpecificModelsAreUsed")}{" "}
               </li>
               <li>
-                <strong>Tags</strong> - Matches tags from key/team <code>metadata.tags</code> or tags passed dynamically
-                in the request body (<code>metadata.tags</code>). Use this to enforce policies across groups, e.g.
-                &quot;all keys tagged <code>healthcare</code> get HIPAA guardrails.&quot; Supports wildcards (
-                <code>prod-*</code>).
+                <strong>{t("policiesPage.tags")}</strong> {t("policiesPage.matchesTagsFromKeyTeam7")}{" "}
+                <code>metadata.tags</code> {t("policiesPage.orTagsPassedDynamicallyInTheRequest8")}
+                <code>metadata.tags</code>
+                {t("policiesPage.useThisToEnforcePoliciesAcrossGroups")} <code>healthcare</code>{" "}
+                {t("policiesPage.getHIPAAGuardrailsQuotSupportsWildcards")} <code>prod-*</code>).
               </li>
             </ul>
             <a
@@ -567,12 +583,12 @@ const PoliciesPanel: React.FC<PoliciesPanelProps> = ({ accessToken, userRole }) 
               rel="noopener noreferrer"
               className="mt-1 inline-block text-primary underline underline-offset-4"
             >
-              Learn more about attachments -&gt;
+              {t("policiesPage.learnMoreAboutAttachmentsGt")}{" "}
             </a>
           </DismissibleAlert>
 
-          <DismissibleAlert title="Enterprise Feature Notice" icon={<TriangleAlert />}>
-            Parts of policy attachments will be on LiteLLM Enterprise in subsequent releases.
+          <DismissibleAlert title={t("policiesPage.enterpriseFeatureNotice")} icon={<TriangleAlert />}>
+            {t("policiesPage.partsOfPolicyAttachmentsWillBeOn")}{" "}
           </DismissibleAlert>
 
           <div className="mb-4 flex items-center justify-between">
@@ -580,7 +596,7 @@ const PoliciesPanel: React.FC<PoliciesPanelProps> = ({ accessToken, userRole }) 
               onClick={() => setIsAddAttachmentModalVisible(true)}
               disabled={!accessToken || policiesList.length === 0}
             >
-              + Add New Attachment
+              {t("policiesPage.addNewAttachment")}{" "}
             </Button>
           </div>
 
@@ -608,14 +624,15 @@ const PoliciesPanel: React.FC<PoliciesPanelProps> = ({ accessToken, userRole }) 
       </Tabs>
 
       <DeleteResourceModal
+        t={t}
         isOpen={isDeleteAttachmentModalOpen}
-        title="Delete Attachment"
-        message="Are you sure you want to delete this attachment? This action cannot be undone."
-        resourceInformationTitle="Attachment Information"
+        title={t("policiesPage.deleteAttachment9")}
+        message={t("policiesPage.areYouSureYouWantToDelete10")}
+        resourceInformationTitle={t("policiesPage.attachmentInformation")}
         resourceInformation={[
-          { label: "Attachment ID", value: attachmentToDelete?.attachment_id, code: true },
-          { label: "Policy", value: attachmentToDelete?.policy_name ?? "-" },
-          { label: "Scope", value: attachmentToDelete?.scope ?? "-" },
+          { label: t("policiesPage.attachmentID"), value: attachmentToDelete?.attachment_id, code: true },
+          { label: t("policiesPage.policy"), value: attachmentToDelete?.policy_name ?? "-" },
+          { label: t("policiesPage.scope"), value: attachmentToDelete?.scope ?? "-" },
         ]}
         onCancel={handleAttachmentDeleteCancel}
         onOk={handleAttachmentDeleteConfirm}

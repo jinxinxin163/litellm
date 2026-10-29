@@ -1,3 +1,6 @@
+import { localizeGuardrailText } from "../guardrail_ui_helpers";
+
+import { useTranslation } from "@/i18n/useTranslation";
 import React from "react";
 import { Trash2 } from "lucide-react";
 import type { ColumnDef } from "@tanstack/react-table";
@@ -23,20 +26,27 @@ interface PatternTableProps {
 }
 
 const PatternTable: React.FC<PatternTableProps> = ({ patterns, onActionChange, onRemove }) => {
+  const { t } = useTranslation();
+  const localizedACTION_ITEMS = ACTION_ITEMS.map((item) => ({ ...item, label: localizeGuardrailText(t, item.label) }));
+
   const columns: ColumnDef<Pattern>[] = [
     {
-      header: "Type",
+      header: t("guardrailsPage.text129"),
       accessorKey: "type",
       size: 100,
-      cell: ({ row }) => <Badge variant="secondary">{row.original.type === "prebuilt" ? "Prebuilt" : "Custom"}</Badge>,
+      cell: ({ row }) => (
+        <Badge variant="secondary">
+          {row.original.type === "prebuilt" ? t("guardrailsPage.text337") : t("guardrailsPage.text338")}
+        </Badge>
+      ),
     },
     {
-      header: "Pattern name",
+      header: t("guardrailsPage.text321"),
       accessorKey: "name",
       cell: ({ row }) => row.original.display_name || row.original.name,
     },
     {
-      header: "Regex pattern",
+      header: t("guardrailsPage.text323"),
       accessorKey: "pattern",
       cell: ({ row }) =>
         row.original.pattern ? (
@@ -46,20 +56,20 @@ const PatternTable: React.FC<PatternTableProps> = ({ patterns, onActionChange, o
         ),
     },
     {
-      header: "Action",
+      header: t("guardrailsPage.text183"),
       accessorKey: "action",
       size: 150,
       cell: ({ row }) => (
         <Select
-          items={ACTION_ITEMS}
+          items={localizedACTION_ITEMS}
           value={row.original.action}
           onValueChange={(value: string | null) => value && onActionChange(row.original.id, value as "BLOCK" | "MASK")}
         >
-          <SelectTrigger size="sm" className="w-[120px]" aria-label="Action">
+          <SelectTrigger size="sm" className="w-[120px]" aria-label={t("guardrailsPage.text183")}>
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {ACTION_ITEMS.map((item) => (
+            {localizedACTION_ITEMS.map((item) => (
               <SelectItem key={item.value} value={item.value}>
                 {item.label}
               </SelectItem>
@@ -75,14 +85,14 @@ const PatternTable: React.FC<PatternTableProps> = ({ patterns, onActionChange, o
       cell: ({ row }) => (
         <Button variant="ghost" size="sm" onClick={() => onRemove(row.original.id)}>
           <Trash2 />
-          Delete
+          {t("guardrailsPage.text076")}
         </Button>
       ),
     },
   ];
 
   if (patterns.length === 0) {
-    return <div className="py-10 text-center text-muted-foreground">No patterns added.</div>;
+    return <div className="py-10 text-center text-muted-foreground"> {t("guardrailsPage.text339")}</div>;
   }
 
   return <DataTable data={patterns} columns={columns} getRowId={(row) => row.id} size="compact" />;

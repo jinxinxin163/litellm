@@ -1,5 +1,7 @@
 "use client";
+import { useTranslation } from "@/i18n/useTranslation";
 
+import type { TFunction } from "i18next";
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal, Pencil, Play, Trash2 } from "lucide-react";
 
@@ -31,9 +33,9 @@ export type AvailableCallbacks = Record<string, AvailableCallbackMeta>;
 export const callbackRowMode = (record: CallbackRow): string => record.type || record.mode || "success";
 
 const CALLBACK_MODE_LABELS: Record<string, string> = {
-  success: "Success",
-  failure: "Failure",
-  success_and_failure: "Success & Failure",
+  success: "loggingAlerts.success",
+  failure: "loggingAlerts.failure",
+  success_and_failure: "loggingAlerts.successAndFailure",
 };
 
 function callbackModeTone(mode: string): StatusTone {
@@ -50,10 +52,11 @@ interface CallbackRowActionsProps {
 }
 
 function CallbackRowActions({ callback, onTest, onEdit, onDelete }: CallbackRowActionsProps) {
+  const { t } = useTranslation();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        aria-label="Open callback actions"
+        aria-label={t("loggingAlerts.openCallbackActions")}
         data-testid={`callback-actions-${callback.name}-${callbackRowMode(callback)}`}
         className={cn(buttonVariants({ variant: "ghost", size: "icon-sm" }), "text-muted-foreground")}
       >
@@ -62,16 +65,16 @@ function CallbackRowActions({ callback, onTest, onEdit, onDelete }: CallbackRowA
       <DropdownMenuContent align="end" className="w-52">
         <DropdownMenuItem data-testid="callback-action-test" onClick={() => void onTest(callback)}>
           <Play />
-          Test
+          {t("loggingAlerts.test")}
         </DropdownMenuItem>
         <DropdownMenuItem data-testid="callback-action-edit" onClick={() => onEdit(callback)}>
           <Pencil />
-          Edit
+          {t("loggingAlerts.edit")}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem variant="destructive" data-testid="callback-action-delete" onClick={() => onDelete(callback)}>
           <Trash2 />
-          Delete
+          {t("loggingAlerts.delete")}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -79,6 +82,7 @@ function CallbackRowActions({ callback, onTest, onEdit, onDelete }: CallbackRowA
 }
 
 interface LoggingCallbacksTableColumnsDeps {
+  t: TFunction;
   availableCallbacks: AvailableCallbacks;
   onTest: (callback: AlertingObject) => void | Promise<void>;
   onEdit: (callback: AlertingObject) => void;
@@ -87,6 +91,7 @@ interface LoggingCallbacksTableColumnsDeps {
 
 export const getLoggingCallbacksTableColumns = ({
   availableCallbacks,
+  t,
   onTest,
   onEdit,
   onDelete,
@@ -94,8 +99,8 @@ export const getLoggingCallbacksTableColumns = ({
   {
     id: "name",
     accessorKey: "name",
-    meta: { title: "Callback Name" },
-    header: "Callback Name",
+    meta: { title: t("loggingAlerts.callbackName") },
+    header: t("loggingAlerts.callbackName"),
     enableSorting: false,
     cell: ({ row }) => {
       const id = row.original.name;
@@ -109,19 +114,24 @@ export const getLoggingCallbacksTableColumns = ({
   },
   {
     id: "mode",
-    meta: { title: "Mode", skeleton: "badge" },
-    header: "Mode",
+    meta: { title: t("loggingAlerts.mode"), skeleton: "badge" },
+    header: t("loggingAlerts.mode"),
     size: 240,
     enableSorting: false,
     cell: ({ row }) => {
       const mode = callbackRowMode(row.original);
-      return <StatusBadge tone={callbackModeTone(mode)} label={CALLBACK_MODE_LABELS[mode] || mode} />;
+      return (
+        <StatusBadge
+          tone={callbackModeTone(mode)}
+          label={CALLBACK_MODE_LABELS[mode] ? t(CALLBACK_MODE_LABELS[mode]) : mode}
+        />
+      );
     },
   },
   {
     id: "actions",
     meta: { className: "text-right", headerClassName: "text-right" },
-    header: () => <span className="sr-only">Actions</span>,
+    header: () => <span className="sr-only">{t("loggingAlerts.actions")}</span>,
     size: 64,
     enableSorting: false,
     enableHiding: false,

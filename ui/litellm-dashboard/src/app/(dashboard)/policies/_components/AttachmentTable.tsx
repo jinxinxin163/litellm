@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "@/i18n/useTranslation";
 import { SortingState } from "@tanstack/react-table";
 import { Inbox } from "lucide-react";
 import React, { useMemo, useState } from "react";
@@ -20,15 +21,14 @@ interface AttachmentTableProps {
 const DEFAULT_SORTING: SortingState = [{ id: "created_at", desc: true }];
 
 function EmptyState() {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-col items-center gap-1 py-6">
       <div className="mb-1 flex size-10 items-center justify-center rounded-lg bg-muted">
         <Inbox className="size-5 text-muted-foreground" />
       </div>
-      <div className="text-sm font-medium text-foreground">No attachments found</div>
-      <div className="text-sm text-muted-foreground">
-        Attach a policy to teams, keys, models, or tags to control where it applies.
-      </div>
+      <div className="text-sm font-medium text-foreground">{t("policiesPage.noAttachmentsFound")}</div>
+      <div className="text-sm text-muted-foreground">{t("policiesPage.attachAPolicyToTeamsKeysModels")} </div>
     </div>
   );
 }
@@ -40,12 +40,13 @@ const AttachmentTable: React.FC<AttachmentTableProps> = ({
   isAdmin,
   accessToken,
 }) => {
+  const { t } = useTranslation();
   const [sorting, setSorting] = useState<SortingState>(DEFAULT_SORTING);
 
   const columns = useMemo(() => {
-    const deps = { isAdmin, accessToken, onDeleteClick };
+    const deps = { t, isAdmin, accessToken, onDeleteClick };
     return getAttachmentTableColumns(deps);
-  }, [isAdmin, accessToken, onDeleteClick]);
+  }, [t, isAdmin, accessToken, onDeleteClick]);
 
   return (
     <DataTable
@@ -57,7 +58,7 @@ const AttachmentTable: React.FC<AttachmentTableProps> = ({
       sorting={sorting}
       onSortingChange={setSorting}
       isLoading={isLoading}
-      loadingMessage="Loading attachments…"
+      loadingMessage={t("policiesPage.loadingAttachments")}
       noDataMessage={<EmptyState />}
       size="compact"
     />

@@ -1,4 +1,7 @@
 "use client";
+import { localizeGuardrailText } from "./guardrail_ui_helpers";
+
+import { useTranslation } from "@/i18n/useTranslation";
 
 import { CircleHelp } from "lucide-react";
 import React, { useId } from "react";
@@ -106,15 +109,21 @@ const SKIP_MESSAGE_ITEMS = [
 ];
 
 export const SkipMessageSelect: React.FC<{ control: GuardrailFieldControlProps }> = ({ control }) => {
+  const { t } = useTranslation();
+  const localizedSKIP_MESSAGE_ITEMS = SKIP_MESSAGE_ITEMS.map((item) => ({
+    ...item,
+    label: localizeGuardrailText(t, item.label),
+  }));
+
   const { id, value, onChange, "aria-invalid": ariaInvalid, "aria-describedby": ariaDescribedBy } = control;
 
   return (
-    <Select items={SKIP_MESSAGE_ITEMS} value={asText(value) || null} onValueChange={onChange}>
+    <Select items={localizedSKIP_MESSAGE_ITEMS} value={asText(value) || null} onValueChange={onChange}>
       <SelectTrigger id={id} aria-invalid={ariaInvalid} aria-describedby={ariaDescribedBy} className="w-full">
-        <SelectValue placeholder="Select an option" />
+        <SelectValue placeholder={t("guardrailsPage.text023")} />
       </SelectTrigger>
       <SelectContent>
-        {SKIP_MESSAGE_ITEMS.map((item) => (
+        {localizedSKIP_MESSAGE_ITEMS.map((item) => (
           <SelectItem key={item.value} value={item.value}>
             {item.label}
           </SelectItem>

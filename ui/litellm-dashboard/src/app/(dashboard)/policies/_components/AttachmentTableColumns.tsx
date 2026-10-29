@@ -1,5 +1,6 @@
 "use client";
 
+import { translate as translateEnglish, useTranslation } from "@/i18n/useTranslation";
 import { ColumnDef } from "@tanstack/react-table";
 import { Copy, MoreHorizontal, Trash2 } from "lucide-react";
 
@@ -18,6 +19,8 @@ import { cn } from "@/lib/cva.config";
 import { copyToClipboard } from "@/utils/dataUtils";
 
 import ImpactPopover from "./impact_popover";
+
+type PolicyTranslator = ReturnType<typeof useTranslation>["t"];
 
 function ChipList({ values }: { values: string[] }) {
   if (values.length === 0) {
@@ -41,16 +44,16 @@ interface AttachmentRowActionsProps {
   onDeleteClick: (attachmentId: string) => void;
 }
 
-const CONFIG_ATTACHMENT_HINT =
-  "Config attachments are defined in the config file and cannot be deleted from the dashboard.";
+const getConfigHint = (t: PolicyTranslator) => t("policiesPage.configAttachmentsAreDefinedInTheConfig");
 
 function AttachmentRowActions({ attachment, isAdmin, onDeleteClick }: AttachmentRowActionsProps) {
+  const { t } = useTranslation();
   const isConfigAttachment = attachment.definition_location === "config";
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        aria-label="Open attachment actions"
+        aria-label={t("policiesPage.openAttachmentActions")}
         data-testid={`attachment-actions-${attachment.attachment_id}`}
         className={cn(buttonVariants({ variant: "ghost", size: "icon-sm" }), "text-muted-foreground")}
       >
@@ -59,10 +62,10 @@ function AttachmentRowActions({ attachment, isAdmin, onDeleteClick }: Attachment
       <DropdownMenuContent align="end" className="w-52">
         <DropdownMenuItem
           data-testid="attachment-action-copy-id"
-          onClick={() => void copyToClipboard(attachment.attachment_id, "Attachment ID copied")}
+          onClick={() => void copyToClipboard(attachment.attachment_id, t("policiesPage.attachmentIDCopied"))}
         >
           <Copy />
-          Copy attachment ID
+          {t("policiesPage.copyAttachmentID")}{" "}
         </DropdownMenuItem>
         {isAdmin && (
           <>
@@ -71,11 +74,11 @@ function AttachmentRowActions({ attachment, isAdmin, onDeleteClick }: Attachment
               variant="destructive"
               data-testid="attachment-action-delete"
               disabled={isConfigAttachment}
-              title={isConfigAttachment ? CONFIG_ATTACHMENT_HINT : undefined}
+              title={isConfigAttachment ? getConfigHint(t) : undefined}
               onClick={() => onDeleteClick(attachment.attachment_id)}
             >
               <Trash2 />
-              Delete attachment
+              {t("policiesPage.deleteAttachment")}{" "}
             </DropdownMenuItem>
           </>
         )}
@@ -85,12 +88,14 @@ function AttachmentRowActions({ attachment, isAdmin, onDeleteClick }: Attachment
 }
 
 interface AttachmentTableColumnsDeps {
+  t?: PolicyTranslator;
   isAdmin: boolean;
   accessToken: string | null;
   onDeleteClick: (attachmentId: string) => void;
 }
 
 export const getAttachmentTableColumns = ({
+  t = translateEnglish,
   isAdmin,
   accessToken,
   onDeleteClick,
@@ -98,8 +103,8 @@ export const getAttachmentTableColumns = ({
   {
     id: "attachment_id",
     accessorKey: "attachment_id",
-    meta: { title: "Attachment ID" },
-    header: "Attachment ID",
+    meta: { title: t("policiesPage.attachmentID") },
+    header: t("policiesPage.attachmentID"),
     size: 160,
     enableSorting: false,
     cell: ({ row }) => <IdCell value={row.original.attachment_id} variant="plain" />,
@@ -107,8 +112,8 @@ export const getAttachmentTableColumns = ({
   {
     id: "policy_name",
     accessorKey: "policy_name",
-    meta: { title: "Policy", skeleton: "badge" },
-    header: ({ column }) => <DataTableSortHeader column={column} title="Policy" />,
+    meta: { title: t("policiesPage.policy"), skeleton: "badge" },
+    header: ({ column }) => <DataTableSortHeader column={column} title={t("policiesPage.policy")} />,
     size: 180,
     enableSorting: true,
     cell: ({ row }) => <StatusBadge tone="info" label={row.original.policy_name} />,
@@ -116,8 +121,8 @@ export const getAttachmentTableColumns = ({
   {
     id: "scope",
     accessorFn: (row) => row.scope ?? "",
-    meta: { title: "Scope", skeleton: "badge" },
-    header: "Scope",
+    meta: { title: t("policiesPage.scope"), skeleton: "badge" },
+    header: t("policiesPage.scope"),
     size: 120,
     enableSorting: false,
     cell: ({ row }) => {
@@ -126,7 +131,7 @@ export const getAttachmentTableColumns = ({
         return <span className="text-muted-foreground">-</span>;
       }
       if (scope === "*") {
-        return <StatusBadge tone="warning" label="Global (*)" />;
+        return <StatusBadge tone="warning" label={t("policiesPage.global")} />;
       }
       return (
         <span className="block max-w-40 truncate text-xs" title={scope}>
@@ -137,32 +142,32 @@ export const getAttachmentTableColumns = ({
   },
   {
     id: "teams",
-    meta: { title: "Teams", skeleton: "chips" },
-    header: "Teams",
+    meta: { title: t("policiesPage.teams"), skeleton: "chips" },
+    header: t("policiesPage.teams"),
     size: 160,
     enableSorting: false,
     cell: ({ row }) => <ChipList values={row.original.teams ?? []} />,
   },
   {
     id: "keys",
-    meta: { title: "Keys", skeleton: "chips" },
-    header: "Keys",
+    meta: { title: t("policiesPage.keys"), skeleton: "chips" },
+    header: t("policiesPage.keys"),
     size: 160,
     enableSorting: false,
     cell: ({ row }) => <ChipList values={row.original.keys ?? []} />,
   },
   {
     id: "models",
-    meta: { title: "Models", skeleton: "chips" },
-    header: "Models",
+    meta: { title: t("policiesPage.models"), skeleton: "chips" },
+    header: t("policiesPage.models"),
     size: 160,
     enableSorting: false,
     cell: ({ row }) => <ChipList values={row.original.models ?? []} />,
   },
   {
     id: "tags",
-    meta: { title: "Tags", skeleton: "chips" },
-    header: "Tags",
+    meta: { title: t("policiesPage.tags"), skeleton: "chips" },
+    header: t("policiesPage.tags"),
     size: 160,
     enableSorting: false,
     cell: ({ row }) => <ChipList values={row.original.tags ?? []} />,
@@ -170,8 +175,8 @@ export const getAttachmentTableColumns = ({
   {
     id: "created_at",
     accessorFn: (row) => row.created_at ?? "",
-    meta: { title: "Created At" },
-    header: ({ column }) => <DataTableSortHeader column={column} title="Created At" />,
+    meta: { title: t("policiesPage.createdAt") },
+    header: ({ column }) => <DataTableSortHeader column={column} title={t("policiesPage.createdAt")} />,
     size: 150,
     enableSorting: true,
     cell: ({ row }) => <DateCell value={row.original.created_at} />,
@@ -179,7 +184,7 @@ export const getAttachmentTableColumns = ({
   {
     id: "actions",
     meta: { className: "text-right", headerClassName: "text-right" },
-    header: () => <span className="sr-only">Actions</span>,
+    header: () => <span className="sr-only">{t("policiesPage.actions")}</span>,
     size: 88,
     enableSorting: false,
     enableHiding: false,

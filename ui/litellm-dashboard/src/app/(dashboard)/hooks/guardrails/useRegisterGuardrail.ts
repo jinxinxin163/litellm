@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n/useTranslation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { getProxyBaseUrl, getGlobalLitellmHeaderName, deriveErrorMessage, handleError } from "@/components/networking";
 import useAuthorized from "@/app/(dashboard)/hooks/useAuthorized";
@@ -52,13 +53,14 @@ const registerGuardrail = async (
 const guardrailKeys = createQueryKeys("guardrails");
 
 export const useRegisterGuardrail = () => {
+  const { t } = useTranslation();
   const { accessToken } = useAuthorized();
   const queryClient = useQueryClient();
 
   return useMutation<RegisterGuardrailResponse, Error, RegisterGuardrailParams>({
     mutationFn: async (params) => {
       if (!accessToken) {
-        throw new Error("Access token is required");
+        throw new Error(t("guardrailsPage.accessTokenRequired"));
       }
       return registerGuardrail(accessToken, params);
     },

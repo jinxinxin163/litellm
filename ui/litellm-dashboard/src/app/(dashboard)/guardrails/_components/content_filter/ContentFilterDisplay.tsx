@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n/useTranslation";
 import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -56,6 +57,7 @@ const ContentFilterDisplay: React.FC<ContentFilterDisplayProps> = ({
   onCategorySeverityChange,
   onCategoryRemove,
 }) => {
+  const { t } = useTranslation();
   if (patterns.length === 0 && blockedWords.length === 0 && categories.length === 0) {
     return null;
   }
@@ -69,8 +71,10 @@ const ContentFilterDisplay: React.FC<ContentFilterDisplayProps> = ({
         <Card className="mt-6">
           <CardContent>
             <div className="mb-4 flex items-center justify-between">
-              <p className="text-lg font-semibold">Content Categories</p>
-              <Badge variant="secondary">{categories.length} categories configured</Badge>
+              <p className="text-lg font-semibold">{t("guardrailsPage.text314")}</p>
+              <Badge variant="secondary">
+                {categories.length} {t("guardrailsPage.text315")}
+              </Badge>
             </div>
             <CategoryTable
               categories={categories}
@@ -87,8 +91,10 @@ const ContentFilterDisplay: React.FC<ContentFilterDisplayProps> = ({
         <Card className="mt-6">
           <CardContent>
             <div className="mb-4 flex items-center justify-between">
-              <p className="text-lg font-semibold">Pattern Detection</p>
-              <Badge variant="secondary">{patterns.length} patterns configured</Badge>
+              <p className="text-lg font-semibold"> {t("guardrailsPage.text306")}</p>
+              <Badge variant="secondary">
+                {patterns.length} {t("guardrailsPage.text316")}
+              </Badge>
             </div>
             <PatternTable
               patterns={patterns}
@@ -103,8 +109,10 @@ const ContentFilterDisplay: React.FC<ContentFilterDisplayProps> = ({
         <Card className="mt-6">
           <CardContent>
             <div className="mb-4 flex items-center justify-between">
-              <p className="text-lg font-semibold">Blocked Keywords</p>
-              <Badge variant="secondary">{blockedWords.length} keywords configured</Badge>
+              <p className="text-lg font-semibold">{t("guardrailsPage.text310")}</p>
+              <Badge variant="secondary">
+                {blockedWords.length} {t("guardrailsPage.text317")}
+              </Badge>
             </div>
             <KeywordTable
               keywords={blockedWords}

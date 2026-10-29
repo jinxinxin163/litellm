@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n/useTranslation";
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,6 +15,7 @@ interface EmailEventSettingsProps {
 }
 
 const EmailEventSettings: React.FC<EmailEventSettingsProps> = ({ accessToken }) => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [eventSettings, setEventSettings] = useState<EmailEventSetting[]>([]);
 
@@ -49,7 +51,7 @@ const EmailEventSettings: React.FC<EmailEventSettingsProps> = ({ accessToken }) 
 
     try {
       await updateEmailEventSettings(accessToken, { settings: eventSettings });
-      toast.success("Email event settings updated successfully");
+      toast.success(t("loggingAlerts.eventsSaved"));
     } catch (error) {
       console.error("Failed to update email event settings:", error);
       toast.fromError(error);
@@ -61,7 +63,7 @@ const EmailEventSettings: React.FC<EmailEventSettingsProps> = ({ accessToken }) 
 
     try {
       await resetEmailEventSettings(accessToken);
-      toast.success("Email event settings reset to defaults");
+      toast.success(t("loggingAlerts.eventsReset"));
       // Refresh settings after reset
       fetchEventSettings();
     } catch (error) {
@@ -74,24 +76,19 @@ const EmailEventSettings: React.FC<EmailEventSettingsProps> = ({ accessToken }) 
   const getEventDescription = (event: EmailEvent): string => {
     // Convert event name to a sentence with more context
     if (event.includes("Virtual Key Created")) {
-      return "An email will be sent to the user when a new virtual key is created with their user ID";
+      return t("loggingAlerts.virtualKeyEmailHelp");
     } else if (event.includes("New User Invitation")) {
-      return "An email will be sent to the email address of the user when a new user is created";
+      return t("loggingAlerts.userInviteEmailHelp");
     } else {
-      // Handle any other event type from the API
-      const words = event
-        .split(/(?=[A-Z])/)
-        .join(" ")
-        .toLowerCase();
-      return `Receive an email notification when ${words}`;
+      return t("loggingAlerts.eventNotification", { event });
     }
   };
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">Email Notifications</CardTitle>
-        <p className="text-sm text-muted-foreground">Select which events should trigger email notifications.</p>
+        <CardTitle className="text-base">{t("loggingAlerts.notifications")}</CardTitle>
+        <p className="text-sm text-muted-foreground">{t("loggingAlerts.notificationHelp")}</p>
       </CardHeader>
 
       <CardContent>
@@ -122,10 +119,10 @@ const EmailEventSettings: React.FC<EmailEventSettingsProps> = ({ accessToken }) 
 
         <div className="mt-6 flex gap-4">
           <Button onClick={handleSaveSettings} disabled={loading}>
-            Save Changes
+            {t("loggingAlerts.saveChanges")}
           </Button>
           <Button variant="secondary" onClick={handleResetSettings} disabled={loading}>
-            Reset to Defaults
+            {t("loggingAlerts.resetDefaults")}
           </Button>
         </div>
       </CardContent>

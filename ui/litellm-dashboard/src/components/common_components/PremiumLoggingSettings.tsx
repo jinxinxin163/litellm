@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n/useTranslation";
 import React from "react";
 import { Badge } from "@/components/ui/badge";
 import LoggingSettings from "../team/LoggingSettings";
@@ -17,6 +18,7 @@ export function PremiumLoggingSettings({
   disabledCallbacks = [],
   onDisabledCallbacksChange,
 }: PremiumLoggingSettingsProps) {
+  const { t } = useTranslation();
   if (!premiumUser) {
     return (
       <div>
@@ -30,10 +32,9 @@ export function PremiumLoggingSettings({
         </div>
         <div className="p-3 bg-muted border border-border rounded-lg">
           <p className="text-sm text-muted-foreground">
-            Setting Key/Team logging settings is a LiteLLM Enterprise feature. Global Logging Settings are available for
-            all free users. Get a trial key{" "}
+            {t("loggingAlerts.premiumLoggingHelp")}{" "}
             <a href="https://www.litellm.ai/#pricing" target="_blank" rel="noopener noreferrer" className="underline">
-              here
+              {t("loggingAlerts.here")}
             </a>
             .
           </p>

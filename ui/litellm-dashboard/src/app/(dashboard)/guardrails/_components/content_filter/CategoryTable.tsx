@@ -1,3 +1,6 @@
+import { localizeGuardrailText } from "../guardrail_ui_helpers";
+
+import { useTranslation } from "@/i18n/useTranslation";
 import React from "react";
 import { Trash2 } from "lucide-react";
 import type { ColumnDef } from "@tanstack/react-table";
@@ -30,9 +33,16 @@ const CategoryTable: React.FC<CategoryTableProps> = ({
   onRemove,
   readOnly = false,
 }) => {
+  const { t } = useTranslation();
+  const localizedSEVERITY_ITEMS = SEVERITY_ITEMS.map((item) => ({
+    ...item,
+    label: localizeGuardrailText(t, item.label),
+  }));
+  const localizedACTION_ITEMS = ACTION_ITEMS.map((item) => ({ ...item, label: localizeGuardrailText(t, item.label) }));
+
   const columns: ColumnDef<ContentCategory>[] = [
     {
-      header: "Category",
+      header: t("guardrailsPage.text500"),
       accessorKey: "display_name",
       cell: ({ row }) => {
         const { category, display_name: displayName } = row.original;
@@ -45,7 +55,7 @@ const CategoryTable: React.FC<CategoryTableProps> = ({
       },
     },
     {
-      header: "Severity Threshold",
+      header: t("guardrailsPage.text259"),
       accessorKey: "severity_threshold",
       size: 180,
       cell: ({ row }) => {
@@ -55,17 +65,17 @@ const CategoryTable: React.FC<CategoryTableProps> = ({
         }
         return (
           <Select
-            items={SEVERITY_ITEMS}
+            items={localizedSEVERITY_ITEMS}
             value={severity}
             onValueChange={(value: string | null) =>
               value && onSeverityChange?.(id, value as "high" | "medium" | "low")
             }
           >
-            <SelectTrigger size="sm" className="w-[150px]" aria-label="Severity Threshold">
+            <SelectTrigger size="sm" className="w-[150px]" aria-label={t("guardrailsPage.text259")}>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {SEVERITY_ITEMS.map((item) => (
+              {localizedSEVERITY_ITEMS.map((item) => (
                 <SelectItem key={item.value} value={item.value}>
                   {item.label}
                 </SelectItem>
@@ -76,7 +86,7 @@ const CategoryTable: React.FC<CategoryTableProps> = ({
       },
     },
     {
-      header: "Action",
+      header: t("guardrailsPage.text183"),
       accessorKey: "action",
       size: 150,
       cell: ({ row }) => {
@@ -86,15 +96,15 @@ const CategoryTable: React.FC<CategoryTableProps> = ({
         }
         return (
           <Select
-            items={ACTION_ITEMS}
+            items={localizedACTION_ITEMS}
             value={action}
             onValueChange={(value: string | null) => value && onActionChange?.(id, value as "BLOCK" | "MASK")}
           >
-            <SelectTrigger size="sm" className="w-[120px]" aria-label="Action">
+            <SelectTrigger size="sm" className="w-[120px]" aria-label={t("guardrailsPage.text183")}>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {ACTION_ITEMS.map((item) => (
+              {localizedACTION_ITEMS.map((item) => (
                 <SelectItem key={item.value} value={item.value}>
                   {item.label}
                 </SelectItem>
@@ -114,14 +124,14 @@ const CategoryTable: React.FC<CategoryTableProps> = ({
       cell: ({ row }) => (
         <Button variant="ghost" size="sm" onClick={() => onRemove?.(row.original.id)}>
           <Trash2 />
-          Delete
+          {t("guardrailsPage.text076")}
         </Button>
       ),
     });
   }
 
   if (categories.length === 0) {
-    return <div className="py-10 text-center text-muted-foreground">No categories configured.</div>;
+    return <div className="py-10 text-center text-muted-foreground">{t("guardrailsPage.text260")}</div>;
   }
 
   return <DataTable data={categories} columns={columns} getRowId={(row) => row.id} size="compact" />;

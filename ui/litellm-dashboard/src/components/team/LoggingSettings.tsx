@@ -15,10 +15,10 @@ import { callbackInfo, callback_map, mapDisplayToInternalNames } from "../callba
 import { Logo } from "@/components/molecules/logo/Logo";
 import NumericalInput from "../shared/numerical_input";
 
-const CALLBACK_TYPE_ITEMS = [
-  { value: "success", label: "Success Only" },
-  { value: "failure", label: "Failure Only" },
-  { value: "success_and_failure", label: "Success & Failure" },
+const callbackTypeItems = (t: (key: string) => string) => [
+  { value: "success", label: t("loggingAlerts.successOnly") },
+  { value: "failure", label: t("loggingAlerts.failureOnly") },
+  { value: "success_and_failure", label: t("loggingAlerts.successAndFailure") },
 ];
 
 const CallbackVarInput: React.FC<{
@@ -27,6 +27,7 @@ const CallbackVarInput: React.FC<{
   value: string;
   onValueChange: (value: string) => void;
 }> = ({ sensitive, placeholder, value, onValueChange }) => {
+  const { t } = useTranslation();
   const [revealed, setRevealed] = React.useState(false);
 
   if (!sensitive) {
@@ -45,7 +46,7 @@ const CallbackVarInput: React.FC<{
         <InputGroupButton
           size="icon-xs"
           onClick={() => setRevealed(!revealed)}
-          aria-label={revealed ? "Hide password" : "Show password"}
+          aria-label={revealed ? t("loggingAlerts.hidePassword") : t("loggingAlerts.showPassword")}
         >
           {revealed ? <EyeOff /> : <Eye />}
         </InputGroupButton>
@@ -198,7 +199,7 @@ const LoggingSettings: React.FC<LoggingSettingsProps> = ({
         <div className="flex items-center space-x-2">
           <BanIcon className="w-5 h-5 text-destructive" />
           <span className="text-base font-semibold text-foreground">{t("people.disabledCallbacks")}</span>
-          <SimpleTooltip content="Select callbacks to disable for this key. Disabled callbacks will not receive any logging data.">
+          <SimpleTooltip content={t("loggingAlerts.disabledCallbacksHelp")}>
             <Info className="size-4 text-muted-foreground cursor-help" />
           </SimpleTooltip>
         </div>
@@ -215,7 +216,9 @@ const LoggingSettings: React.FC<LoggingSettingsProps> = ({
             </SelectTrigger>
             <SelectContent>
               {allCallbacks.map((callbackName) => {
-                const description = callbackInfo[callbackName]?.description;
+                const description = t(`loggingAlerts.integrationDescriptions.${callback_map[callbackName]}`, {
+                  defaultValue: callbackInfo[callbackName]?.description,
+                });
                 return (
                   <SelectItem key={callbackName} value={callbackName}>
                     <SimpleTooltip content={description} side="right">
@@ -246,7 +249,7 @@ const LoggingSettings: React.FC<LoggingSettingsProps> = ({
         <div className="flex items-center space-x-2">
           <CogIcon className="w-5 h-5 text-foreground" />
           <span className="text-base font-semibold text-foreground">{t("people.loggingIntegrations")}</span>
-          <SimpleTooltip content="Configure callback logging integrations for this team.">
+          <SimpleTooltip content={t("loggingAlerts.integrationsHelp")}>
             <Info className="size-4 text-muted-foreground cursor-help" />
           </SimpleTooltip>
         </div>
@@ -306,7 +309,9 @@ const LoggingSettings: React.FC<LoggingSettingsProps> = ({
                       </SelectTrigger>
                       <SelectContent>
                         {supportedCallbacks.map((callbackName) => {
-                          const description = callbackInfo[callbackName]?.description;
+                          const description = t(`loggingAlerts.integrationDescriptions.${callback_map[callbackName]}`, {
+                            defaultValue: callbackInfo[callbackName]?.description,
+                          });
                           return (
                             <SelectItem key={callbackName} value={callbackName}>
                               <SimpleTooltip content={description} side="right">
@@ -329,7 +334,7 @@ const LoggingSettings: React.FC<LoggingSettingsProps> = ({
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-foreground">{t("people.eventType")}</label>
                     <Select
-                      items={CALLBACK_TYPE_ITEMS}
+                      items={callbackTypeItems(t)}
                       value={config.callback_type}
                       onValueChange={(value: string | null) =>
                         value && updateLoggingConfig(index, "callback_type", value)
@@ -339,7 +344,7 @@ const LoggingSettings: React.FC<LoggingSettingsProps> = ({
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        {CALLBACK_TYPE_ITEMS.map((item) => (
+                        {callbackTypeItems(t).map((item) => (
                           <SelectItem key={item.value} value={item.value}>
                             {item.label}
                           </SelectItem>

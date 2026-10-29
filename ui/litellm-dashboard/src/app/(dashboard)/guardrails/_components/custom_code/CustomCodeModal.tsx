@@ -1,3 +1,6 @@
+import { localizeGuardrailText } from "../guardrail_ui_helpers";
+
+import { useTranslation } from "@/i18n/useTranslation";
 import React, { useState, useRef, useEffect } from "react";
 import { CheckCircle2, ChevronRight, Code, ExternalLink, PlayCircle, Save, Users, XCircle } from "lucide-react";
 import { createGuardrailCall, updateGuardrailCall, testCustomCodeGuardrail } from "@/components/networking";
@@ -192,6 +195,13 @@ interface CustomCodeModalProps {
 }
 
 const CustomCodeModal: React.FC<CustomCodeModalProps> = ({ visible, onClose, onSuccess, accessToken, editData }) => {
+  const { t } = useTranslation();
+  const localizedMODE_OPTIONS = MODE_OPTIONS.map((item) => ({ ...item, label: localizeGuardrailText(t, item.label) }));
+  const localizedTEMPLATE_ITEMS = TEMPLATE_ITEMS.map((item) => ({
+    ...item,
+    label: localizeGuardrailText(t, item.label),
+  }));
+
   const anchor = useComboboxAnchor();
   const isEditMode = !!editData;
   const [guardrailName, setGuardrailName] = useState("");
@@ -365,15 +375,15 @@ const CustomCodeModal: React.FC<CustomCodeModalProps> = ({ visible, onClose, onS
   // Save guardrail (create or update)
   const handleSave = async () => {
     if (!guardrailName.trim()) {
-      toast.fromError("Please enter a guardrail name");
+      toast.fromError(t("guardrailsPage.text012"));
       return;
     }
     if (!code.trim()) {
-      toast.fromError("Please enter custom code");
+      toast.fromError(t("guardrailsPage.text346"));
       return;
     }
     if (!accessToken) {
-      toast.fromError("No access token available");
+      toast.fromError(t("guardrailsPage.text347"));
       return;
     }
 
@@ -401,7 +411,7 @@ const CustomCodeModal: React.FC<CustomCodeModalProps> = ({ visible, onClose, onS
         }
 
         await updateGuardrailCall(accessToken, editData.guardrail_id, updateData);
-        toast.success("Custom code guardrail updated successfully");
+        toast.success(t("guardrailsPage.text348"));
       } else {
         // Create new guardrail
         const guardrailData = {
@@ -416,15 +426,16 @@ const CustomCodeModal: React.FC<CustomCodeModalProps> = ({ visible, onClose, onS
         };
 
         await createGuardrailCall(accessToken, guardrailData);
-        toast.success("Custom code guardrail created successfully");
+        toast.success(t("guardrailsPage.text349"));
       }
       onSuccess();
       onClose();
     } catch (error) {
       console.error("Failed to save guardrail:", error);
       toast.fromError(
-        `Failed to ${isEditMode ? "update" : "create"} guardrail: ` +
-          (error instanceof Error ? error.message : String(error)),
+        t(isEditMode ? "guardrailsPage.updateFailed" : "guardrailsPage.createFailed", {
+          error: error instanceof Error ? error.message : String(error),
+        }),
       );
     } finally {
       setIsSaving(false);
@@ -434,7 +445,7 @@ const CustomCodeModal: React.FC<CustomCodeModalProps> = ({ visible, onClose, onS
   // Test guardrail using backend endpoint
   const handleTest = async () => {
     if (!accessToken) {
-      setTestResult({ error: "No access token available" });
+      setTestResult({ error: t("guardrailsPage.text347") });
       return;
     }
 
@@ -447,7 +458,7 @@ const CustomCodeModal: React.FC<CustomCodeModalProps> = ({ visible, onClose, onS
       try {
         parsedInput = JSON.parse(testInput);
       } catch (e) {
-        setTestResult({ error: "Invalid test input JSON" });
+        setTestResult({ error: t("guardrailsPage.text510") });
         setIsTesting(false);
         return;
       }
@@ -484,12 +495,12 @@ const CustomCodeModal: React.FC<CustomCodeModalProps> = ({ visible, onClose, onS
           error_type: response.error_type,
         });
       } else {
-        setTestResult({ error: "Unknown error occurred" });
+        setTestResult({ error: t("guardrailsPage.text511") });
       }
     } catch (error) {
       console.error("Failed to test custom code:", error);
       setTestResult({
-        error: error instanceof Error ? error.message : "Failed to test custom code",
+        error: error instanceof Error ? error.message : t("guardrailsPage.text350"),
       });
     } finally {
       setIsTesting(false);
@@ -504,43 +515,46 @@ const CustomCodeModal: React.FC<CustomCodeModalProps> = ({ visible, onClose, onS
       <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-y-auto sm:max-w-[1400px]">
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold">
-            {isEditMode ? "Edit Custom Guardrail" : "Create Custom Guardrail"}
+            {isEditMode ? t("guardrailsPage.text351") : t("guardrailsPage.text352")}
           </DialogTitle>
-          <DialogDescription>Define custom logic using Python-like syntax</DialogDescription>
+          <DialogDescription>{t("guardrailsPage.text353")}</DialogDescription>
         </DialogHeader>
 
         {/* Top Controls */}
         <div className="flex items-center gap-4 border-b border-border py-4">
           <div className="max-w-[200px] flex-1">
-            <label className="mb-1 block text-xs font-medium text-muted-foreground">Guardrail Name</label>
+            <label className="mb-1 block text-xs font-medium text-muted-foreground">{t("guardrailsPage.text011")}</label>
             <Input
               value={guardrailName}
               onChange={(e) => setGuardrailName(e.target.value)}
-              placeholder="e.g., block-pii-custom"
+              placeholder={t("guardrailsPage.text354")}
             />
           </div>
           <div className="w-[280px]">
-            <label className="mb-1 block text-xs font-medium text-muted-foreground">Mode (can select multiple)</label>
+            <label className="mb-1 block text-xs font-medium text-muted-foreground">
+              {t("guardrailsPage.text355")}
+            </label>
             <Combobox
-              items={MODE_OPTIONS}
+              items={localizedMODE_OPTIONS}
               value={selectedModeOptions}
+              isItemEqualToValue={(item, value) => item.value === value.value}
               onValueChange={(options: ModeOption[]) => setMode(options.map((option) => option.value))}
               multiple
             >
               <ComboboxChips render={<div ref={anchor} />} className="w-full">
                 {selectedModeOptions.map((option) => (
-                  <ComboboxChip key={option.value} aria-label={option.label}>
-                    {option.label}
+                  <ComboboxChip key={option.value} aria-label={localizeGuardrailText(t, option.label)}>
+                    {localizeGuardrailText(t, option.label)}
                   </ComboboxChip>
                 ))}
-                <ComboboxChipsInput placeholder={mode.length === 0 ? "Select modes" : undefined} />
+                <ComboboxChipsInput placeholder={mode.length === 0 ? t("guardrailsPage.text356") : undefined} />
               </ComboboxChips>
               <ComboboxContent anchor={anchor}>
-                <ComboboxEmpty>No matching modes</ComboboxEmpty>
+                <ComboboxEmpty> {t("guardrailsPage.text357")}</ComboboxEmpty>
                 <ComboboxList>
                   {(option: ModeOption) => (
                     <ComboboxItem key={option.value} value={option}>
-                      {option.label}
+                      {localizeGuardrailText(t, option.label)}
                     </ComboboxItem>
                   )}
                 </ComboboxList>
@@ -548,19 +562,19 @@ const CustomCodeModal: React.FC<CustomCodeModalProps> = ({ visible, onClose, onS
             </Combobox>
           </div>
           <div className="w-[180px]">
-            <label className="mb-1 block text-xs font-medium text-muted-foreground">Template</label>
+            <label className="mb-1 block text-xs font-medium text-muted-foreground">{t("guardrailsPage.text358")}</label>
             <Select
-              items={TEMPLATE_ITEMS}
+              items={localizedTEMPLATE_ITEMS}
               value={selectedTemplate}
               onValueChange={(value: string | null) => value && handleTemplateChange(value)}
             >
-              <SelectTrigger className="w-full" aria-label="Template">
+              <SelectTrigger className="w-full" aria-label={t("guardrailsPage.text358")}>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectLabel>STANDARD</SelectLabel>
-                  {TEMPLATE_ITEMS.map((template) => (
+                  <SelectLabel>{t("guardrailsPage.standard")}</SelectLabel>
+                  {localizedTEMPLATE_ITEMS.map((template) => (
                     <SelectItem key={template.value} value={template.value}>
                       {template.label}
                     </SelectItem>
@@ -573,15 +587,15 @@ const CustomCodeModal: React.FC<CustomCodeModalProps> = ({ visible, onClose, onS
                   className="flex w-full items-center gap-1 rounded-sm px-2 py-1.5 text-xs text-primary hover:bg-accent"
                 >
                   <Users className="size-3.5" />
-                  <span>Browse Community templates</span>
+                  <span>{t("guardrailsPage.text359")}</span>
                   <ExternalLink className="size-2.5" />
                 </button>
               </SelectContent>
             </Select>
           </div>
           <div className="flex items-center gap-2 pt-5">
-            <span className="text-sm text-muted-foreground">Default On</span>
-            <Switch checked={defaultOn} onCheckedChange={setDefaultOn} aria-label="Default On" />
+            <span className="text-sm text-muted-foreground">{t("guardrailsPage.text074")}</span>
+            <Switch checked={defaultOn} onCheckedChange={setDefaultOn} aria-label={t("guardrailsPage.text074")} />
           </div>
         </div>
 
@@ -590,8 +604,11 @@ const CustomCodeModal: React.FC<CustomCodeModalProps> = ({ visible, onClose, onS
           {/* Code Editor */}
           <div className="flex min-w-0 flex-1 flex-col">
             <div className="mb-2 flex shrink-0 items-center justify-between">
-              <span className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">Python Logic</span>
-              <span className="text-xs text-muted-foreground">Restricted environment (no imports)</span>
+              <span className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+                {" "}
+                {t("guardrailsPage.text360")}
+              </span>
+              <span className="text-xs text-muted-foreground">{t("guardrailsPage.text361")}</span>
             </div>
             <div
               className="relative rounded-lg overflow-hidden border border-gray-700 bg-[#1e1e1e] shrink-0"
@@ -637,60 +654,65 @@ const CustomCodeModal: React.FC<CustomCodeModalProps> = ({ visible, onClose, onS
             >
               <CollapsibleTrigger className="flex w-full items-center gap-2 p-3 text-sm font-medium">
                 <ChevronRight className={`size-4 transition-transform ${testExpanded ? "rotate-90" : ""}`} />
-                <PlayCircle className="size-4 text-muted-foreground" />
-                Test Your Guardrail
-              </CollapsibleTrigger>
+                <PlayCircle className="size-4 text-muted-foreground" />{t("guardrailsPage.text362")}</CollapsibleTrigger>
               <CollapsibleContent className="p-3 pt-0">
                 <div className="space-y-3">
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <label className="block text-xs font-medium text-muted-foreground">Test Input (JSON)</label>
+                      <label className="block text-xs font-medium text-muted-foreground">{t("guardrailsPage.text363")}</label>
                       <div className="flex items-center gap-2">
-                        <span className="text-xs text-muted-foreground">Load example:</span>
+                        <span className="text-xs text-muted-foreground">{t("guardrailsPage.text364")}</span>
                         <button
                           type="button"
                           onClick={() => setTestInput(JSON.stringify(TEST_INPUT_EXAMPLES.pre_call.data, null, 2))}
                           className="px-2 py-1 text-xs rounded-sm border border-warning/20 bg-warning/10 text-warning hover:bg-warning/15 transition-colors"
                         >
-                          Pre-call
+                          {" "}
+                          {t("guardrailsPage.text365")}{" "}
                         </button>
                         <button
                           type="button"
                           onClick={() => setTestInput(JSON.stringify(TEST_INPUT_EXAMPLES.pre_mcp_call.data, null, 2))}
                           className="px-2 py-1 text-xs rounded-sm border border-purple-200 bg-purple-50 text-purple-700 hover:bg-purple-100 transition-colors dark:border-purple-800 dark:bg-purple-950 dark:text-purple-300 dark:hover:bg-purple-900"
                         >
-                          Pre MCP
+                          {" "}
+                          {t("guardrailsPage.text366")}
                         </button>
                         <button
                           type="button"
                           onClick={() => setTestInput(JSON.stringify(TEST_INPUT_EXAMPLES.post_call.data, null, 2))}
                           className="px-2 py-1 text-xs rounded-sm border border-success/20 bg-success/10 text-success hover:bg-success/15 transition-colors"
                         >
-                          Post-call
+                          {t("guardrailsPage.text367")}
                         </button>
                       </div>
                     </div>
                     <div className="mb-2 rounded-sm border border-border bg-muted/40 p-2 text-xs text-muted-foreground">
                       <div className="grid grid-cols-2 gap-x-4 gap-y-1">
                         <div>
-                          <strong>texts</strong>: Message content (always)
+                          <strong>texts</strong> {t("guardrailsPage.text368")}
                         </div>
                         <div>
-                          <strong>images</strong>: Base64 images (vision)
+                          <strong>images</strong>
+                          {t("guardrailsPage.text369")}
                         </div>
                         <div>
-                          <strong>tools</strong>: Tool definitions <span className="text-warning">(pre_call)</span>, MCP
-                          as OpenAI tool <span className="text-purple-600">(pre_mcp_call)</span>
+                          <strong>tools</strong>
+                          {t("guardrailsPage.text370")}
+                          <span className="text-warning">(pre_call)</span> {t("guardrailsPage.text371")}
+                          <span className="text-purple-600">(pre_mcp_call)</span>
                         </div>
                         <div>
-                          <strong>tool_calls</strong>: LLM tool calls <span className="text-success">(post_call)</span>
+                          <strong>tool_calls</strong> {t("guardrailsPage.text372")}
+                          <span className="text-success">(post_call)</span>
                         </div>
                         <div>
-                          <strong>structured_messages</strong>: Full messages{" "}
+                          <strong>structured_messages</strong> {t("guardrailsPage.text373")}{" "}
                           <span className="text-warning">(pre_call)</span>
                         </div>
                         <div>
-                          <strong>model</strong>: Model name (always)
+                          <strong>model</strong>
+                          {t("guardrailsPage.text374")}
                         </div>
                       </div>
                     </div>
@@ -705,7 +727,7 @@ const CustomCodeModal: React.FC<CustomCodeModalProps> = ({ visible, onClose, onS
                   <div className="flex items-center gap-3">
                     <Button size="sm" onClick={handleTest} disabled={isTesting} aria-busy={isTesting}>
                       {isTesting ? <UiLoadingSpinner className="size-4" /> : <PlayCircle />}
-                      {isTesting ? "Running..." : "Run Test"}
+                      {isTesting ? t("guardrailsPage.text375") : t("guardrailsPage.text376")}
                     </Button>
                     {testResult && (
                       <div
@@ -729,15 +751,16 @@ const CustomCodeModal: React.FC<CustomCodeModalProps> = ({ visible, onClose, onS
                           </>
                         ) : testResult.action === "allow" ? (
                           <>
-                            <CheckCircle2 className="size-4" /> Allowed
+                            <CheckCircle2 className="size-4" /> {t("guardrailsPage.text377")}
                           </>
                         ) : testResult.action === "block" ? (
                           <>
-                            <XCircle className="size-4" /> Blocked: {testResult.reason}
+                            <XCircle className="size-4" /> {t("guardrailsPage.text378")}{" "}
+                            {testResult.reason}
                           </>
                         ) : testResult.action === "modify" ? (
                           <>
-                            <CheckCircle2 className="size-4" /> Modified
+                            <CheckCircle2 className="size-4" /> {t("guardrailsPage.text379")}
                             {testResult.texts && testResult.texts.length > 0 && (
                               <span className="ml-1 text-xs text-muted-foreground">
                                 -&gt; {testResult.texts[0].substring(0, 50)}
@@ -747,7 +770,7 @@ const CustomCodeModal: React.FC<CustomCodeModalProps> = ({ visible, onClose, onS
                           </>
                         ) : (
                           <>
-                            <CheckCircle2 className="size-4" /> {testResult.action || "Unknown"}
+                            <CheckCircle2 className="size-4" /> {testResult.action || t("guardrailsPage.text512")}
                           </>
                         )}
                       </div>
@@ -763,15 +786,12 @@ const CustomCodeModal: React.FC<CustomCodeModalProps> = ({ visible, onClose, onS
                   <Users className="size-5 text-info" />
                 </div>
                 <div>
-                  <div className="text-sm font-medium">Built a useful guardrail?</div>
-                  <div className="text-xs text-muted-foreground">
-                    Share it with the community and help others build faster
-                  </div>
+                  <div className="text-sm font-medium">{t("guardrailsPage.text380")}</div>
+                  <div className="text-xs text-muted-foreground">{t("guardrailsPage.text381")}</div>
                 </div>
               </div>
               <Button size="sm" onClick={() => window.open("https://github.com/BerriAI/litellm-guardrails", "_blank")}>
-                <ExternalLink />
-                Contribute Template
+                <ExternalLink /> {t("guardrailsPage.text382")}
               </Button>
             </div>
           </div>
@@ -780,9 +800,9 @@ const CustomCodeModal: React.FC<CustomCodeModalProps> = ({ visible, onClose, onS
           <div className="w-[300px] shrink-0 overflow-auto border-l border-border pl-6">
             <div className="mb-3 flex items-center gap-2">
               <Code className="size-4 text-muted-foreground" />
-              <span className="font-semibold">Available Primitives</span>
+              <span className="font-semibold"> {t("guardrailsPage.text383")}</span>
             </div>
-            <p className="mb-3 text-xs text-muted-foreground">Click to copy functions to clipboard</p>
+            <p className="mb-3 text-xs text-muted-foreground"> {t("guardrailsPage.text384")} </p>
 
             <div className="space-y-2">
               {Object.entries(PRIMITIVES).map(([category, primitives]) => (
@@ -792,7 +812,7 @@ const CustomCodeModal: React.FC<CustomCodeModalProps> = ({ visible, onClose, onS
                   className="rounded-lg border border-border"
                 >
                   <CollapsibleTrigger className="group flex w-full items-center justify-between px-3 py-2 text-sm font-medium">
-                    {category}
+                    {localizeGuardrailText(t, category)}
                     <ChevronRight className="size-4 transition-transform group-data-panel-open:rotate-90" />
                   </CollapsibleTrigger>
                   <CollapsibleContent className="px-3 pb-3">
@@ -807,12 +827,14 @@ const CustomCodeModal: React.FC<CustomCodeModalProps> = ({ visible, onClose, onS
                         >
                           {copiedPrimitive === p.name ? (
                             <span className="flex items-center gap-1 font-mono text-xs">
-                              <CheckCircle2 className="size-3.5" /> Copied!
+                              <CheckCircle2 className="size-3.5" /> {t("guardrailsPage.text385")}
                             </span>
                           ) : (
                             <>
                               <div className="font-mono text-xs">{p.name}</div>
-                              <div className="mt-0.5 text-[10px] text-muted-foreground">{p.desc}</div>
+                              <div className="mt-0.5 text-[10px] text-muted-foreground">
+                                {localizeGuardrailText(t, p.desc)}
+                              </div>
                             </>
                           )}
                         </button>
@@ -827,14 +849,12 @@ const CustomCodeModal: React.FC<CustomCodeModalProps> = ({ visible, onClose, onS
 
         {/* Footer */}
         <div className="mt-4 flex items-center justify-between border-t border-border pt-4">
-          <span className="text-xs text-muted-foreground">Changes are auto-saved to local draft</span>
+          <span className="text-xs text-muted-foreground">{t("guardrailsPage.text386")}</span>
           <div className="flex items-center gap-3">
-            <Button variant="secondary" onClick={onClose}>
-              Cancel
-            </Button>
+            <Button variant="secondary" onClick={onClose}>{t("guardrailsPage.text054")}</Button>
             <Button onClick={handleSave} disabled={isSaving || !guardrailName.trim()} aria-busy={isSaving}>
               {isSaving ? <UiLoadingSpinner className="size-4" /> : <Save />}
-              {isEditMode ? "Update Guardrail" : "Save Guardrail"}
+              {isEditMode ? t("guardrailsPage.text387") : t("guardrailsPage.text388")}
             </Button>
           </div>
         </div>

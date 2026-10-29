@@ -1,3 +1,6 @@
+import { localizeGuardrailText } from "../guardrail_ui_helpers";
+
+import { useTranslation } from "@/i18n/useTranslation";
 import { Trash2 } from "lucide-react";
 import type { ColumnDef } from "@tanstack/react-table";
 import React from "react";
@@ -20,26 +23,29 @@ interface KeywordTableProps {
 }
 
 const KeywordTable: React.FC<KeywordTableProps> = ({ keywords, onActionChange, onRemove }) => {
+  const { t } = useTranslation();
+  const localizedACTION_ITEMS = ACTION_ITEMS.map((item) => ({ ...item, label: localizeGuardrailText(t, item.label) }));
+
   const columns: ColumnDef<BlockedWord>[] = [
     {
-      header: "Keyword",
+      header: t("guardrailsPage.text328"),
       accessorKey: "keyword",
     },
     {
-      header: "Action",
+      header: t("guardrailsPage.text183"),
       accessorKey: "action",
       size: 150,
       cell: ({ row }) => (
         <Select
-          items={ACTION_ITEMS}
+          items={localizedACTION_ITEMS}
           value={row.original.action}
           onValueChange={(value: string | null) => value && onActionChange(row.original.id, "action", value)}
         >
-          <SelectTrigger size="sm" className="w-[120px]" aria-label="Action">
+          <SelectTrigger size="sm" className="w-[120px]" aria-label={t("guardrailsPage.text183")}>
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {ACTION_ITEMS.map((item) => (
+            {localizedACTION_ITEMS.map((item) => (
               <SelectItem key={item.value} value={item.value}>
                 {item.label}
               </SelectItem>
@@ -49,7 +55,7 @@ const KeywordTable: React.FC<KeywordTableProps> = ({ keywords, onActionChange, o
       ),
     },
     {
-      header: "Description",
+      header: t("guardrailsPage.text501"),
       accessorKey: "description",
       cell: ({ row }) => row.original.description || "-",
     },
@@ -60,14 +66,14 @@ const KeywordTable: React.FC<KeywordTableProps> = ({ keywords, onActionChange, o
       cell: ({ row }) => (
         <Button variant="ghost" size="sm" onClick={() => onRemove(row.original.id)}>
           <Trash2 />
-          Delete
+          {t("guardrailsPage.text076")}
         </Button>
       ),
     },
   ];
 
   if (keywords.length === 0) {
-    return <div className="py-10 text-center text-muted-foreground">No keywords added.</div>;
+    return <div className="py-10 text-center text-muted-foreground">{t("guardrailsPage.text333")}</div>;
   }
 
   return <DataTable data={keywords} columns={columns} getRowId={(row) => row.id} size="compact" />;

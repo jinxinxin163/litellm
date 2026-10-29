@@ -1,3 +1,6 @@
+import { localizeGuardrailText } from "../guardrail_ui_helpers";
+
+import { useTranslation } from "@/i18n/useTranslation";
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -29,39 +32,40 @@ const KeywordModal: React.FC<KeywordModalProps> = ({
   onAdd,
   onCancel,
 }) => {
+  const { t } = useTranslation();
+  const localizedACTION_ITEMS = ACTION_ITEMS.map((item) => ({ ...item, label: localizeGuardrailText(t, item.label) }));
+
   return (
     <Dialog open={visible} onOpenChange={(open) => !open && onCancel()}>
       <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-y-auto sm:max-w-[800px]">
         <DialogHeader>
-          <DialogTitle>Add blocked keyword</DialogTitle>
+          <DialogTitle> {t("guardrailsPage.text327")}</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-6">
           <div>
-            <p className="font-semibold">Keyword</p>
+            <p className="font-semibold"> {t("guardrailsPage.text328")}</p>
             <Input
               className="mt-2"
-              placeholder="Enter sensitive keyword or phrase"
+              placeholder={t("guardrailsPage.text329")}
               value={keyword}
               onChange={(e) => onKeywordChange(e.target.value)}
             />
           </div>
 
           <div>
-            <p className="font-semibold">Action</p>
-            <p className="mt-1 mb-2 text-muted-foreground">
-              Choose what action the guardrail should take when this keyword is detected
-            </p>
+            <p className="font-semibold">{t("guardrailsPage.text183")}</p>
+            <p className="mt-1 mb-2 text-muted-foreground">{t("guardrailsPage.text330")}</p>
             <Select
-              items={ACTION_ITEMS}
+              items={localizedACTION_ITEMS}
               value={action}
               onValueChange={(value: string | null) => value && onActionChange(value as "BLOCK" | "MASK")}
             >
-              <SelectTrigger className="w-full" aria-label="Action">
+              <SelectTrigger className="w-full" aria-label={t("guardrailsPage.text183")}>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {ACTION_ITEMS.map((item) => (
+                {localizedACTION_ITEMS.map((item) => (
                   <SelectItem key={item.value} value={item.value}>
                     {item.label}
                   </SelectItem>
@@ -71,10 +75,10 @@ const KeywordModal: React.FC<KeywordModalProps> = ({
           </div>
 
           <div>
-            <p className="font-semibold">Description (optional)</p>
+            <p className="font-semibold">{t("guardrailsPage.text331")}</p>
             <Textarea
               className="mt-2 field-sizing-fixed"
-              placeholder="Explain why this keyword is sensitive"
+              placeholder={t("guardrailsPage.text332")}
               value={description}
               onChange={(e) => onDescriptionChange(e.target.value)}
               rows={3}
@@ -84,9 +88,9 @@ const KeywordModal: React.FC<KeywordModalProps> = ({
 
         <DialogFooter>
           <Button variant="outline" onClick={onCancel}>
-            Cancel
+            {t("guardrailsPage.text054")}
           </Button>
-          <Button onClick={onAdd}>Add</Button>
+          <Button onClick={onAdd}>{t("guardrailsPage.text215")}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
