@@ -83,7 +83,7 @@
       },
       "block_code_execution": {
         "name": "阻止代码执行",
-        "description": "检测请求和响应中的 Markdown 围栏代码块。按语言拦截或屏蔽可执行代码（如 Python、JavaScript、Bash），并可配置置信度。"
+        "description": "检测请求和响应中的 markdown fenced code。按语言拦截或屏蔽可执行代码（如 Python、JavaScript、Bash），并可配置置信度。"
       },
       "cf_competitor_intent": {
         "name": "竞争对手名称拦截",
@@ -405,7 +405,7 @@
     "pages": {
       "api-keys": "虚拟密钥",
       "models": "模型",
-      "guardrails": "Guardrails",
+      "guardrails": "安全护栏",
       "policies": "策略",
       "new_usage": "用量",
       "logs": "日志",
@@ -416,7 +416,7 @@
       "router-settings": "路由设置",
       "logging-and-alerts": "日志与告警",
       "admin-panel": "管理设置",
-      "guardrails-monitor": "Guardrails 监控"
+      "guardrails-monitor": "护栏监控"
     },
     "groups": {
       "AI GATEWAY": "AI 网关",
