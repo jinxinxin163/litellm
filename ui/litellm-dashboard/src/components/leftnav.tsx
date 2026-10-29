@@ -27,6 +27,7 @@ import {
   Database,
   ExternalLink,
   Folder,
+  HeartPulse,
   KeyRound,
   Network,
   PanelLeftClose,
@@ -112,6 +113,13 @@ const menuGroups: MenuGroup[] = [
         label: "Usage",
       },
       { key: "logs", page: "logs", label: "Logs", icon: <Activity {...ICON} /> },
+      {
+        key: "guardrails-monitor",
+        page: "guardrails-monitor",
+        label: "Guardrails Monitor",
+        icon: <HeartPulse {...ICON} />,
+        roles: rolesWithCapability("viewGuardrailUsage"),
+      },
     ],
   },
   {
@@ -448,9 +456,7 @@ const Sidebar_: React.FC<SidebarProps> = ({
                 </span>
               )}
             </Link>
-            
           </div>
-          
         </div>
       </SidebarHeader>
 

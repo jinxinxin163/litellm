@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n/useTranslation";
 import type { ColumnDef, OnChangeFn, SortingState } from "@tanstack/react-table";
 import { CircleDollarSign, Download, HeartPulse, Settings, TrendingUp, TriangleAlert } from "lucide-react";
 import React, { useMemo, useState } from "react";
@@ -80,29 +81,32 @@ function TotalCostMath({
   total: number | null;
   untracked: UsageUnits;
 }) {
+  const { t } = useTranslation();
   return (
-    <CalcPopover title="How this cost is calculated" formula="guardrail + guardrail + … = guardrail cost">
+    <CalcPopover
+      title={t("guardrailsMonitor.usage.costMathTitle")}
+      formula={t("guardrailsMonitor.overview.totalCostFormula")}
+    >
       <MathTable
         rows={rows
           .filter((row) => row.cost != null)
           .map((row) => ({ label: row.name, parts: [formatCost(row.cost)], note: null }))}
         total={formatCost(total)}
       />
-      <p className="text-xs text-muted-foreground">
-        {`Each guardrail's cost is its units per counter × that counter's per-unit price from the cost map. Open a guardrail for its per-counter math.`}
-      </p>
+      <p className="text-xs text-muted-foreground">{t("guardrailsMonitor.overview.costHelp")}</p>
       <UnpricedNote unpriced={untracked} />
     </CalcPopover>
   );
 }
 
 function CostCell({ row }: { row: GuardrailUsageOverviewRow }) {
-  const unpriced = unpricedSummary(row.untrackedUsageUnits);
+  const { t } = useTranslation();
+  const unpriced = unpricedSummary(row.untrackedUsageUnits, t);
   return (
     <span className="inline-flex w-full items-center justify-end gap-1">
       {unpriced && (
         <CellTooltip
-          content={`${unpriced}: these units have no known price and are left out of the cost`}
+          content={t("guardrailsMonitor.overview.unpricedHelp", { summary: unpriced })}
           trigger={<TriangleAlert aria-label={unpriced} className="size-3.5 shrink-0 text-warning" />}
         />
       )}
@@ -118,6 +122,7 @@ export function GuardrailsOverview({
   onSelectGuardrail,
   dateRangeControl,
 }: GuardrailsOverviewProps) {
+  const { t } = useTranslation();
   const [sortBy, setSortBy] = useState<SortKey>("failRate");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
   const [evaluationModalOpen, setEvaluationModalOpen] = useState(false);
@@ -158,7 +163,7 @@ export function GuardrailsOverview({
 
   const columns: ColumnDef<GuardrailUsageOverviewRow>[] = [
     {
-      header: "Status",
+      header: t("guardrailsMonitor.common.status"),
       accessorKey: "status",
       enableSorting: false,
       cell: ({ row }) => (
@@ -172,12 +177,14 @@ export function GuardrailsOverview({
                   : "bg-destructive"
             }`}
           />
-          <span className="text-xs text-muted-foreground capitalize">{row.original.status}</span>
+          <span className="text-xs text-muted-foreground capitalize">
+            {t(`guardrailsMonitor.status.${row.original.status}`, { defaultValue: row.original.status })}
+          </span>
         </span>
       ),
     },
     {
-      header: "Guardrail",
+      header: t("guardrailsMonitor.common.guardrail"),
       accessorKey: "name",
       enableSorting: false,
       cell: ({ row }) => (
@@ -191,7 +198,7 @@ export function GuardrailsOverview({
       ),
     },
     {
-      header: "Provider",
+      header: t("guardrailsMonitor.common.provider"),
       accessorKey: "provider",
       enableSorting: false,
       cell: ({ row }) => (
@@ -205,14 +212,14 @@ export function GuardrailsOverview({
       ),
     },
     {
-      header: ({ column }) => <DataTableSortHeader column={column} title="Requests" />,
+      header: ({ column }) => <DataTableSortHeader column={column} title={t("guardrailsMonitor.common.requests")} />,
       accessorKey: "requestsEvaluated",
       meta: { numeric: true },
       sortDescFirst: false,
       cell: ({ row }) => row.original.requestsEvaluated.toLocaleString(),
     },
     {
-      header: ({ column }) => <DataTableSortHeader column={column} title="Fail Rate" />,
+      header: ({ column }) => <DataTableSortHeader column={column} title={t("guardrailsMonitor.common.failRate")} />,
       accessorKey: "failRate",
       meta: { numeric: true },
       sortDescFirst: false,
@@ -233,7 +240,7 @@ export function GuardrailsOverview({
       ),
     },
     {
-      header: ({ column }) => <DataTableSortHeader column={column} title="Avg. latency added" />,
+      header: ({ column }) => <DataTableSortHeader column={column} title={t("guardrailsMonitor.common.latency")} />,
       accessorKey: "avgLatency",
       meta: { numeric: true },
       sortDescFirst: false,
@@ -254,14 +261,14 @@ export function GuardrailsOverview({
       ),
     },
     {
-      header: "Usage Units",
+      header: t("guardrailsMonitor.common.usageUnits"),
       accessorKey: "usageUnits",
       enableSorting: false,
       meta: { numeric: true },
       cell: ({ row }) => <UsageUnitsCell units={row.original.usageUnits} />,
     },
     {
-      header: ({ column }) => <DataTableSortHeader column={column} title="Cost" />,
+      header: ({ column }) => <DataTableSortHeader column={column} title={t("guardrailsMonitor.common.cost")} />,
       accessorKey: "cost",
       meta: { numeric: true },
       sortDescFirst: false,
@@ -284,49 +291,52 @@ export function GuardrailsOverview({
     <div>
       <PageHeader
         icon={<HeartPulse />}
-        title="Guardrails Monitor"
-        subtitle="Monitor guardrail performance across all requests"
+        title={t("guardrailsMonitor.title")}
+        subtitle={t("guardrailsMonitor.subtitle")}
         utilities={
           <>
             {dateRangeControl}
-            <Button variant="outline" title="Coming soon">
+            <Button variant="outline" title={t("guardrailsMonitor.overview.comingSoon")}>
               <Download className="size-4" />
-              Export Data
+              {t("guardrailsMonitor.overview.exportData")}
             </Button>
           </>
         }
       />
 
       <div className="mt-6 mb-6 grid grid-cols-[repeat(auto-fit,minmax(7rem,1fr))] gap-4">
-        <MetricCard label="Total Evaluations" value={metrics.totalRequests.toLocaleString()} />
         <MetricCard
-          label="Blocked Requests"
+          label={t("guardrailsMonitor.overview.totalEvaluations")}
+          value={metrics.totalRequests.toLocaleString()}
+        />
+        <MetricCard
+          label={t("guardrailsMonitor.overview.blockedRequests")}
           value={metrics.totalBlocked.toLocaleString()}
           valueColor="text-destructive"
           icon={<TriangleAlert className="size-4 text-destructive" />}
         />
         <MetricCard
-          label="Pass Rate"
+          label={t("guardrailsMonitor.overview.passRate")}
           value={`${metrics.passRate}%`}
           valueColor="text-success"
           icon={<TrendingUp className="size-4 text-success" />}
         />
         <MetricCard
-          label="Avg. latency added"
+          label={t("guardrailsMonitor.common.latency")}
           value={`${metrics.avgLatency}ms`}
           valueColor={
             metrics.avgLatency > 150 ? "text-destructive" : metrics.avgLatency > 50 ? "text-warning" : "text-success"
           }
         />
         <MetricCard
-          label="Guardrail Cost"
+          label={t("guardrailsMonitor.overview.guardrailCost")}
           value={formatCost(metrics.totalCost)}
           valueColor={metrics.totalCost != null ? "text-foreground" : "text-muted-foreground"}
           icon={<CircleDollarSign className="size-4" />}
-          subtitle={unpricedSummary(metrics.untracked) ?? undefined}
+          subtitle={unpricedSummary(metrics.untracked, t) ?? undefined}
           hint={<TotalCostMath rows={activeData} total={metrics.totalCost} untracked={metrics.untracked} />}
         />
-        <MetricCard label="Active Guardrails" value={metrics.count} />
+        <MetricCard label={t("guardrailsMonitor.overview.activeGuardrails")} value={metrics.count} />
       </div>
 
       <div className="mb-6">
@@ -337,11 +347,16 @@ export function GuardrailsOverview({
         {(isLoading || error) && (
           <div className="mb-2 flex items-center gap-2">
             {isLoading && (
-              <span role="status" aria-busy="true" aria-label="Loading" className="inline-flex">
+              <span
+                role="status"
+                aria-busy="true"
+                aria-label={t("guardrailsMonitor.common.loading")}
+                className="inline-flex"
+              >
                 <UiLoadingSpinner className="size-4 text-primary" />
               </span>
             )}
-            {error && <span className="text-sm text-destructive">Failed to load data. Try again.</span>}
+            {error && <span className="text-sm text-destructive">{t("guardrailsMonitor.overview.loadError")}</span>}
           </div>
         )}
         <DataTable
@@ -349,7 +364,7 @@ export function GuardrailsOverview({
           data={sorted}
           getRowId={(row) => row.id}
           isLoading={isLoading}
-          noDataMessage="No data for this period"
+          noDataMessage={t("guardrailsMonitor.overview.empty")}
           onRowClick={(row) => onSelectGuardrail(row.id)}
           rowClassName={() => "cursor-pointer"}
           sortingMode="server"
@@ -360,9 +375,11 @@ export function GuardrailsOverview({
           toolbar={() => (
             <div className="flex items-start justify-between gap-4">
               <div>
-                <h5 className="mb-0 text-base font-semibold text-foreground">Guardrail Performance</h5>
+                <h5 className="mb-0 text-base font-semibold text-foreground">
+                  {t("guardrailsMonitor.overview.performance")}
+                </h5>
                 <p className="text-xs text-muted-foreground mt-0.5">
-                  Click a guardrail to view details, logs, and configuration
+                  {t("guardrailsMonitor.overview.performanceHelp")}
                 </p>
               </div>
               <div className="flex items-center gap-2">
@@ -370,7 +387,7 @@ export function GuardrailsOverview({
                   variant="outline"
                   size="icon"
                   onClick={() => setEvaluationModalOpen(true)}
-                  title="Evaluation settings"
+                  title={t("guardrailsMonitor.common.evaluationSettings")}
                 >
                   <Settings className="size-4" />
                 </Button>

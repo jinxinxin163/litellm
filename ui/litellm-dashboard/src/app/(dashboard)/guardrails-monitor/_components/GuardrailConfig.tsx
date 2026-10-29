@@ -1,3 +1,4 @@
+import { useTranslation } from "@/i18n/useTranslation";
 import { CircleCheck, CirclePlay, Code, Save, Undo2 } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
@@ -5,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import React, { useId, useState } from "react";
+import React, { useId, useMemo, useState } from "react";
 
 interface GuardrailConfigProps {
   guardrailName: string;
@@ -16,7 +17,7 @@ interface GuardrailConfigProps {
 const versions = [
   {
     id: "v3",
-    label: "v3 (current)",
+    label: "v3",
     date: "2026-02-18",
     author: "admin@company.com",
     changes: "Adjusted sensitivity for medical terms",
@@ -26,10 +27,10 @@ const versions = [
 ];
 
 const ACTION_ITEMS = [
-  { value: "block", label: "Block Request" },
-  { value: "flag", label: "Flag for Review" },
-  { value: "log", label: "Log Only" },
-  { value: "fallback", label: "Use Fallback Response" },
+  { value: "block", labelKey: "guardrailsMonitor.config.actions.block" },
+  { value: "flag", labelKey: "guardrailsMonitor.config.actions.flag" },
+  { value: "log", labelKey: "guardrailsMonitor.config.actions.log" },
+  { value: "fallback", labelKey: "guardrailsMonitor.config.actions.fallback" },
 ];
 
 const PROVIDER_ITEMS = [
@@ -40,14 +41,28 @@ const PROVIDER_ITEMS = [
 ];
 
 const GUARDRAIL_TYPE_ITEMS = [
-  { value: "Content Safety", label: "Content Safety" },
-  { value: "PII", label: "PII Detection" },
-  { value: "Topic", label: "Topic Restriction" },
-  { value: "prompt_injection", label: "Prompt Injection" },
-  { value: "custom", label: "Custom" },
+  { value: "Content Safety", labelKey: "guardrailsMonitor.config.types.contentSafety" },
+  { value: "PII", labelKey: "guardrailsMonitor.config.types.pii" },
+  { value: "Topic", labelKey: "guardrailsMonitor.config.types.topic" },
+  { value: "prompt_injection", labelKey: "guardrailsMonitor.config.types.promptInjection" },
+  { value: "custom", labelKey: "guardrailsMonitor.config.types.custom" },
 ];
 
 export function GuardrailConfig({ guardrailName, guardrailType, provider }: GuardrailConfigProps) {
+  const { t } = useTranslation();
+  const actionItems = useMemo(() => ACTION_ITEMS.map((item) => ({ value: item.value, label: t(item.labelKey) })), [t]);
+  const guardrailTypeItems = useMemo(
+    () => GUARDRAIL_TYPE_ITEMS.map((item) => ({ value: item.value, label: t(item.labelKey) })),
+    [t],
+  );
+  const versionItems = useMemo(
+    () =>
+      versions.map((v) => ({
+        value: v.id,
+        label: v.id === "v3" ? t("guardrailsMonitor.config.currentVersion", { version: v.id }) : v.label,
+      })),
+    [t],
+  );
   const [action, setAction] = useState("block");
   const [enabled, setEnabled] = useState(true);
   const [customCode, setCustomCode] = useState("");
@@ -71,9 +86,9 @@ export function GuardrailConfig({ guardrailName, guardrailType, provider }: Guar
       <div className="bg-card border border-border rounded-lg p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <span className="text-sm font-medium text-foreground">Version:</span>
+            <span className="text-sm font-medium text-foreground">{t("guardrailsMonitor.config.version")}</span>
             <Select
-              items={versions.map((v) => ({ value: v.id, label: v.label }))}
+              items={versionItems}
               value={version}
               onValueChange={(value: string | null) => value && setVersion(value)}
             >
@@ -83,23 +98,25 @@ export function GuardrailConfig({ guardrailName, guardrailType, provider }: Guar
               <SelectContent>
                 {versions.map((v) => (
                   <SelectItem key={v.id} value={v.id}>
-                    {v.label}
+                    {v.id === "v3" ? t("guardrailsMonitor.config.currentVersion", { version: v.id }) : v.label}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
             <Button variant="link" size="sm" onClick={() => setShowVersionHistory(!showVersionHistory)}>
-              {showVersionHistory ? "Hide history" : "View history"}
+              {showVersionHistory
+                ? t("guardrailsMonitor.config.hideHistory")
+                : t("guardrailsMonitor.config.viewHistory")}
             </Button>
           </div>
           <div className="flex items-center gap-2">
             <Button variant="outline">
               <Undo2 />
-              Revert
+              {t("guardrailsMonitor.config.revert")}
             </Button>
             <Button>
               <Save />
-              Save as v{parseInt(version.replace("v", ""), 10) + 1}
+              {t("guardrailsMonitor.config.saveVersion", { version: parseInt(version.replace("v", ""), 10) + 1 })}
             </Button>
           </div>
         </div>
@@ -119,7 +136,7 @@ export function GuardrailConfig({ guardrailName, guardrailType, provider }: Guar
                   >
                     {v.id}
                   </span>
-                  <span className="text-foreground">{v.changes}</span>
+                  <span className="text-foreground">{t(`guardrailsMonitor.config.history.${v.id}`)}</span>
                 </div>
                 <div className="flex items-center gap-3 text-xs text-muted-foreground">
                   <span>{v.author}</span>
@@ -133,14 +150,18 @@ export function GuardrailConfig({ guardrailName, guardrailType, provider }: Guar
 
       {/* Parameters */}
       <div className="bg-card border border-border rounded-lg p-6">
-        <h3 className="text-base font-semibold text-foreground mb-1">Parameters</h3>
-        <p className="text-xs text-muted-foreground mb-5">Configure {guardrailName} behavior</p>
+        <h3 className="text-base font-semibold text-foreground mb-1">{t("guardrailsMonitor.config.parameters")}</h3>
+        <p className="text-xs text-muted-foreground mb-5">
+          {t("guardrailsMonitor.config.configureBehavior", { name: guardrailName })}
+        </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1.5">Action on Failure</label>
+            <label className="block text-sm font-medium text-foreground mb-1.5">
+              {t("guardrailsMonitor.config.failureAction")}
+            </label>
             <Select
-              items={ACTION_ITEMS}
+              items={actionItems}
               value={action}
               onValueChange={(value: string | null) => value && setAction(value)}
             >
@@ -148,7 +169,7 @@ export function GuardrailConfig({ guardrailName, guardrailType, provider }: Guar
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {ACTION_ITEMS.map((item) => (
+                {actionItems.map((item) => (
                   <SelectItem key={item.value} value={item.value}>
                     {item.label}
                   </SelectItem>
@@ -158,7 +179,9 @@ export function GuardrailConfig({ guardrailName, guardrailType, provider }: Guar
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1.5">Provider</label>
+            <label className="block text-sm font-medium text-foreground mb-1.5">
+              {t("guardrailsMonitor.common.provider")}
+            </label>
             <Select items={PROVIDER_ITEMS} defaultValue={provider}>
               <SelectTrigger className="w-full">
                 <SelectValue />
@@ -174,13 +197,15 @@ export function GuardrailConfig({ guardrailName, guardrailType, provider }: Guar
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1.5">Guardrail Type</label>
-            <Select items={GUARDRAIL_TYPE_ITEMS} defaultValue={guardrailType}>
+            <label className="block text-sm font-medium text-foreground mb-1.5">
+              {t("guardrailsMonitor.config.type")}
+            </label>
+            <Select items={guardrailTypeItems} defaultValue={guardrailType}>
               <SelectTrigger className="w-full">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {GUARDRAIL_TYPE_ITEMS.map((item) => (
+                {guardrailTypeItems.map((item) => (
                   <SelectItem key={item.value} value={item.value}>
                     {item.label}
                   </SelectItem>
@@ -190,14 +215,16 @@ export function GuardrailConfig({ guardrailName, guardrailType, provider }: Guar
           </div>
 
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-foreground mb-1.5">Categories (comma-separated)</label>
+            <label className="block text-sm font-medium text-foreground mb-1.5">
+              {t("guardrailsMonitor.config.categories")}
+            </label>
             <Input defaultValue="violence, hate_speech, sexual_content, self_harm, illegal_activity" />
           </div>
 
           <div className="md:col-span-2 flex items-center gap-3">
             <Switch id={enabledToggleId} checked={enabled} onCheckedChange={setEnabled} />
             <Label htmlFor={enabledToggleId} className="font-normal text-foreground">
-              Guardrail enabled in production
+              {t("guardrailsMonitor.config.productionEnabled")}
             </Label>
           </div>
         </div>
@@ -209,13 +236,15 @@ export function GuardrailConfig({ guardrailName, guardrailType, provider }: Guar
           <div>
             <h3 className="text-base font-semibold text-foreground flex items-center gap-2">
               <Code className="size-4 text-muted-foreground" />
-              Custom Code Override
+              {t("guardrailsMonitor.config.codeOverride")}
             </h3>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              Replace the built-in guardrail with custom evaluation code
-            </p>
+            <p className="text-xs text-muted-foreground mt-0.5">{t("guardrailsMonitor.config.codeHelp")}</p>
           </div>
-          <Switch aria-label="Custom Code Override" checked={useCustomCode} onCheckedChange={setUseCustomCode} />
+          <Switch
+            aria-label={t("guardrailsMonitor.config.codeOverride")}
+            checked={useCustomCode}
+            onCheckedChange={setUseCustomCode}
+          />
         </div>
 
         {useCustomCode && (
@@ -236,24 +265,24 @@ export function GuardrailConfig({ guardrailName, guardrailType, provider }: Guar
 
       {/* Re-run on Failing Logs */}
       <div className="bg-card border border-border rounded-lg p-6">
-        <h3 className="text-base font-semibold text-foreground mb-1">Test Configuration</h3>
-        <p className="text-xs text-muted-foreground mb-4">
-          Re-run this guardrail on recent failing logs to validate your changes
-        </p>
+        <h3 className="text-base font-semibold text-foreground mb-1">{t("guardrailsMonitor.config.test")}</h3>
+        <p className="text-xs text-muted-foreground mb-4">{t("guardrailsMonitor.config.testHelp")}</p>
 
         <div className="flex items-center gap-3">
           <Button disabled={rerunStatus === "running"} aria-busy={rerunStatus === "running"} onClick={handleRerun}>
             {rerunStatus === "running" ? null : <CirclePlay />}
-            {rerunStatus === "running" ? "Running on 10 samples..." : "Re-run on failing logs"}
+            {rerunStatus === "running" ? t("guardrailsMonitor.config.running") : t("guardrailsMonitor.config.rerun")}
           </Button>
 
           {rerunStatus === "success" && (
             <span className="text-sm text-success flex items-center gap-2">
-              <CircleCheck className="size-4" /> 7/10 would now pass with new config
+              <CircleCheck className="size-4" /> {t("guardrailsMonitor.config.testSuccess")}
             </span>
           )}
 
-          {rerunStatus === "error" && <span className="text-sm text-destructive">Error running tests</span>}
+          {rerunStatus === "error" && (
+            <span className="text-sm text-destructive">{t("guardrailsMonitor.config.testError")}</span>
+          )}
         </div>
       </div>
     </div>

@@ -415,7 +415,8 @@
       "settings": "设置",
       "router-settings": "路由设置",
       "logging-and-alerts": "日志与告警",
-      "admin-panel": "管理设置"
+      "admin-panel": "管理设置",
+      "guardrails-monitor": "Guardrails 监控"
     },
     "groups": {
       "AI GATEWAY": "AI 网关",
@@ -4031,5 +4032,163 @@
       "s3": "S3 Bucket (AWS) 日志集成",
       "SQS": "SQS Queue (AWS) 日志集成"
     }
+  },
+  "guardrailsMonitor": {
+    "shared": {
+      "howCalculated": "如何计算？",
+      "total": "合计",
+      "unpricedExcluded_one": "{{total}} 个用量单位因价格未知而未计入成本。",
+      "unpricedExcluded_other": "{{total}} 个用量单位因价格未知而未计入成本。",
+      "requestPricing": "在 GitHub 上申请补充定价",
+      "unpricedSummary_one": "{{total}} 个用量单位未定价",
+      "unpricedSummary_other": "{{total}} 个用量单位未定价",
+      "noKnownPrice": "价格未知，未计入",
+      "unpricedLeftOut_one": "{{total}} 个未定价用量单位未计入",
+      "unpricedLeftOut_other": "{{total}} 个未定价用量单位未计入",
+      "blocked": "已拦截",
+      "passed": "已通过",
+      "flagged": "已标记",
+      "all": "全部",
+      "requestLogs": "请求日志",
+      "logsForGuardrail": "日志 — {{name}}",
+      "loading": "加载中…",
+      "showingEntries": "显示 {{total}} 条中的 {{shown}} 条",
+      "noLogsPeriod": "此时间段内没有日志。请选择 Guardrail 和日期范围。",
+      "noLogsFilters": "没有可显示的日志，请调整筛选条件或日期范围。",
+      "sample": "样本数："
+    },
+    "title": "护栏监控",
+    "subtitle": "监控所有请求中的护栏表现",
+    "common": {
+      "status": "状态",
+      "guardrail": "护栏",
+      "provider": "提供商",
+      "requests": "请求数",
+      "failRate": "失败率",
+      "latency": "平均新增延迟",
+      "usageUnits": "用量单位",
+      "cost": "费用",
+      "loading": "加载中",
+      "evaluationSettings": "评估设置",
+      "noData": "暂无数据"
+    },
+    "overview": {
+      "comingSoon": "即将推出",
+      "exportData": "导出数据",
+      "totalEvaluations": "评估总次数",
+      "blockedRequests": "已拦截请求",
+      "passRate": "通过率",
+      "guardrailCost": "护栏费用",
+      "activeGuardrails": "活跃护栏",
+      "loadError": "数据加载失败，请重试",
+      "empty": "此时间段暂无数据",
+      "performance": "护栏表现",
+      "performanceHelp": "点击护栏以查看详情、日志和配置",
+      "totalCostFormula": "护栏 + 护栏 + … = 护栏费用",
+      "costHelp": "每个护栏的费用为各计数器的用量单位乘以费用映射表中的对应单价之和，打开护栏可查看各计数器的计算详情",
+      "unpricedHelp": "{{summary}}：这些单位没有已知价格，不计入费用"
+    },
+    "chart": {
+      "title": "请求结果趋势",
+      "empty": "此时间段暂无图表数据",
+      "passed": "通过",
+      "blocked": "拦截"
+    },
+    "detail": {
+      "back": "返回概览",
+      "loadError": "护栏详情加载失败",
+      "overview": "概览",
+      "logs": "日志",
+      "requestsEvaluated": "已评估请求",
+      "perRequest": "每个请求（平均）",
+      "blockedCount_one": "已拦截 {{total}} 个",
+      "blockedCount_other": "已拦截 {{total}} 个"
+    },
+    "evaluation": {
+      "title": "评估设置",
+      "description": "配置用于重新评估日志的 AI 评估",
+      "prompt": "评估提示词",
+      "reset": "恢复默认值",
+      "promptHelp": "发送给评估模型的系统提示词，通过 response_format 定义输出结构",
+      "schema": "响应结构",
+      "model": "模型",
+      "loadingModels": "正在加载模型…",
+      "selectModel": "选择模型",
+      "signIn": "登录后查看模型",
+      "noModels": "没有可用模型",
+      "cancel": "取消",
+      "run": "运行评估",
+      "namedDescription": "为 {{name}} 配置 AI 评估"
+    },
+    "usage": {
+      "unpricedUnits": "未定价单位",
+      "counter": "计数器",
+      "units": "单位",
+      "team": "团队",
+      "noTeam": "无团队",
+      "key": "密钥",
+      "noKey": "无密钥",
+      "costMathTitle": "费用计算方式",
+      "costFormula": "按计数器计算：已定价单位 × 单价 = 费用",
+      "priceHelp": "单价来自 LiteLLM 内置的费用映射表",
+      "unitsMathTitle": "用量单位的汇总方式",
+      "unitsFormula": "计数器 + 计数器 + … = 用量单位",
+      "unitsHelp": "用量单位是提供商为此护栏报告的计费计数，按所有调用汇总",
+      "sectionLabel": "用量与费用",
+      "title": "用量与费用",
+      "help": "提供商为此护栏报告的计费单位及 LiteLLM 计算的费用",
+      "empty": "此时间段未记录计费用量单位",
+      "byCounter": "按计数器",
+      "byTeam": "按团队",
+      "byKey": "按密钥",
+      "counterCount_one": "{{count}} 个计数器",
+      "counterCount_other": "{{count}} 个计数器"
+    },
+    "config": {
+      "version": "版本：",
+      "hideHistory": "隐藏历史",
+      "viewHistory": "查看历史",
+      "revert": "还原",
+      "parameters": "参数",
+      "failureAction": "失败时的操作",
+      "type": "护栏类型",
+      "categories": "类别（以逗号分隔）",
+      "productionEnabled": "在生产环境中启用护栏",
+      "codeOverride": "自定义代码覆盖",
+      "codeHelp": "使用自定义评估代码替换内置护栏",
+      "test": "测试配置",
+      "testHelp": "对近期失败日志重新运行此护栏，以验证更改",
+      "running": "正在运行 10 个样本…",
+      "rerun": "对失败日志重新运行",
+      "testSuccess": "新配置下将有 7/10 的样本通过",
+      "testError": "运行测试时出错",
+      "configureBehavior": "配置 {{name}} 的行为",
+      "saveVersion": "保存为 v{{version}}",
+      "currentVersion": "{{version}}（当前）",
+      "history": {
+        "v3": "调整医学术语的敏感度",
+        "v2": "添加自定义类别列表",
+        "v1": "初始配置"
+      },
+      "actions": {
+        "block": "拦截请求",
+        "flag": "标记以供审核",
+        "log": "仅记录日志",
+        "fallback": "使用回退响应"
+      },
+      "types": {
+        "contentSafety": "内容安全",
+        "pii": "个人身份信息检测",
+        "topic": "主题限制",
+        "promptInjection": "提示词注入",
+        "custom": "自定义"
+      }
+    },
+    "status": {
+      "healthy": "正常",
+      "warning": "警告",
+      "critical": "严重"
+    },
+    "adminOnly": "Guardrails 监控仅对管理员用户开放。"
   }
 }

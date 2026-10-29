@@ -415,7 +415,8 @@
       "settings": "Settings",
       "router-settings": "Router Settings",
       "logging-and-alerts": "Logging & Alerts",
-      "admin-panel": "Admin Settings"
+      "admin-panel": "Admin Settings",
+      "guardrails-monitor": "Guardrails Monitor"
     },
     "groups": {
       "AI GATEWAY": "AI GATEWAY",
@@ -4031,5 +4032,163 @@
       "s3": "S3 Bucket (AWS) Logging Integration",
       "SQS": "SQS Queue (AWS) Logging Integration"
     }
+  },
+  "guardrailsMonitor": {
+    "shared": {
+      "howCalculated": "How is this calculated?",
+      "total": "Total",
+      "unpricedExcluded_one": "{{total}} unit with no known price is left out of the cost.",
+      "unpricedExcluded_other": "{{total}} units with no known price are left out of the cost.",
+      "requestPricing": "Request pricing on GitHub",
+      "unpricedSummary_one": "{{total}} unit unpriced",
+      "unpricedSummary_other": "{{total}} units unpriced",
+      "noKnownPrice": "no known price, left out",
+      "unpricedLeftOut_one": "{{total}} unpriced unit left out",
+      "unpricedLeftOut_other": "{{total}} unpriced units left out",
+      "blocked": "Blocked",
+      "passed": "Passed",
+      "flagged": "Flagged",
+      "all": "All",
+      "requestLogs": "Request Logs",
+      "logsForGuardrail": "Logs — {{name}}",
+      "loading": "Loading…",
+      "showingEntries": "Showing {{shown}} of {{total}} entries",
+      "noLogsPeriod": "No logs for this period. Select a guardrail and date range.",
+      "noLogsFilters": "No logs to display. Adjust filters or date range.",
+      "sample": "Sample:"
+    },
+    "title": "Guardrails Monitor",
+    "subtitle": "Monitor guardrail performance across all requests",
+    "common": {
+      "status": "Status",
+      "guardrail": "Guardrail",
+      "provider": "Provider",
+      "requests": "Requests",
+      "failRate": "Fail Rate",
+      "latency": "Avg. latency added",
+      "usageUnits": "Usage Units",
+      "cost": "Cost",
+      "loading": "Loading",
+      "evaluationSettings": "Evaluation settings",
+      "noData": "No data"
+    },
+    "overview": {
+      "comingSoon": "Coming soon",
+      "exportData": "Export Data",
+      "totalEvaluations": "Total Evaluations",
+      "blockedRequests": "Blocked Requests",
+      "passRate": "Pass Rate",
+      "guardrailCost": "Guardrail Cost",
+      "activeGuardrails": "Active Guardrails",
+      "loadError": "Failed to load data. Try again.",
+      "empty": "No data for this period",
+      "performance": "Guardrail Performance",
+      "performanceHelp": "Click a guardrail to view details, logs, and configuration",
+      "totalCostFormula": "guardrail + guardrail + … = guardrail cost",
+      "costHelp": "Each guardrail's cost is its units per counter × that counter's per-unit price from the cost map. Open a guardrail for its per-counter math.",
+      "unpricedHelp": "{{summary}}: these units have no known price and are left out of the cost"
+    },
+    "chart": {
+      "title": "Request Outcomes Over Time",
+      "empty": "No chart data for this period",
+      "passed": "passed",
+      "blocked": "blocked"
+    },
+    "detail": {
+      "back": "Back to Overview",
+      "loadError": "Failed to load guardrail details.",
+      "overview": "Overview",
+      "logs": "Logs",
+      "requestsEvaluated": "Requests Evaluated",
+      "perRequest": "Per request (avg)",
+      "blockedCount_one": "{{total}} blocked",
+      "blockedCount_other": "{{total}} blocked"
+    },
+    "evaluation": {
+      "title": "Evaluation Settings",
+      "description": "Configure AI evaluation for re-running on logs",
+      "prompt": "Evaluation Prompt",
+      "reset": "Reset to default",
+      "promptHelp": "System prompt sent to the evaluation model. Output is structured via response_format.",
+      "schema": "Response Schema",
+      "model": "Model",
+      "loadingModels": "Loading models…",
+      "selectModel": "Select a model",
+      "signIn": "Sign in to see models",
+      "noModels": "No models available",
+      "cancel": "Cancel",
+      "run": "Run Evaluation",
+      "namedDescription": "Configure AI evaluation for {{name}}"
+    },
+    "usage": {
+      "unpricedUnits": "Unpriced Units",
+      "counter": "Counter",
+      "units": "Units",
+      "team": "Team",
+      "noTeam": "No team",
+      "key": "Key",
+      "noKey": "No key",
+      "costMathTitle": "How this cost is calculated",
+      "costFormula": "priced units × price per unit = cost, per counter",
+      "priceHelp": "Per-unit prices come from the cost map LiteLLM ships with.",
+      "unitsMathTitle": "How usage units add up",
+      "unitsFormula": "counter + counter + … = usage units",
+      "unitsHelp": "Units are the billable counters the provider reported for this guardrail, added up over every call.",
+      "sectionLabel": "Usage and cost",
+      "title": "Usage & Cost",
+      "help": "Billable units the provider reported for this guardrail and what LiteLLM priced them at",
+      "empty": "No billable usage units were recorded in this period.",
+      "byCounter": "By counter",
+      "byTeam": "By team",
+      "byKey": "By key",
+      "counterCount_one": "{{count}} counter",
+      "counterCount_other": "{{count}} counters"
+    },
+    "config": {
+      "version": "Version:",
+      "hideHistory": "Hide history",
+      "viewHistory": "View history",
+      "revert": "Revert",
+      "parameters": "Parameters",
+      "failureAction": "Action on Failure",
+      "type": "Guardrail Type",
+      "categories": "Categories (comma-separated)",
+      "productionEnabled": "Guardrail enabled in production",
+      "codeOverride": "Custom Code Override",
+      "codeHelp": "Replace the built-in guardrail with custom evaluation code",
+      "test": "Test Configuration",
+      "testHelp": "Re-run this guardrail on recent failing logs to validate your changes",
+      "running": "Running on 10 samples...",
+      "rerun": "Re-run on failing logs",
+      "testSuccess": "7/10 would now pass with new config",
+      "testError": "Error running tests",
+      "configureBehavior": "Configure {{name}} behavior",
+      "saveVersion": "Save as v{{version}}",
+      "currentVersion": "{{version}} (current)",
+      "history": {
+        "v3": "Adjusted sensitivity for medical terms",
+        "v2": "Added custom categories list",
+        "v1": "Initial configuration"
+      },
+      "actions": {
+        "block": "Block Request",
+        "flag": "Flag for Review",
+        "log": "Log Only",
+        "fallback": "Use Fallback Response"
+      },
+      "types": {
+        "contentSafety": "Content Safety",
+        "pii": "PII Detection",
+        "topic": "Topic Restriction",
+        "promptInjection": "Prompt Injection",
+        "custom": "Custom"
+      }
+    },
+    "status": {
+      "healthy": "Healthy",
+      "warning": "Warning",
+      "critical": "Critical"
+    },
+    "adminOnly": "Guardrails Monitor is only available to admin users."
   }
 }

@@ -1,4 +1,6 @@
 import { CircleCheck, ChevronDown, TriangleAlert, X } from "lucide-react";
+import { translate } from "@/i18n/useTranslation";
+import type { TFunction } from "i18next";
 import { useQuery } from "@tanstack/react-query";
 import moment from "moment";
 import React, { useState } from "react";
@@ -18,25 +20,26 @@ const actionConfig: Record<
     color: "text-destructive",
     bg: "bg-destructive/10",
     border: "border-destructive/20",
-    label: "Blocked",
+    label: "guardrailsMonitor.shared.blocked",
   },
   passed: {
     icon: CircleCheck,
     color: "text-success",
     bg: "bg-success/10",
     border: "border-success/20",
-    label: "Passed",
+    label: "guardrailsMonitor.shared.passed",
   },
   flagged: {
     icon: TriangleAlert,
     color: "text-warning",
     bg: "bg-warning/10",
     border: "border-warning/20",
-    label: "Flagged",
+    label: "guardrailsMonitor.shared.flagged",
   },
 };
 
 interface LogViewerProps {
+  t?: TFunction;
   guardrailName?: string;
   filterAction?: "all" | "blocked" | "passed" | "flagged";
   logs?: LogEntry[];
@@ -48,6 +51,7 @@ interface LogViewerProps {
 }
 
 export function LogViewer({
+  t = translate,
   guardrailName,
   filterAction = "all",
   logs = [],
@@ -110,14 +114,16 @@ export function LogViewer({
         <div className="flex items-center justify-between flex-wrap gap-3">
           <div>
             <h3 className="text-base font-semibold text-foreground">
-              {guardrailName ? `Logs — ${guardrailName}` : "Request Logs"}
+              {guardrailName
+                ? t("guardrailsMonitor.shared.logsForGuardrail", { name: guardrailName })
+                : t("guardrailsMonitor.shared.requestLogs")}
             </h3>
             <p className="text-xs text-muted-foreground mt-0.5">
               {logsLoading
-                ? "Loading…"
+                ? t("guardrailsMonitor.shared.loading")
                 : logs.length > 0
-                  ? `Showing ${displayLogs.length} of ${total} entries`
-                  : "No logs for this period. Select a guardrail and date range."}
+                  ? t("guardrailsMonitor.shared.showingEntries", { shown: displayLogs.length, total })
+                  : t("guardrailsMonitor.shared.noLogsPeriod")}
             </p>
           </div>
           {logs.length > 0 && (
@@ -130,13 +136,13 @@ export function LogViewer({
                     size="sm"
                     onClick={() => setActiveFilter(f)}
                   >
-                    {f.charAt(0).toUpperCase() + f.slice(1)}
+                    {t(`guardrailsMonitor.shared.${f}`)}
                   </Button>
                 ))}
               </div>
               <div className="h-4 w-px bg-border" />
               <div className="flex items-center gap-1">
-                <span className="text-xs text-muted-foreground mr-1">Sample:</span>
+                <span className="text-xs text-muted-foreground mr-1">{t("guardrailsMonitor.shared.sample")}</span>
                 {sampleSizes.map((size) => (
                   <Button
                     key={size}
@@ -160,7 +166,7 @@ export function LogViewer({
       )}
       {!logsLoading && displayLogs.length === 0 && (
         <div className="py-12 text-center text-sm text-muted-foreground">
-          No logs to display. Adjust filters or date range.
+          {t("guardrailsMonitor.shared.noLogsFilters")}
         </div>
       )}
       {!logsLoading && displayLogs.length > 0 && (
@@ -181,7 +187,7 @@ export function LogViewer({
                     <span
                       className={`inline-flex items-center px-2 py-0.5 text-xs font-medium rounded-sm border ${config.bg} ${config.color} ${config.border}`}
                     >
-                      {config.label}
+                      {t(config.label)}
                     </span>
                     <span className="text-xs text-muted-foreground">{log.timestamp}</span>
                     <span className="text-xs text-muted-foreground">·</span>
