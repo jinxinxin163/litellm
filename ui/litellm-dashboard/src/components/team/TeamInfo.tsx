@@ -1720,6 +1720,7 @@ const TeamInfoView: React.FC<TeamInfoProps> = ({
                   </FormField>
 
 
+                  {/*
                   {canViewPolicies && (
                     <FormField
                       control={form.control}
@@ -1741,6 +1742,7 @@ const TeamInfoView: React.FC<TeamInfoProps> = ({
                       )}
                     </FormField>
                   )}
+                  */}
 
                   <FormField
                     control={form.control}

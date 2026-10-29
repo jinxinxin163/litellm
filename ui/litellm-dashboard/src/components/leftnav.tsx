@@ -93,6 +93,7 @@ const menuGroups: MenuGroup[] = [
         roles: rolesAllowedToViewWriteScopedPages,
       },
       { key: "guardrails", page: "guardrails", label: "Guardrails", icon: <Shield {...ICON} /> },
+      /*
       {
         key: "policies",
         page: "policies",
@@ -100,6 +101,7 @@ const menuGroups: MenuGroup[] = [
         icon: <ScrollText {...ICON} />,
         roles: rolesWithCapability("viewPolicies"),
       },
+      */
     ],
   },
   {

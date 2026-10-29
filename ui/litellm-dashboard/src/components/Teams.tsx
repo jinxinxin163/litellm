@@ -872,6 +872,7 @@ const Teams: React.FC<TeamProps> = ({ accessToken, userID, userRole, premiumUser
                             />
                           )}
                         </FormField>
+                        {/*
                         {canViewPolicies && (
                           <FormField
                             control={form.control}
@@ -895,6 +896,7 @@ const Teams: React.FC<TeamProps> = ({ accessToken, userID, userRole, premiumUser
                             )}
                           </FormField>
                         )}
+                        */}
                         <FormField
                           control={form.control}
                           name="access_group_ids"
