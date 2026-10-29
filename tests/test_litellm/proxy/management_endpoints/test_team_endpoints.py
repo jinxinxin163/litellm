@@ -3,7 +3,7 @@ import json
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from types import SimpleNamespace
-from typing import Final, Optional, cast
+from typing import Final, Literal, Optional, cast
 from unittest.mock import AsyncMock, MagicMock, PropertyMock, call, patch
 
 import pytest
@@ -13895,6 +13895,74 @@ async def test_team_member_update_skips_invalidation_when_no_budget_fields_sent(
 
     assert await real_cache.async_get_cache(key="team-1_member-1") == "still-fresh-membership"
     assert real_spend_counter_cache.in_memory_cache.get_cache(key="spend:team_member:member-1:team-1") == 1.5
+
+
+@pytest.mark.parametrize("old_role,new_role", [("user", "admin"), ("admin", "user")])
+@pytest.mark.asyncio
+async def test_team_member_update_refreshes_own_team_role(
+    monkeypatch: pytest.MonkeyPatch, old_role: Literal["admin", "user"], new_role: Literal["admin", "user"]
+) -> None:
+    from litellm.proxy.common_utils.user_api_key_cache import UserApiKeyCache
+    from litellm.proxy.management_endpoints.team_endpoints import team_member_me
+
+    team_id: Final = f"role-cache-{uuid.uuid4()}"
+    team_alias: Final = f"alias-{team_id}"
+    old_team: Final = LiteLLM_TeamTable(
+        team_id=team_id,
+        team_alias=team_alias,
+        members_with_roles=[Member(user_id="member-1", role=old_role)],
+    )
+    updated_team: Final = LiteLLM_TeamTable(
+        team_id=team_id,
+        team_alias=team_alias,
+        members_with_roles=[Member(user_id="member-1", role=new_role)],
+    )
+    cache: Final = UserApiKeyCache()
+    for key in (f"team_id:{team_id}", f"team_alias:{team_alias}"):
+        await cache.async_set_cache(
+            key=key,
+            value=LiteLLM_TeamTableCachedObj.model_validate(old_team.model_dump()),
+            model_type=LiteLLM_TeamTableCachedObj,
+        )
+
+    prisma: Final = MagicMock()
+    prisma.db.litellm_teamtable.find_unique = AsyncMock(side_effect=[old_team, updated_team])
+    prisma.db.litellm_teamtable.update = AsyncMock(return_value=updated_team)
+    prisma.tx.return_value.__aenter__ = AsyncMock()
+    prisma.tx.return_value.__aexit__ = AsyncMock(return_value=None)
+    monkeypatch.setattr("litellm.proxy.proxy_server.prisma_client", prisma)
+    monkeypatch.setattr("litellm.proxy.proxy_server.user_api_key_cache", cache)
+    monkeypatch.setattr("litellm.proxy.proxy_server.premium_user", True)
+
+    with (
+        patch(  # test-quality-ok: isolate the update's DB response while exercising real team-cache reads
+            "litellm.proxy.management_endpoints.team_endpoints.team_info",
+            AsyncMock(return_value={"team_info": old_team, "team_memberships": []}),
+        ),
+        patch(  # test-quality-ok: membership budgets are unrelated to the cached roster role under test
+            "litellm.proxy.management_endpoints.team_endpoints.get_team_membership",
+            AsyncMock(return_value=None),
+        ),
+        patch(  # test-quality-ok: user email lookup is unrelated to the cached roster role under test
+            "litellm.proxy.management_endpoints.team_endpoints.get_user_object",
+            AsyncMock(return_value=LiteLLM_UserTable(user_id="member-1")),
+        ),
+    ):
+        await team_member_update(
+            data=TeamMemberUpdateRequest(team_id=team_id, user_id="member-1", role=new_role),
+            http_request=MagicMock(),
+            user_api_key_dict=UserAPIKeyAuth(user_id="proxy-admin", user_role=LitellmUserRoles.PROXY_ADMIN),
+        )
+        response: Final = await team_member_me(
+            http_request=MagicMock(),
+            team_id=team_id,
+            user_api_key_dict=UserAPIKeyAuth(user_id="member-1", user_role=LitellmUserRoles.INTERNAL_USER),
+        )
+
+    assert response.role == new_role
+    assert await cache.async_get_cache(key=f"team_alias:{team_alias}") is None
+    saved_members: Final = json.loads(prisma.db.litellm_teamtable.update.await_args.kwargs["data"]["members_with_roles"])
+    assert saved_members[0]["role"] == new_role
 
 
 def _team_spend_by_user_team(team_id: str, team_alias: str, member: Member, permissions: list[str]) -> MagicMock:

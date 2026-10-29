@@ -3444,7 +3444,7 @@ async def team_member_update(
 
     Update team member budgets and team member role
     """
-    from litellm.proxy.proxy_server import premium_user, prisma_client, user_api_key_cache
+    from litellm.proxy.proxy_server import premium_user, prisma_client, proxy_logging_obj, user_api_key_cache
 
     if prisma_client is None:
         raise HTTPException(status_code=500, detail={"error": "No db connected"})
@@ -3573,6 +3573,12 @@ async def team_member_update(
         await _team_db(prisma_client).update(
             where={"team_id": data.team_id},
             data={"members_with_roles": json.dumps(_db_team_members)},
+        )
+        await delete_cache_team_object(
+            team_id=data.team_id,
+            team_alias=team_table.team_alias,
+            user_api_key_cache=user_api_key_cache,
+            proxy_logging_obj=proxy_logging_obj,
         )
 
     return TeamMemberUpdateResponse(
