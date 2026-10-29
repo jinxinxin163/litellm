@@ -89,49 +89,51 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
 
   return (
     <form onSubmit={form.handleSubmit(onFinish)} noValidate>
-      {alertingSettings.map((value, index) => (
-        <TableRow key={index}>
-          <TableCell>
-            <p className="text-sm">{value.field_name}</p>
-            <p className="mt-1 text-[0.65rem] italic text-muted-foreground">{value.field_description}</p>
-          </TableCell>
-          {value.premium_field && !premiumUser ? (
+      {alertingSettings.map((value, index) =>
+        value.field_name === "region_outage_alert_ttl" ? null : (
+          <TableRow key={index}>
             <TableCell>
-              <Button className="flex items-center justify-center">
-                <a href="https://forms.gle/W3U4PZpJGFHWtHyA9" target="_blank">
-                  {t("loggingAlerts.enterprise")}
-                </a>
+              <p className="text-sm">{value.field_name}</p>
+              <p className="mt-1 text-[0.65rem] italic text-muted-foreground">{value.field_description}</p>
+            </TableCell>
+            {value.premium_field && !premiumUser ? (
+              <TableCell>
+                <Button className="flex items-center justify-center">
+                  <a href="https://forms.gle/W3U4PZpJGFHWtHyA9" target="_blank">
+                    {t("loggingAlerts.enterprise")}
+                  </a>
+                </Button>
+              </TableCell>
+            ) : (
+              <TableCell>{renderControl(value)}</TableCell>
+            )}
+            <TableCell>
+              {value.stored_in_db == true ? (
+                <Badge variant="secondary">
+                  <CircleCheck />
+                  {t("loggingAlerts.inDb")}
+                </Badge>
+              ) : value.stored_in_db == false ? (
+                <Badge variant="outline">{t("loggingAlerts.inConfig")}</Badge>
+              ) : (
+                <Badge variant="outline">{t("loggingAlerts.notSet")}</Badge>
+              )}
+            </TableCell>
+            <TableCell>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-sm"
+                aria-label={t("loggingAlerts.resetField", { field: value.field_name })}
+                onClick={() => handleResetField(value.field_name, index)}
+                className="text-destructive"
+              >
+                <Trash2 className="size-5" />
               </Button>
             </TableCell>
-          ) : (
-            <TableCell>{renderControl(value)}</TableCell>
-          )}
-          <TableCell>
-            {value.stored_in_db == true ? (
-              <Badge variant="secondary">
-                <CircleCheck />
-                {t("loggingAlerts.inDb")}
-              </Badge>
-            ) : value.stored_in_db == false ? (
-              <Badge variant="outline">{t("loggingAlerts.inConfig")}</Badge>
-            ) : (
-              <Badge variant="outline">{t("loggingAlerts.notSet")}</Badge>
-            )}
-          </TableCell>
-          <TableCell>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon-sm"
-              aria-label={t("loggingAlerts.resetField", { field: value.field_name })}
-              onClick={() => handleResetField(value.field_name, index)}
-              className="text-destructive"
-            >
-              <Trash2 className="size-5" />
-            </Button>
-          </TableCell>
-        </TableRow>
-      ))}
+          </TableRow>
+        ),
+      )}
       <div>
         <Button type="submit">{t("loggingAlerts.updateSettings")}</Button>
       </div>
