@@ -77,14 +77,7 @@ const AboutPoliciesAlert = () => {
         <li>{t("policiesPage.groupGuardrailsIntoASinglePolicy")}</li>
         <li>{t("policiesPage.inheritFromExistingPoliciesAndOverrideWhat")}</li>
       </ul>
-      <a
-        href="https://docs.litellm.ai/docs/proxy/guardrails/guardrail_policies"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="mt-1 inline-block text-primary underline underline-offset-4"
-      >
-        {t("policiesPage.learnMoreInTheDocumentationGt")}{" "}
-      </a>
+      
     </DismissibleAlert>
   );
 };
