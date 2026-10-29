@@ -115,16 +115,6 @@ const EmailSettings: React.FC<EmailSettingsProps> = ({ accessToken, premiumUser,
       <Card>
         <CardHeader>
           <CardTitle className="text-base">{t("loggingAlerts.emailServer")}</CardTitle>
-          <p className="text-sm">
-            <a
-              href="https://docs.litellm.ai/docs/proxy/email"
-              target="_blank"
-              rel="noreferrer"
-              className="text-primary underline underline-offset-4"
-            >
-              {t("loggingAlerts.emailDocs")}
-            </a>
-          </p>
         </CardHeader>
 
         <CardContent>
@@ -133,6 +123,7 @@ const EmailSettings: React.FC<EmailSettingsProps> = ({ accessToken, premiumUser,
             .map((alert, index) => (
               <div key={index} className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 {Object.entries(alert.variables ?? {}).map(([key, value]) => {
+                  if (PREMIUM_ONLY_FIELDS.includes(key)) return null;
                   const isLocked = !premiumUser && PREMIUM_ONLY_FIELDS.includes(key);
                   const isSensitive = SENSITIVE_FIELD_PATTERN.test(key);
                   const isVisible = visibleFields[key] || false;
