@@ -3452,12 +3452,14 @@ async def team_member_update(
     if data.team_id is None:
         raise HTTPException(status_code=400, detail={"error": "No team id passed in"})
 
+    """
     if data.role == "admin" and not premium_user:
         # exactly the same text your proxy throws for add:
         raise HTTPException(
             status_code=400,
             detail="Assigning team admins is a premium feature. You must be a LiteLLM Enterprise user to use this feature. If you have a license please set `LITELLM_LICENSE` in your env. Get a 7 day trial key here: https://www.litellm.ai/#trial. Pricing: https://www.litellm.ai/#pricing",
         )
+    """
     if data.user_id is None and data.user_email is None:
         raise HTTPException(
             status_code=400,
