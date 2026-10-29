@@ -306,7 +306,7 @@ const Settings: React.FC<SettingsPageProps> = ({ accessToken, userRole, userID, 
     db_exceptions: t("loggingAlerts.dbExceptions"),
     daily_reports: t("loggingAlerts.spendReports"),
     outage_alerts: t("loggingAlerts.outageAlerts"),
-    region_outage_alerts: t("loggingAlerts.regionOutageAlerts"),
+    //region_outage_alerts: t("loggingAlerts.regionOutageAlerts"),
     model_deprecation_warnings: t("loggingAlerts.deprecationWarnings"),
   };
 
