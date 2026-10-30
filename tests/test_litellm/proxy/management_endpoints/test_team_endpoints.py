@@ -1,5 +1,6 @@
 import asyncio
 import json
+from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from types import SimpleNamespace
@@ -1861,6 +1862,73 @@ async def test_update_team_members_list_duplicate_prevention():
 
     # Verify member was NOT added (still only 1 member)
     assert len(mock_team.members_with_roles) == 1
+
+
+@pytest.mark.parametrize("role", ["admin", "user"])
+@pytest.mark.parametrize("as_list", [False, True])
+@pytest.mark.asyncio
+async def test_add_team_members_invalidates_cached_roster_after_commit(
+    monkeypatch: pytest.MonkeyPatch, role: Literal["admin", "user"], as_list: bool
+) -> None:
+    from litellm.proxy.common_utils.user_api_key_cache import UserApiKeyCache
+    from litellm.proxy.management_endpoints.team_endpoints import _add_team_members_to_team, team_member_me
+
+    team_id: Final = f"member-add-cache-{uuid.uuid4()}"
+    team_alias: Final = f"alias-{team_id}"
+    member: Final = Member(user_id=f"member-{uuid.uuid4()}", user_email="member@example.com", role=role)
+    old_team: Final = LiteLLM_TeamTable(team_id=team_id, team_alias=team_alias, members_with_roles=[])
+    updated_team: Final = LiteLLM_TeamTable(team_id=team_id, team_alias=team_alias, members_with_roles=[member])
+    cache: Final = UserApiKeyCache()
+    for key in (f"team_id:{team_id}", f"team_alias:{team_alias}"):
+        await cache.async_set_cache(
+            key=key,
+            value=LiteLLM_TeamTableCachedObj.model_validate(old_team.model_dump()),
+            model_type=LiteLLM_TeamTableCachedObj,
+        )
+
+    tx: Final = MagicMock()
+    tx.query_raw = AsyncMock(return_value=[{"members_with_roles": []}])
+    tx.litellm_teamtable.update = AsyncMock(return_value=updated_team)
+
+    @asynccontextmanager
+    async def transaction() -> AsyncIterator[MagicMock]:
+        yield tx
+        assert await cache.async_get_cache(key=f"team_id:{team_id}") is not None
+
+    prisma: Final = MagicMock()
+    prisma.tx.return_value = transaction()
+    prisma.db.litellm_teamtable.find_unique = AsyncMock(return_value=updated_team)
+    prisma.db.litellm_teammembership.find_unique = AsyncMock(return_value=None)
+    prisma.db.litellm_usertable.find_unique = AsyncMock(
+        return_value=LiteLLM_UserTable(user_id=member.user_id, user_email=member.user_email)
+    )
+    monkeypatch.setattr("litellm.proxy.proxy_server.prisma_client", prisma)
+    monkeypatch.setattr("litellm.proxy.proxy_server.user_api_key_cache", cache)
+
+    with patch(  # test-quality-ok: isolate nested user/budget writes while exercising real roster updates and cache reads
+        "litellm.proxy.management_endpoints.team_endpoints._process_team_members",
+        AsyncMock(return_value=([], [])),
+    ):
+        await _add_team_members_to_team(
+            data=TeamMemberAddRequest(team_id=team_id, member=[member] if as_list else member),
+            complete_team_data=old_team,
+            prisma_client=prisma,
+            user_api_key_dict=UserAPIKeyAuth(user_role=LitellmUserRoles.PROXY_ADMIN),
+            litellm_proxy_admin_name="proxy-admin",
+        )
+
+    assert await cache.async_get_cache(key=f"team_id:{team_id}") is None
+    assert await cache.async_get_cache(key=f"team_alias:{team_alias}") is None
+    response: Final = await team_member_me(
+        http_request=MagicMock(),
+        team_id=team_id,
+        user_api_key_dict=UserAPIKeyAuth(user_id=member.user_id, user_role=LitellmUserRoles.INTERNAL_USER),
+    )
+    assert response.role == role
+    assert response.user_email == member.user_email
+    saved_members: Final = json.loads(tx.litellm_teamtable.update.await_args.kwargs["data"]["members_with_roles"])
+    assert saved_members[0]["user_id"] == member.user_id
+    assert saved_members[0]["role"] == role
 
 
 @pytest.mark.asyncio

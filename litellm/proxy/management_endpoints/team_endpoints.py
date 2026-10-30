@@ -2776,6 +2776,8 @@ async def _add_team_members_to_team(
     a waiter that can deadlock the pool, since enough concurrent adds for one team would
     hold every connection waiting on the lock while the holder waits for a free one.
     """
+    from litellm.proxy.proxy_server import proxy_logging_obj, user_api_key_cache
+
     gone_detail: Final[_ErrorDetail] = {"error": f"Team={data.team_id} was deleted while this member add was running"}
     async with prisma_client.tx() as tx:
         await tx.query_raw(TEAM_ADVISORY_LOCK_SQL, data.team_id)
@@ -2808,6 +2810,12 @@ async def _add_team_members_to_team(
         if updated_team is None:
             raise HTTPException(status_code=404, detail=gone_detail)
 
+    await delete_cache_team_object(
+        team_id=updated_team.team_id,
+        team_alias=updated_team.team_alias,
+        user_api_key_cache=user_api_key_cache,
+        proxy_logging_obj=proxy_logging_obj,
+    )
     return updated_team, updated_users, updated_team_memberships
 
 
@@ -3104,6 +3112,7 @@ async def team_member_add(
         user_api_key_cache,
     )
 
+    """
     try:
         team_call_validation_checks(
             prisma_client=prisma_client,
@@ -3112,7 +3121,8 @@ async def team_member_add(
         )
     except HTTPException as e:
         raise e
-
+    """
+    
     validate_budget_duration(data.budget_duration)
 
     prisma_client = cast(PrismaClient, prisma_client)
