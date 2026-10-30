@@ -290,7 +290,7 @@ function LoginPageContent() {
           </CardContent>
         </Card>
       </div>
-      <footer className="mindgate-login-footer">© 1983-2026 Vision Studio Co., Ltd.</footer>
+      <footer className="mindgate-login-footer">© 1983-2026 MindGate Co., Ltd.</footer>
     </div>
   );
 }

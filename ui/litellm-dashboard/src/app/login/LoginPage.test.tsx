@@ -125,7 +125,7 @@ describe("LoginPage", () => {
     await waitFor(() => {
       expect(screen.getByRole("heading", { name: "Login MindGate" })).toBeInTheDocument();
     });
-    expect(screen.getByText("© 1983-2026 Vision Studio Co., Ltd.")).toBeInTheDocument();
+    expect(screen.getByText("© 1983-2026 MindGate Co., Ltd.")).toBeInTheDocument();
     expect(screen.queryByText("Username", { exact: true })).not.toBeInTheDocument();
     expect(screen.queryByText("Password", { exact: true })).not.toBeInTheDocument();
     expect(screen.queryByText("Default Credentials")).not.toBeInTheDocument();
