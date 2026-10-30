@@ -1,5 +1,5 @@
 """
-Modern Email Templates for LiteLLM Email Service with professional styling
+Modern Email Templates for MindGate Email Service with professional styling
 """
 
 from typing import Final
@@ -157,16 +157,13 @@ KEY_CREATED_EMAIL_TEMPLATE: Final = """
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <img src="{email_logo_url}" alt="LiteLLM Logo" style="height: 32px; width: auto;">
-        </div>
         <div class="content">
             <div class="greeting">
                 <p>Hi {recipient_email},</p>
             </div>
             
             <div class="message">
-                <p>Great news! Your LiteLLM API key is ready to use.</p>
+                <p>Great news! Your MindGate API key is ready to use.</p>
             </div>
             
             <div class="budget-info">

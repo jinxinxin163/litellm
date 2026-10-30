@@ -1266,11 +1266,11 @@ Model Info:
                     self.alerting,
                 )
                 return False
-            from litellm.proxy.proxy_server import premium_user, prisma_client
+            from litellm.proxy.proxy_server import  prisma_client
 
             email_logo_url = os.getenv("SMTP_SENDER_LOGO", os.getenv("EMAIL_LOGO_URL", None))
             email_support_contact = os.getenv("EMAIL_SUPPORT_CONTACT", None)
-            await self._check_if_using_premium_email_feature(premium_user, email_logo_url, email_support_contact)
+            # await self._check_if_using_premium_email_feature(premium_user, email_logo_url, email_support_contact)
             if email_logo_url is None:
                 email_logo_url = LITELLM_LOGO_URL
             if email_support_contact is None:
@@ -1289,7 +1289,7 @@ Model Info:
             key_budget: Final = webhook_event.max_budget
             base_url: Final = os.getenv("PROXY_BASE_URL", "http://0.0.0.0:4000")
 
-            email_html_content = "Alert from LiteLLM Server"
+            email_html_content = "Alert from MindGate Server"
             if recipient_email is None:
                 verbose_proxy_logger.error(
                     "Trying to send email alert to no recipient",
@@ -1332,7 +1332,7 @@ Model Info:
             webhook_event.model_dump_json()
             email_event: Final = {
                 "to": recipient_email,
-                "subject": f"LiteLLM: {event_name}",
+                "subject": f"MindGate: {event_name}",
                 "html": email_html_content,
             }
 
@@ -1356,12 +1356,12 @@ Model Info:
 
         Returns -> True if sent, False if not.
         """
-        from litellm.proxy.proxy_server import premium_user
+        #from litellm.proxy.proxy_server import premium_user
         from litellm.proxy.utils import send_email
 
         email_logo_url = os.getenv("SMTP_SENDER_LOGO", os.getenv("EMAIL_LOGO_URL", None))
         email_support_contact = os.getenv("EMAIL_SUPPORT_CONTACT", None)
-        await self._check_if_using_premium_email_feature(premium_user, email_logo_url, email_support_contact)
+        #await self._check_if_using_premium_email_feature(premium_user, email_logo_url, email_support_contact)
 
         if email_logo_url is None:
             email_logo_url = LITELLM_LOGO_URL
@@ -1372,14 +1372,12 @@ Model Info:
         recipient_email: Final = webhook_event.user_email
         user_name: Final = webhook_event.user_id
         max_budget: Final = webhook_event.max_budget
-        email_html_content = "Alert from LiteLLM Server"
+        email_html_content = "Alert from MindGate Server"
         if recipient_email is None:
             verbose_proxy_logger.error("Trying to send email alert to no recipient", extra=webhook_event.dict())
 
         if webhook_event.event == "budget_crossed":
             email_html_content = f"""
-            <img src="{email_logo_url}" alt="LiteLLM Logo" width="150" height="50" />
-
             <p> Hi {user_name}, <br/>
 
             Your LLM API usage this month has reached your account's <b> monthly budget of ${max_budget} </b> <br /> <br />
@@ -1389,13 +1387,13 @@ Model Info:
             If you have any questions, please send an email to {email_support_contact} <br /> <br />
 
             Best, <br />
-            The LiteLLM team <br />
+            The MindGate team <br />
             """
 
         webhook_event.model_dump_json()
         email_event: Final = {
             "to": recipient_email,
-            "subject": f"LiteLLM: {event_name}",
+            "subject": f"MindGate: {event_name}",
             "html": email_html_content,
         }
 
