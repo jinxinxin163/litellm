@@ -974,11 +974,30 @@ class CustomGuardrail(CustomLogger):
         Returns True if the guardrail should be run on the event_type
         """
         if self._suppressed_by_auto_router_compression():
+            verbose_logger.info(
+                "Guardrail debug: stage=eligibility call_id=%s guardrail=%s skip=auto_router_compression",
+                data.get("litellm_call_id"),
+                self.guardrail_name,
+            )
             return False
 
         requested_guardrails: Final = self.get_guardrail_from_metadata(data)
         disable_global_guardrail: Final = self.get_disable_global_guardrail(data)
         opted_out_global_guardrails: Final = self.get_opted_out_global_guardrails_from_metadata(data)
+        verbose_logger.info(
+            "Guardrail debug: stage=eligibility call_id=%s guardrail=%s event=%s mode=%s "
+            "event_matches=%s default_on=%s requested=%s disable_global=%s opted_out=%s",
+            data.get("litellm_call_id"),
+            self.guardrail_name,
+            event_type.value,
+            self.event_hook,
+            self._event_hook_is_event_type(event_type),
+            self.default_on,
+            isinstance(requested_guardrails, list)
+            and self._guardrail_is_in_requested_guardrails(requested_guardrails),
+            disable_global_guardrail,
+            self.guardrail_name in opted_out_global_guardrails,
+        )
         verbose_logger.debug(
             "inside should_run_guardrail for guardrail=%s event_type= %s guardrail_supported_event_hooks= %s requested_guardrails= %s self.default_on= %s",
             self.guardrail_name,

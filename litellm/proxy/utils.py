@@ -1229,6 +1229,14 @@ class ProxyLogging:
             data["guardrail_to_apply"] = callback
 
         target: Final = unified_guardrail if use_unified else callback
+        verbose_proxy_logger.info(
+            "Guardrail debug: stage=dispatch call_id=%s guardrail=%s hook=%s call_type=%s target=%s",
+            data.get("litellm_call_id"),
+            callback.guardrail_name,
+            hook_type,
+            call_type,
+            type(target).__name__,
+        )
 
         if hook_type == "pre_call":
             return await target.async_pre_call_hook(
@@ -1325,7 +1333,15 @@ class ProxyLogging:
             event_type = GuardrailEventHooks.pre_mcp_call
 
         # Check if the guardrail should run for this request
-        if callback.should_run_guardrail(data=data, event_type=event_type) is not True:
+        should_run: Final = callback.should_run_guardrail(data=data, event_type=event_type)
+        verbose_proxy_logger.info(
+            "Guardrail debug: stage=decision call_id=%s guardrail=%s event=%s should_run=%s",
+            data.get("litellm_call_id"),
+            callback.guardrail_name,
+            event_type.value,
+            should_run,
+        )
+        if should_run is not True:
             return None
 
         guardrail_name: Final = callback.guardrail_name
@@ -1748,6 +1764,11 @@ class ProxyLogging:
         if data is None:
             return None
 
+        verbose_proxy_logger.info(
+            "Guardrail debug: stage=pre_call_entry call_id=%s call_type=%s",
+            data.get("litellm_call_id"),
+            call_type,
+        )
         litellm_logging_obj: Final = cast(Optional["LiteLLMLoggingObj"], data.get("litellm_logging_obj", None))
         prompt_id: Final[str | None] = data.get("prompt_id", None)
 
@@ -1801,6 +1822,15 @@ class ProxyLogging:
             pipeline_managed: Final = _pipeline_managed_guardrail_names(data)
 
             caps: Final = ProxyLogging._callback_capabilities()
+            verbose_proxy_logger.info(
+                "Guardrail debug: stage=callbacks call_id=%s call_type=%s callback_count=%s "
+                "guardrails=%s pipeline_managed=%s",
+                data.get("litellm_call_id") if data is not None else None,
+                call_type,
+                len(caps.resolved_callbacks),
+                tuple(cb.guardrail_name for cb in caps.resolved_callbacks if isinstance(cb, CustomGuardrail)),
+                tuple(pipeline_managed),
+            )
             # Skip the per-request callback walk entirely when nothing in
             # ``litellm.callbacks`` overrides ``async_pre_call_hook`` and no
             # CustomGuardrail is configured. Saves the loop overhead +
@@ -1828,6 +1858,13 @@ class ProxyLogging:
                 start_time = time.time()
                 try:
                     if isinstance(_callback, CustomGuardrail) and data is not None:
+                        verbose_proxy_logger.info(
+                            "Guardrail debug: stage=select call_id=%s guardrail=%s pipeline_managed=%s parallel=%s",
+                            data.get("litellm_call_id"),
+                            _callback.guardrail_name,
+                            _callback.guardrail_name in pipeline_managed,
+                            _callback.run_in_parallel,
+                        )
                         # Skip guardrails managed by a pipeline
                         if _callback.guardrail_name and _callback.guardrail_name in pipeline_managed:
                             continue
