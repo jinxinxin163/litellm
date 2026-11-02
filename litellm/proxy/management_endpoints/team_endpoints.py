@@ -91,6 +91,7 @@ from litellm.proxy.auth.auth_utils import (
     enforce_output_token_estimates_are_admin_only,
 )
 from litellm.proxy.auth.user_api_key_auth import user_api_key_auth
+from litellm.proxy.common_utils.auth_cache_invalidation_pubsub import evict_and_broadcast
 from litellm.proxy.common_utils.callback_utils import encrypt_callback_vars
 from litellm.proxy.common_utils.json_merge_patch import apply_json_merge_patch
 from litellm.proxy.common_utils.user_api_key_cache import UserApiKeyCache
@@ -2816,6 +2817,10 @@ async def _add_team_members_to_team(
         user_api_key_cache=user_api_key_cache,
         proxy_logging_obj=proxy_logging_obj,
     )
+    await evict_and_broadcast(
+        cache_keys=tuple(user.user_id for user in updated_users if user.user_id is not None),
+        user_api_key_cache=user_api_key_cache,
+    )
     return updated_team, updated_users, updated_team_memberships
 
 
@@ -3273,7 +3278,7 @@ async def team_member_delete(
     }'
     ```
     """
-    from litellm.proxy.proxy_server import prisma_client
+    from litellm.proxy.proxy_server import prisma_client, proxy_logging_obj, user_api_key_cache
 
     if prisma_client is None:
         raise HTTPException(status_code=500, detail={"error": "No db connected"})
@@ -3411,6 +3416,16 @@ async def team_member_delete(
                 }
             )
 
+    await evict_and_broadcast(
+        cache_keys=tuple(sorted(user_ids_to_delete)),
+        user_api_key_cache=user_api_key_cache,
+    )
+    await delete_cache_team_object(
+        team_id=data.team_id,
+        team_alias=existing_team_row.team_alias,
+        user_api_key_cache=user_api_key_cache,
+        proxy_logging_obj=proxy_logging_obj,
+    )
     _emit_team_members_metric(existing_team_row)
 
     return existing_team_row
