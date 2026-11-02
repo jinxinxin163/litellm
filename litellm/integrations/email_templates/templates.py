@@ -10,7 +10,7 @@ KEY_CREATED_EMAIL_TEMPLATE: Final = """
                     I'm happy to provide you with an OpenAI Proxy API Key. <br /> <br />
 
                     <b>
-                    Key: <pre>{key_token}</pre> <br>
+                    Key ID: <pre>{key_token}</pre> <br>
                     </b>
 
                     <h2>Usage Example</h2>
@@ -19,7 +19,7 @@ KEY_CREATED_EMAIL_TEMPLATE: Final = """
 
                     import openai
                     client = openai.OpenAI(
-                        api_key="{key_token}",
+                        api_key="{{api_key}}}",
                         base_url={{base_url}}
                     )
 
