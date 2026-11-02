@@ -185,12 +185,20 @@ class UnifiedLLMGuardrails(CustomLogger):
         mappings: Final = load_guardrail_translation_mappings()
 
         try:
-            if CallTypes(call_type) not in mappings:
-                return data
-        except ValueError:
-            return data  # handle unmapped call types
+            typed_call_type = CallTypes(call_type)
+        except ValueError as exc:
+            raise HTTPException(
+                status_code=500,
+                detail="Guardrail execution failed: unsupported call type",
+            ) from exc
 
-        endpoint_translation: Final = _as_endpoint_translation(mappings[CallTypes(call_type)]())
+        if typed_call_type not in mappings:
+            raise HTTPException(
+                status_code=500,
+                detail="Guardrail execution failed: translation handler unavailable",
+            )
+
+        endpoint_translation: Final = _as_endpoint_translation(mappings[typed_call_type])
 
         _ensure_litellm_metadata(data, user_api_key_dict)
 
