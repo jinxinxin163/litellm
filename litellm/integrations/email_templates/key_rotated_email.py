@@ -209,8 +209,6 @@ response = client.chat.completions.create(<br>
                 <li style="margin-bottom: 8px;">Rotate your keys periodically as a security best practice</li>
             </ul>
             
-            <a href="https://docs.litellm.ai/docs/proxy/user_keys" class="btn" style="color: #ffffff;">View Documentation</a>
-            
             <div class="separator"></div>
             
             <h2>Need Help?</h2>
