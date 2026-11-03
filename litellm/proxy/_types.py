@@ -4471,6 +4471,8 @@ class PassThroughEndpointLoggingTypedDict(TypedDict):
 
 
 LiteLLM_ManagementEndpoint_MetadataFields: Final = [
+    "disable_global_guardrails",
+    "guardrails",
     "model_rpm_limit",
     "model_tpm_limit",
     "model_itpm_limit",
