@@ -5155,12 +5155,14 @@ async def regenerate_key_fn(
             and _is_master_key(api_key=regenerate_target_key, _master_key=master_key)
         )
 
+        """
         if (
             premium_user is not True and not is_master_key_regeneration
         ):  # allow master key regeneration for non-premium users
             raise ValueError(
                 f"Regenerating Virtual Keys is an Enterprise feature, {CommonProxyErrors.not_premium_user.value}"
             )
+        """
 
         # Check if key exists, raise exception if key is not in the DB
         key = data.key if data and data.key else key
