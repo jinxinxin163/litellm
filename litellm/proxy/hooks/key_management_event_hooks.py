@@ -546,6 +546,7 @@ class KeyManagementEventHooks:
             )
 
         if not initialized_email_loggers:
+            from litellm.proxy._types import WebhookEvent
             from litellm.proxy.proxy_server import general_settings, proxy_logging_obj
 
             if "email" in general_settings.get("alerting", []):
@@ -554,6 +555,7 @@ class KeyManagementEventHooks:
                     event_group=Litellm_EntityType.KEY,
                     event_message="API Key Rotated",
                     token=response.get("key", ""),
+                    spend=response.get("spend", 0.0),
                     max_budget=response.get("max_budget", 0.0),
                     user_id=response.get("user_id"),
                     team_id=response.get("team_id"),
