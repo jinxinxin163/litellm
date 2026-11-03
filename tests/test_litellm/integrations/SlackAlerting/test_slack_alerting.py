@@ -15,6 +15,19 @@ from litellm.proxy._types import CallInfo, Litellm_EntityType
 from litellm.types.integrations.slack_alerting import AlertType, SlackAlertingCacheKeys
 
 
+def test_key_created_email_template_formats_api_key_placeholder():
+    from litellm.integrations.email_templates.templates import KEY_CREATED_EMAIL_TEMPLATE
+
+    rendered: Final = KEY_CREATED_EMAIL_TEMPLATE.format(
+        recipient_email="owner@example.com",
+        key_token="test-key-id",
+        email_support_contact="support@example.com",
+    )
+
+    assert 'api_key="{api_key}"' in rendered
+    assert "Key ID: <pre>test-key-id</pre>" in rendered
+
+
 class TestSlackAlerting(unittest.TestCase):
     def setUp(self):
         self.slack_alerting = SlackAlerting()

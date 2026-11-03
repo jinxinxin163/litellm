@@ -19,7 +19,7 @@ KEY_CREATED_EMAIL_TEMPLATE: Final = """
 
                     import openai
                     client = openai.OpenAI(
-                        api_key="{{api_key}}}",
+                        api_key="{{api_key}}",
                         base_url={{base_url}}
                     )
 
