@@ -1666,12 +1666,14 @@ class ModelManagementAuthChecks:
     ) -> Literal[True]:
         if model_params.model_info is None or model_params.model_info.team_id is None:
             return True
+        """
         if model_params.model_info.team_id is not None and premium_user is not True:
             raise HTTPException(
                 status_code=403,
                 detail={"error": CommonProxyErrors.not_premium_user.value},
             )
-
+        """
+        
         _existing_team_row: Final = await _repo_team_table(prisma_client).find_unique(
             where={"team_id": model_params.model_info.team_id}
         )
