@@ -168,12 +168,6 @@ class UnifiedLLMGuardrails(CustomLogger):
         verbose_proxy_logger.debug("Running UnifiedLLMGuardrails pre-call hook")
 
         guardrail_to_apply: Final[CustomGuardrail] = data.pop("guardrail_to_apply", None)
-        verbose_proxy_logger.info(
-            "Guardrail debug: stage=unified_entry call_id=%s guardrail=%s call_type=%s",
-            data.get("litellm_call_id"),
-            guardrail_to_apply.guardrail_name if guardrail_to_apply is not None else None,
-            call_type,
-        )
         if guardrail_to_apply is None:
             return data
 
@@ -199,28 +193,12 @@ class UnifiedLLMGuardrails(CustomLogger):
             ) from exc
 
         if typed_call_type not in mappings:
-            verbose_proxy_logger.info(
-                "Guardrail debug: stage=translation_missing call_id=%s guardrail=%s call_type=%s available=%s",
-                data.get("litellm_call_id"),
-                guardrail_to_apply.guardrail_name,
-                call_type,
-                tuple(mappings),
-            )
             raise HTTPException(
                 status_code=500,
                 detail="Guardrail execution failed: translation handler unavailable",
             )
 
-        endpoint_translation: Final = _as_endpoint_translation(mappings[typed_call_type]())
-        verbose_proxy_logger.info(
-            "Guardrail debug: stage=translation call_id=%s guardrail=%s handler=%s "
-            "message_count=%s scan_only_tool_results=%s",
-            data.get("litellm_call_id"),
-            guardrail_to_apply.guardrail_name,
-            type(endpoint_translation).__name__,
-            len(data.get("messages") or []),
-            getattr(guardrail_to_apply, "scan_only_tool_results", None),
-        )
+        endpoint_translation: Final = _as_endpoint_translation(mappings[typed_call_type])
 
         _ensure_litellm_metadata(data, user_api_key_dict)
 
@@ -228,11 +206,6 @@ class UnifiedLLMGuardrails(CustomLogger):
             data=data,
             guardrail_to_apply=guardrail_to_apply,
             litellm_logging_obj=data.get("litellm_logging_obj"),
-        )
-        verbose_proxy_logger.info(
-            "Guardrail debug: stage=unified_complete call_id=%s guardrail=%s",
-            data.get("litellm_call_id"),
-            guardrail_to_apply.guardrail_name,
         )
 
         if not guardrail_to_apply.records_own_guardrail_information:
