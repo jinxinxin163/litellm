@@ -194,12 +194,18 @@ class TestKeyRotationManager:
         with patch(
             "litellm.proxy.common_utils.key_rotation_manager.regenerate_key_fn",
             return_value=mock_response,
-        ):
+        ) as regenerate:
             with patch(
-                "litellm.proxy.common_utils.key_rotation_manager.KeyManagementEventHooks.async_key_rotated_hook"
-            ):
+                "litellm.proxy.hooks.key_management_event_hooks.KeyManagementEventHooks.async_key_rotated_hook"
+            ) as rotation_hook:
+                async def regenerate_with_notification(**kwargs: object) -> GenerateKeyResponse:
+                    await rotation_hook()
+                    return mock_response
+
+                regenerate.side_effect = regenerate_with_notification
                 # Execute
                 await manager._rotate_key(key_to_rotate)
+                rotation_hook.assert_awaited_once()
 
         # Verify database update was called with correct data
         mock_prisma_client.db.litellm_verificationtoken.update.assert_called_once()
@@ -275,7 +281,7 @@ class TestKeyRotationManager:
         ) as mock_regenerate:
             mock_regenerate.return_value = mock_response
             with patch(
-                "litellm.proxy.common_utils.key_rotation_manager.KeyManagementEventHooks.async_key_rotated_hook",
+                "litellm.proxy.hooks.key_management_event_hooks.KeyManagementEventHooks.async_key_rotated_hook",
                 new_callable=AsyncMock,
             ):
                 with patch(

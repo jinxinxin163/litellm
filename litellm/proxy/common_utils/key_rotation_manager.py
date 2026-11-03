@@ -19,7 +19,6 @@ from litellm.proxy._types import (
     LiteLLM_VerificationToken,
     RegenerateKeyRequest,
 )
-from litellm.proxy.hooks.key_management_event_hooks import KeyManagementEventHooks
 from litellm.proxy.management_endpoints.key_management_endpoints import (
     _calculate_key_rotation_time,
     regenerate_key_fn,
@@ -162,7 +161,7 @@ class KeyRotationManager:
 
     async def _rotate_key(self, key: "prisma_models.LiteLLM_VerificationToken"):
         """
-        Rotate a single key using existing regenerate_key_fn and call the rotation hook
+        Rotate a single key and update its next rotation schedule.
         """
         # Create regenerate request with grace period for seamless cutover
         regenerate_request: Final = RegenerateKeyRequest(
@@ -195,14 +194,4 @@ class KeyRotationManager:
                     "last_rotation_at": now,
                     "key_rotation_at": next_rotation_time,
                 },
-            )
-
-        # Call the existing rotation hook for notifications, audit logs, etc.
-        if isinstance(response, GenerateKeyResponse):
-            await KeyManagementEventHooks.async_key_rotated_hook(
-                data=regenerate_request,
-                existing_key_row=key,  # pyright: ignore[reportArgumentType]  # prisma row, hook wants the domain model
-                response=response,
-                user_api_key_dict=system_user,
-                litellm_changed_by=LITELLM_INTERNAL_JOBS_SERVICE_ACCOUNT_NAME,
             )

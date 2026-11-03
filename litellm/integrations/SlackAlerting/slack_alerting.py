@@ -24,6 +24,8 @@ from litellm.constants import (
     SLACK_MODEL_DEPRECATION_LOCK_ID,
 )
 from litellm.integrations.custom_batch_logger import CustomBatchLogger
+from litellm.integrations.email_templates.email_footer import EMAIL_FOOTER
+from litellm.integrations.email_templates.key_rotated_email import KEY_ROTATED_EMAIL_TEMPLATE
 from litellm.integrations.SlackAlerting.budget_alert_types import get_budget_alert_type
 from litellm.integrations.SlackAlerting.hanging_request_check import (
     AlertingHangingRequestCheck,
@@ -1304,6 +1306,16 @@ Model Info:
                     key_token=key_token,
                     base_url=base_url,
                     email_support_contact=email_support_contact,
+                )
+            elif webhook_event.event == "key_rotated":
+                email_html_content = KEY_ROTATED_EMAIL_TEMPLATE.format(
+                    email_logo_url=email_logo_url,
+                    recipient_email=recipient_email,
+                    key_budget=key_budget,
+                    key_token=key_token,
+                    base_url=base_url,
+                    email_support_contact=email_support_contact,
+                    email_footer=EMAIL_FOOTER,
                 )
             elif webhook_event.event == "internal_user_created":
                 # GET TEAM NAME

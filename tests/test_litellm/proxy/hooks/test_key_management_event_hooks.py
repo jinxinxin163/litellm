@@ -5,12 +5,89 @@ Validates that email and secret manager operations are independent and non-block
 """
 
 import asyncio
+from typing import Final
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-
+import litellm
 from litellm.proxy.hooks.key_management_event_hooks import KeyManagementEventHooks
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("alerting", [[], ["email"]])
+async def test_legacy_key_rotated_email_without_enterprise(alerting: list[str]) -> None:
+    from types import SimpleNamespace
+
+    from litellm.integrations.SlackAlerting.slack_alerting import SlackAlerting
+
+    database: Final = MagicMock()
+    database.db.litellm_usertable.find_unique = AsyncMock(
+        return_value=SimpleNamespace(user_email="owner@example.com")
+    )
+    with (
+        patch.dict("sys.modules", {"litellm_enterprise": None}),
+        patch("litellm.proxy.proxy_server.general_settings", {"alerting": alerting}),
+        patch("litellm.proxy.proxy_server.prisma_client", database),
+        patch(
+            "litellm.proxy.proxy_server.proxy_logging_obj",
+            SimpleNamespace(slack_alerting_instance=SlackAlerting(alerting=alerting)),
+        ),
+        patch.dict("os.environ", {"PROXY_BASE_URL": "https://proxy.example.com"}),
+        patch("litellm.proxy.utils.send_email", new_callable=AsyncMock) as send_email,
+    ):
+        await KeyManagementEventHooks._send_key_rotated_email(
+            response={"key": "sk-new-raw-key", "token": "hashed-token-id", "user_id": "owner"},
+            existing_key_alias="test-key",
+        )
+
+    if not alerting:
+        send_email.assert_not_awaited()
+        return
+    send_email.assert_awaited_once()
+    assert send_email.call_args.kwargs["receiver_email"] == "owner@example.com"
+    assert "API Key Rotated" in send_email.call_args.kwargs["subject"]
+    assert "sk-new-raw-key" in send_email.call_args.kwargs["html"]
+    assert "hashed-token-id" not in send_email.call_args.kwargs["html"]
+    assert "https://proxy.example.com" in send_email.call_args.kwargs["html"]
+
+
+@pytest.mark.asyncio
+async def test_key_rotated_email_prefers_registered_callback() -> None:
+    from types import SimpleNamespace
+
+    logger_type: Final = type("EmailLogger", (), {})
+    logger: Final = logger_type()
+    logger.send_key_rotated_email = AsyncMock()
+    legacy_sender: Final = AsyncMock()
+    with (
+        patch.dict(
+            "sys.modules",
+            {
+                "litellm_enterprise.enterprise_callbacks.send_emails.base_email": SimpleNamespace(
+                    BaseEmailLogger=logger_type
+                ),
+                "litellm_enterprise.types.enterprise_callbacks.send_emails": SimpleNamespace(
+                    SendKeyRotatedEmailEvent=SimpleNamespace
+                ),
+            },
+        ),
+        patch("litellm.proxy.proxy_server.general_settings", {"alerting": ["email"]}),
+        patch(
+            "litellm.proxy.proxy_server.proxy_logging_obj",
+            SimpleNamespace(
+                slack_alerting_instance=SimpleNamespace(send_key_created_or_user_invited_email=legacy_sender)
+            ),
+        ),
+        patch.object(litellm.logging_callback_manager, "get_custom_loggers_for_type", return_value=[logger]),
+    ):
+        await KeyManagementEventHooks._send_key_rotated_email(
+            response={"key": "sk-new-raw-key", "token": "hashed-token-id"}, existing_key_alias="test-key"
+        )
+
+    logger.send_key_rotated_email.assert_awaited_once()
+    assert logger.send_key_rotated_email.call_args.kwargs["send_key_rotated_email_event"].virtual_key == "sk-new-raw-key"
+    legacy_sender.assert_not_awaited()
 
 
 class TestKeyManagementEventHooksIndependentOperations:
