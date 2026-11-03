@@ -4492,8 +4492,8 @@ LiteLLM_ManagementEndpoint_MetadataFields: Final = [
 ]
 
 LiteLLM_ManagementEndpoint_MetadataFields_Premium: Final = [
-    "disable_global_guardrails",
-    "guardrails",
+    #"disable_global_guardrails",
+    #"guardrails",
     "policies",
     "tags",
     "team_member_key_duration",
