@@ -2897,19 +2897,19 @@ def _add_guardrails_from_key_or_team_metadata(
     # Add key-level guardrails first
     if key_metadata and "guardrails" in key_metadata:
         if isinstance(key_metadata["guardrails"], list) and len(key_metadata["guardrails"]) > 0:
-            _premium_user_check()
+            # _premium_user_check()
             combined_guardrails.update(key_metadata["guardrails"])
 
     # Add team-level guardrails (set automatically handles duplicates)
     if team_metadata and "guardrails" in team_metadata:
         if isinstance(team_metadata["guardrails"], list) and len(team_metadata["guardrails"]) > 0:
-            _premium_user_check()
+            # _premium_user_check()
             combined_guardrails.update(team_metadata["guardrails"])
 
     # Add project-level guardrails (set automatically handles duplicates)
     if project_metadata and "guardrails" in project_metadata:
         if isinstance(project_metadata["guardrails"], list) and len(project_metadata["guardrails"]) > 0:
-            _premium_user_check()
+            # _premium_user_check()
             combined_guardrails.update(project_metadata["guardrails"])
 
     # Set combined guardrails in metadata as list
