@@ -19,8 +19,8 @@ KEY_CREATED_EMAIL_TEMPLATE: Final = """
 
                     import openai
                     client = openai.OpenAI(
-                        api_key={key_token},
-                        base_url={{base_url}}
+                        api_key="{key_token}",
+                        base_url="{base_url}"
                     )
 
                     response = client.chat.completions.create(
